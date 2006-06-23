@@ -171,18 +171,10 @@
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 		</VersionInfoKeys>  
-    
-    
-    
-    
-    
-    
-    
     <FileList>
-      <File FileName="C:\Inetpub\wwwroot\WebEMSOF\LibrarySupport\ki\default.txaPackage" ContainerId="TogetherDiagram" ModuleName="default"/>
       <File FileName="c:\program files\common files\borland shared\bds\shared assemblies\4.0\Borland.Delphi.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Delphi" AssemblyName="borland.delphi" Version="10.0.4143.0" LinkUnits="False"/>
       <File FileName="c:\program files\common files\borland shared\bds\shared assemblies\4.0\Borland.Data.Provider.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Data.Provider" AssemblyName="Borland.Data.Provider" Version="2.5.0.0" LinkUnits="False"/>
-      <File FileName="ki.common.pas" ContainerId="" ModuleName="ki.common"/>
+      <File FileName="ki.common.pas" ContainerId="PascalCompiler" ModuleName="ki.common"/>
     </FileList>
   </DelphiDotNet.Personality>
 	<StarTeamAssociation></StarTeamAssociation>
