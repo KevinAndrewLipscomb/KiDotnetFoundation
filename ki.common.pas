@@ -171,6 +171,12 @@ begin
   + '          </td>'
   + '			   </tr>'
   + '		   </table>'
+  + '      <p></p>'
+  + '      <p><small>You can help us make WebEMSOF better!</small></p>'
+  + '      <p><small>Copy any error messages and paste them into an email '
+  + '        <a href="mailto:kevin.lipscomb@kvrs.org?subject=WebEMSOF%20bug%20report">here</a>.</small></p>'
+  + '      <p><small>Send suggestions <a href="mailto:kevin.lipscomb@kvrs.org?subject=WebEMSOF%20suggestion">here</a>.</small></p>'
+  + '      <p><small><strong>Thanks!</strong></small></p>'
   + '    </td>'
   + '		 <td valign="top">';
   precontent.Controls.Add(literal);
