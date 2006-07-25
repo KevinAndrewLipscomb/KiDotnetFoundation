@@ -146,7 +146,7 @@ begin
   + '			     <td>'
   + '				     <table cellspacing="0" cellpadding="5" border="0">'
   + '					     <tr>'
-  + '					       <td bgcolor="#f5f5f5"><small><strong>EMSOF docs</strong></small></td>'
+  + '					       <td bgcolor="#f5f5f5"><small><strong>EMSOF documents</strong></small></td>'
   + '					     </tr>'
   + '					     <tr>'
   + '					       <td>'
