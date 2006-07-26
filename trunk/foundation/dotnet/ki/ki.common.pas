@@ -59,6 +59,12 @@ procedure DbOpen;
 
 function Digest(source_string: string): string;
 
+procedure ExportToExcel
+  (
+  dg: DataGrid;
+  filename_sans_extension: string
+  );
+
 procedure PopulatePlaceHolders
   (
   var precontent: System.Web.Ui.WebControls.PlaceHolder;
@@ -98,6 +104,27 @@ begin
     target_string := target_string + byte_buf[i].tostring('x2');
   end;
   Digest := target_string;
+end;
+
+procedure ExportToExcel
+  (
+  dg: DataGrid;
+  filename_sans_extension: string
+  );
+begin
+  page.response.Clear;
+  page.response.AppendHeader
+    (
+    'Content-Disposition',
+    'attachment; filename=' + filename + '.xls'
+    );
+  page.response.bufferoutput := TRUE;
+  page.response.contenttype := 'application/vnd.ms-excel';
+  page.enableviewstate := FALSE;
+  stringwriter := system.io.stringwriter.Create;
+  dg.RenderControl(system.web.ui.htmltextwriter.Create(stringwriter));
+  page.response.Write(stringwriter.tostring);
+  page.response.&End;
 end;
 
 PROCEDURE PopulatePrecontent(var precontent: System.Web.Ui.WebControls.PlaceHolder);
