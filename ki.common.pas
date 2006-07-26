@@ -6,11 +6,13 @@ uses
   borland.data.provider,
   system.configuration,
   system.data,
+  system.io,
   system.security.cryptography,
   system.text,
   system.text.regularexpressions,
   system.web,
   system.web.security,
+  system.web.ui,
   system.Web.UI.WebControls;
 
 const ID = '$Id$';
@@ -61,6 +63,7 @@ function Digest(source_string: string): string;
 
 procedure ExportToExcel
   (
+  page: system.web.ui.page;
   dg: DataGrid;
   filename_sans_extension: string
   );
@@ -108,15 +111,18 @@ end;
 
 procedure ExportToExcel
   (
+  page: system.web.ui.page;
   dg: DataGrid;
   filename_sans_extension: string
   );
+var
+  stringwriter: system.io.stringwriter;
 begin
   page.response.Clear;
   page.response.AppendHeader
     (
     'Content-Disposition',
-    'attachment; filename=' + filename + '.xls'
+    'attachment; filename=' + filename_sans_extension + '.xls'
     );
   page.response.bufferoutput := TRUE;
   page.response.contenttype := 'application/vnd.ms-excel';
