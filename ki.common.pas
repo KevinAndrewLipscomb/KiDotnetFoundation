@@ -64,8 +64,8 @@ function Digest(source_string: string): string;
 procedure ExportToExcel
   (
   page: system.web.ui.page;
-  dg: DataGrid;
-  filename_sans_extension: string
+  filename_sans_extension: string;
+  excel_string: string
   );
 
 procedure PopulatePlaceHolders
@@ -80,6 +80,8 @@ function Safe
   hint: safe_hint_type = NONE
   )
   : string;
+
+function StringOfControl(c: control): string;
 
 IMPLEMENTATION
 
@@ -112,11 +114,9 @@ end;
 procedure ExportToExcel
   (
   page: system.web.ui.page;
-  dg: DataGrid;
-  filename_sans_extension: string
+  filename_sans_extension: string;
+  excel_string: string
   );
-var
-  stringwriter: system.io.stringwriter;
 begin
   page.response.Clear;
   page.response.AppendHeader
@@ -127,9 +127,7 @@ begin
   page.response.bufferoutput := TRUE;
   page.response.contenttype := 'application/vnd.ms-excel';
   page.enableviewstate := FALSE;
-  stringwriter := system.io.stringwriter.Create;
-  dg.RenderControl(system.web.ui.htmltextwriter.Create(stringwriter));
-  page.response.Write(stringwriter.tostring);
+  page.response.Write(excel_string);
   page.response.&End;
 end;
 
@@ -205,13 +203,24 @@ begin
   + '			   </tr>'
   + '		   </table>'
   + '      <p></p>'
-  + '      <i><small><small>'
-  + '      <p>You can help us make WebEMSOF better!</p>'
-  + '      <p>Copy any fatal errors and paste them into an email '
-  + '        <a href="mailto:kevin.lipscomb@kvrs.org?subject=WebEMSOF%20bug%20report">here</a>.</p>'
-  + '      <p>Send suggestions <a href="mailto:kevin.lipscomb@kvrs.org?subject=WebEMSOF%20suggestion">here</a>.</p>'
-  + '      <p><strong>Thanks!</strong></p>'
-  + '      </small></small></i>'
+  + '		   <table bordercolor="#dcdcdc" cellspacing="0" cellpadding="0" border="1">'
+  + '			   <tr>'
+  + '			     <td>'
+  + '				     <table cellspacing="0" cellpadding="5" border="0">'
+  + '					     <tr><td bgcolor="#f5f5f5"><small><strong>Process improvement</strong></small></td></tr>'
+  + '					     <tr><td><small><small>You can help us make WebEMSOF better!</small></small></td></tr>'
+  + '              <tr>'
+  + '                <td>'
+  + '                  <small><small>Copy any fatal errors and paste them into an email '
+  + '                    <a href="mailto:kevin.lipscomb@kvrs.org?subject=WebEMSOF%20bug%20report">here</a>.</small></small>'
+  + '                </td>'
+  + '              </tr>'
+  + '              <tr><td><small><small>Send suggestions <a href="mailto:kevin.lipscomb@kvrs.org?subject=WebEMSOF%20suggestion">here</a>.</small></small></td></tr>'
+  + '              <tr><td><small><small><strong>Thanks!</strong></small></small></td></tr>'
+  + '				     </table>'
+  + '          </td>'
+  + '			   </tr>'
+  + '		   </table>'
   + '    </td>'
   + '		 <td valign="top">';
   precontent.Controls.Add(literal);
@@ -314,6 +323,15 @@ begin
     end;
   //
   Safe := scratch_string;
+end;
+
+function StringOfControl(c: control): string;
+var
+  stringwriter: system.io.stringwriter;
+begin
+  stringwriter := system.io.stringwriter.Create;
+  c.RenderControl(system.web.ui.htmltextwriter.Create(stringwriter));
+  StringOfControl := stringwriter.tostring;
 end;
 
 BEGIN
