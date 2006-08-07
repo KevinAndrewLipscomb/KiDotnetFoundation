@@ -11,8 +11,10 @@ uses
   system.text,
   system.text.regularexpressions,
   system.web,
+  system.web.mail,
   system.web.security,
   system.web.ui,
+  system.web.ui.htmlcontrols,
   system.Web.UI.WebControls;
 
 const ID = '$Id$';
@@ -80,6 +82,17 @@ function Safe
   hint: safe_hint_type = NONE
   )
   : string;
+
+procedure SendControlAsAttachmentToEmailMessage
+  (
+  c: system.object;
+  scratch_pathname: string;
+  from_address: string;
+  to_target: string;
+  cc_target: string;
+  subject: string;
+  body: string
+  );
 
 function StringOfControl(c: control): string;
 
@@ -323,6 +336,40 @@ begin
     end;
   //
   Safe := scratch_string;
+end;
+
+procedure SendControlAsAttachmentToEmailMessage
+  (
+  c: system.object;
+  scratch_pathname: string;
+  from_address: string;
+  to_target: string;
+  cc_target: string;
+  subject: string;
+  body: string
+  );
+var
+  msg: system.web.mail.mailmessage;
+  streamwriter: system.io.streamwriter;
+begin
+  //
+  streamwriter := system.io.streamwriter.Create(scratch_pathname);
+  system.web.ui.control(c).RenderControl(system.web.ui.htmltextwriter.Create(streamwriter));
+  streamwriter.Close;
+  //
+  msg := system.web.mail.mailmessage.Create;
+  msg.from := from_address;
+  msg.&to := to_target;
+  msg.cc := cc_target;
+  msg.subject := subject;
+  msg.body := body;
+  msg.attachments.Add(system.web.mail.mailattachment.Create(scratch_pathname));
+  //
+  smtpmail.smtpserver := configurationsettings.appsettings['smtp_server'];
+  smtpmail.Send(msg);
+  //
+  &file.Delete(scratch_pathname);
+  //
 end;
 
 function StringOfControl(c: control): string;
