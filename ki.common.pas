@@ -50,7 +50,8 @@ type
     PHONE_NUM,
     POSTAL_CITY,
     POSTAL_STREET_ADDRESS,
-    REAL_NUM
+    REAL_NUM,
+    REAL_NUM_INCLUDING_NEGATIVE
     );
   string_array = array of string;
 
@@ -323,6 +324,8 @@ begin
       allow := '0-9a-zA-Z#\-,\(\)\. ' + APOSTROPHE;
     REAL_NUM:
       allow := '0-9\.';
+    REAL_NUM_INCLUDING_NEGATIVE:
+      allow := '0-9\.\-';
   end;
   //
   if allow = system.string.EMPTY then
