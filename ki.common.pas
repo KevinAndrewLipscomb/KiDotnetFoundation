@@ -95,6 +95,16 @@ procedure SendControlAsAttachmentToEmailMessage
   body: string
   );
 
+procedure SmtpMailSend(mail_message: MailMessage); overload;
+procedure SmtpMailSend
+  (
+  from: string;
+  &to: string;
+  subject: string;
+  message_text: string
+  );
+  overload;
+
 function StringOfControl(c: control): string;
 
 IMPLEMENTATION
@@ -368,8 +378,7 @@ begin
   msg.body := body;
   msg.attachments.Add(system.web.mail.mailattachment.Create(scratch_pathname));
   //
-  smtpmail.smtpserver := configurationsettings.appsettings['smtp_server'];
-  smtpmail.Send(msg);
+  SmtpMailSend(msg);
   //
   &file.Delete(scratch_pathname);
   //
@@ -382,6 +391,50 @@ begin
   stringwriter := system.io.stringwriter.Create;
   c.RenderControl(system.web.ui.htmltextwriter.Create(stringwriter));
   StringOfControl := stringwriter.tostring;
+end;
+
+procedure SmtpMailSend(mail_message: MailMessage);
+const
+  CDO_BASIC = 1;
+  CDO_SEND_USING_PORT = 2;
+var
+  smtp_password: string;
+  smtp_server: string;
+  smtp_username: string;
+begin
+  smtp_server := ConfigurationSettings.AppSettings['smtp_server'];
+  smtp_username := ConfigurationSettings.AppSettings['smtp_username'];
+  smtp_password := ConfigurationSettings.AppSettings['smtp_password'];
+  with mail_message do begin
+    fields.Add('http://schemas.microsoft.com/cdo/configuration/smtpserver',smtp_server);
+    fields.Add('http://schemas.microsoft.com/cdo/configuration/smtpserverport',system.object(25));
+    fields.Add('http://schemas.microsoft.com/cdo/configuration/sendusing',system.object(CDO_SEND_USING_PORT));
+    if (smtp_username <> system.string.Empty) and (smtp_password <> system.string.Empty) then begin
+      fields.Add('http://schemas.microsoft.com/cdo/configuration/smtpauthenticate',system.object(CDO_BASIC));
+      fields.Add('http://schemas.microsoft.com/cdo/configuration/sendusername',smtp_username);
+      fields.Add('http://schemas.microsoft.com/cdo/configuration/sendpassword',smtp_password);
+    end;
+  end;
+  smtpmail.smtpserver := smtp_server;
+  smtpmail.Send(mail_message);
+end;
+
+procedure SmtpMailSend
+  (
+  from: string;
+  &to: string;
+  subject: string;
+  message_text: string
+  );
+var
+  mail_message: mailmessage;
+begin
+  mail_message := mailmessage.Create;
+  mail_message.from := from;
+  mail_message.&to := &to;
+  mail_message.subject := subject;
+  mail_message.body := message_text;
+  SmtpMailSend(mail_message);
 end;
 
 BEGIN
