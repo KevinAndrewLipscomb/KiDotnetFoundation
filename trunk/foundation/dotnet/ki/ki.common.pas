@@ -55,13 +55,6 @@ type
     );
   string_array = array of string;
 
-var
-  db: borland.data.provider.bdpconnection;
-
-procedure DbClose;
-
-procedure DbOpen;
-
 function Digest(source_string: string): string;
 
 procedure ExportToExcel
@@ -108,18 +101,6 @@ procedure SmtpMailSend
 function StringOfControl(c: control): string;
 
 IMPLEMENTATION
-
-PROCEDURE DbClose;
-begin
-  db.Close;
-end;
-
-PROCEDURE DbOpen;
-begin
-  if db.State <> connectionstate.OPEN then begin
-    db.Open;
-  end;
-end;
 
 FUNCTION Digest(source_string: string): string;
 var
@@ -437,8 +418,4 @@ begin
   SmtpMailSend(mail_message);
 end;
 
-BEGIN
-db := borland.data.provider.bdpconnection.Create;
-db.ConnectionOptions := 'transaction isolation=ReadCommitted';
-db.ConnectionString := ConfigurationSettings.AppSettings['bdp_connection_string'];
 END.
