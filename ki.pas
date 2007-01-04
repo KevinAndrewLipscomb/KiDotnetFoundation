@@ -41,6 +41,7 @@ type
     HOSTNAME,
     HUMAN_NAME,
     HUMAN_NAME_CSV,
+    HYPHENATED_ALPHA,
     HYPHENATED_ALPHANUM,
     HYPHENATED_NUM,
     MAKE_MODEL,
@@ -169,6 +170,8 @@ begin
       allow := 'a-zA-Z\-\. ' + APOSTROPHE;
     HUMAN_NAME_CSV:
       allow := 'a-zA-Z\-,\. ' + APOSTROPHE;
+    HYPHENATED_ALPHA:
+      allow := 'a-zA-z\-';
     HYPHENATED_ALPHANUM:
       allow := 'a-zA-z0-9\-';
     HYPHENATED_NUM:
