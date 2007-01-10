@@ -7,6 +7,7 @@ uses
   system.configuration,
   system.data,
   system.io,
+  system.net,
   system.security.cryptography,
   system.text,
   system.text.regularexpressions,
@@ -56,6 +57,8 @@ type
     );
   string_array = array of string;
 
+function BeValidDomainPartOfEmailAddress(email_address: string): boolean;
+
 function Digest(source_string: string): string;
 
 procedure ExportToExcel
@@ -96,6 +99,19 @@ procedure SmtpMailSend
 function StringOfControl(c: control): string;
 
 IMPLEMENTATION
+
+FUNCTION BeValidDomainPartOfEmailAddress(email_address: string): boolean;
+var
+  be_valid_domain_part_of_email_address: boolean;
+begin
+  be_valid_domain_part_of_email_address := TRUE;
+  try
+    dns.GetHostByName(email_address.Substring(email_address.LastIndexOf('@') + 1));
+  except
+    be_valid_domain_part_of_email_address := FALSE;
+  end;
+  BeValidDomainPartOfEmailAddress := be_valid_domain_part_of_email_address;
+end;
 
 FUNCTION Digest(source_string: string): string;
 var
