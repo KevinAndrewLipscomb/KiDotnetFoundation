@@ -45,6 +45,7 @@ type
     HYPHENATED_ALPHA,
     HYPHENATED_ALPHANUM,
     HYPHENATED_NUM,
+    KI_SORT_EXPRESSION,
     MAKE_MODEL,
     NARRATIVE,
     NUM,
@@ -175,7 +176,7 @@ begin
     CURRENCY_USA:
       allow := '0-9\$\,\.';
     DATE_TIME:
-      allow := '0-9AMPamp:\/ ';
+      allow := '0-9:\-\/ ';
     ECMASCRIPT_WORD:
       allow := '0-9a-zA-Z_';
     EMAIL_ADDRESS:
@@ -192,6 +193,8 @@ begin
       allow := 'a-zA-z0-9\-';
     HYPHENATED_NUM:
       allow := '0-9\-';
+    KI_SORT_EXPRESSION:
+      allow := 'a-zA-z%';
     MAKE_MODEL:
       allow := '0-9a-zA-Z#\*\(\)\-\+/\. ';
     NARRATIVE:
