@@ -194,7 +194,7 @@ begin
     HYPHENATED_NUM:
       allow := '0-9\-';
     KI_SORT_EXPRESSION:
-      allow := 'a-zA-z%,\.\ ';
+      allow := 'a-zA-z%,\. ';
     MAKE_MODEL:
       allow := '0-9a-zA-Z#\*\(\)\-\+/\. ';
     NARRATIVE:
