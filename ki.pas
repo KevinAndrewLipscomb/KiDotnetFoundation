@@ -87,7 +87,7 @@ procedure SendControlAsAttachmentToEmailMessage
   body: string
   );
 
-procedure SilentAlarm;
+procedure SilentAlarm(e: exception);
 
 procedure SmtpMailSend(mail_message: MailMessage); overload;
 procedure SmtpMailSend
@@ -272,32 +272,19 @@ begin
   StringOfControl := stringwriter.tostring;
 end;
 
-PROCEDURE SilentAlarm;
-var
-  exception: system.exception;
+PROCEDURE SilentAlarm(e: exception);
 begin
-  exception := server.GetLastError.GetBaseException;
-  //
-  notification_message := '[MESSAGE]' + NEW_LINE
-  + exception.message + NEW_LINE
-  + NEW_LINE
-  + '[STACKTRACE]' + NEW_LINE
-  + exception.stacktrace + NEW_LINE
-  + NEW_LINE
-  + '[SESSION]' + NEW_LINE;
-  for lcv := 0 to (session.count - 1) do begin
-    notification_message := notification_message + session.keys[lcv].tostring + ' = ' + session.item[lcv].tostring + NEW_LINE;
-  end;
-  //
   SmtpMailSend
     (
     configurationsettings.appsettings['sender_email_address'],
     configurationsettings.appsettings['sender_email_address'],
     'SILENT ALARM',
-    notification_message
+    '[MESSAGE]' + NEW_LINE
+    + e.message + NEW_LINE
+    + NEW_LINE
+    + '[STACKTRACE]' + NEW_LINE
+    + e.stacktrace + NEW_LINE
     );
-  //
-  server.ClearError;
 end;
 
 procedure SmtpMailSend(mail_message: MailMessage);
@@ -326,7 +313,7 @@ begin
   try
     smtpmail.Send(mail_message);
   except
-    SilentAlarm;
+    on e: exception do SilentAlarm(e);
   end;
 end;
 
