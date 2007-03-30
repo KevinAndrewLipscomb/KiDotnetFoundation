@@ -14,6 +14,7 @@ type
       value: string
       );
     procedure OnInit(e: eventargs); override;
+    procedure ValidationAlert;
   public
     constructor Create;
   end;
@@ -26,6 +27,7 @@ type
       value: string
       );
     procedure OnInit(e: eventargs); override;
+    procedure ValidationAlert;
   public
     constructor Create;
   end;
@@ -34,6 +36,9 @@ implementation
 
 uses
   ki;
+
+const
+  STD_VALIDATION_ALERT = 'Invalid submission.  Look for !ERR! indications.  An explanation may appear near the top of the page.';
 
 //
 // PAGE_CLASS
@@ -69,6 +74,11 @@ begin
   end;
 end;
 
+procedure page_class.ValidationAlert;
+begin
+  Alert('validation_alert',STD_VALIDATION_ALERT);
+end;
+
 //
 // USERCONTROL_CLASS
 //
@@ -91,6 +101,11 @@ end;
 procedure usercontrol_class.OnInit(e: system.eventargs);
 begin
   inherited OnInit(e);
+end;
+
+procedure usercontrol_class.ValidationAlert;
+begin
+  Alert('validation_alert',STD_VALIDATION_ALERT);
 end;
 
 end.
