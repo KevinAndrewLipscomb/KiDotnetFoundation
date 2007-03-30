@@ -18,8 +18,6 @@ uses
   system.web.ui.htmlcontrols,
   system.Web.UI.WebControls;
 
-const ID = '$Id$';
-
 const
   APOSTROPHE = '''';
   DOUBLE_APOSTROPHE = '''''';
@@ -57,6 +55,13 @@ type
     REAL_NUM_INCLUDING_NEGATIVE
     );
   string_array = array of string;
+
+procedure Alert
+  (
+  page: page;
+  key: string;
+  s: string
+  );
 
 function BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 
@@ -102,6 +107,19 @@ procedure SmtpMailSend
 function StringOfControl(c: control): string;
 
 IMPLEMENTATION
+
+PROCEDURE Alert
+  (
+  page: page;
+  key: string;
+  s: string
+  );
+begin
+  if not page.IsStartupScriptRegistered(key) then begin
+    page.RegisterStartupScript
+      (key,'<script language="javascript" type="text/javascript">alert("' + s.Replace(NEW_LINE,'\n') + '")</script>');
+  end;
+end;
 
 FUNCTION BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 var
