@@ -38,7 +38,7 @@ uses
   ki;
 
 const
-  STD_VALIDATION_ALERT = 'Invalid submission.  Look for !ERR! indications.  An explanation may appear near the top of the page.';
+  STD_VALIDATION_ALERT = 'Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.';
 
 //
 // PAGE_CLASS
