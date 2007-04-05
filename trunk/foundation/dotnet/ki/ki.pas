@@ -30,11 +30,13 @@ const
 type
   alert_facility_type =
     (
-    NORMAL,
-    DATA,
+    APPDATA,
+    DBMS,
+    FILESYSTEM,
     LOGIC,
+    MEMORY,
     NETWORK,
-    RESOURCE,
+    OTHER,
     USER
     );
   //
