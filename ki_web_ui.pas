@@ -3,13 +3,17 @@ unit ki_web_ui;
 interface
 
 uses
+  ki,
   system.web.ui;
 
 type
+  //
   page_class = class(System.Web.UI.Page)
   strict protected
     procedure Alert
       (
+      facility: alert_facility_type;
+      state: alert_state_type;
       key: string;
       value: string
       );
@@ -23,6 +27,8 @@ type
   strict protected
     procedure Alert
       (
+      facility: alert_facility_type;
+      state: alert_state_type;
       key: string;
       value: string
       );
@@ -35,7 +41,7 @@ type
 implementation
 
 uses
-  ki;
+  system.configuration;
 
 const
   STD_VALIDATION_ALERT = 'Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.';
@@ -52,11 +58,13 @@ end;
 
 procedure page_class.Alert
   (
+  facility: alert_facility_type;
+  state: alert_state_type;
   key: string;
   value: string
   );
 begin
-  ki.Alert(page,key,value);
+  ki.Alert(page,configurationsettings.appsettings['application_name'],facility,state,key,value);
 end;
 
 procedure page_class.OnInit(e: system.eventargs);
@@ -76,7 +84,7 @@ end;
 
 procedure page_class.ValidationAlert;
 begin
-  Alert('validation_alert',STD_VALIDATION_ALERT);
+  Alert(ki.USER,ki.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
 end;
 
 //
@@ -91,11 +99,13 @@ end;
 
 procedure usercontrol_class.Alert
   (
+  facility: alert_facility_type;
+  state: alert_state_type;
   key: string;
   value: string
   );
 begin
-  ki.Alert(page,key,value);
+  ki.Alert(page,configurationsettings.appsettings['application_name'],facility,state,key,value);
 end;
 
 procedure usercontrol_class.OnInit(e: system.eventargs);
@@ -105,7 +115,7 @@ end;
 
 procedure usercontrol_class.ValidationAlert;
 begin
-  Alert('validation_alert',STD_VALIDATION_ALERT);
+  Alert(ki.USER,ki.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
 end;
 
 end.

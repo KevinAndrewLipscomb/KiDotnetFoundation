@@ -28,6 +28,25 @@ const
   TAB = #9;
 
 type
+  alert_facility_type =
+    (
+    NORMAL,
+    DATA,
+    LOGIC,
+    NETWORK,
+    RESOURCE,
+    USER
+    );
+  //
+  alert_state_type =
+    (
+    INFORMATIVE,
+    SUCCESS,
+    WARNING,
+    FAILURE,
+    DAMAGE
+    );
+  //
   safe_hint_type =
     (
     NONE,
@@ -43,6 +62,7 @@ type
     HYPHENATED_ALPHA,
     HYPHENATED_ALPHANUM,
     HYPHENATED_NUM,
+    HYPHENATED_UNDERSCORED_ALPHANUM,
     KI_SORT_EXPRESSION,
     MAKE_MODEL,
     NARRATIVE,
@@ -59,6 +79,9 @@ type
 procedure Alert
   (
   page: page;
+  application_name: string;
+  facility: alert_facility_type;
+  state: alert_state_type;
   key: string;
   s: string
   );
@@ -111,13 +134,29 @@ IMPLEMENTATION
 PROCEDURE Alert
   (
   page: page;
+  application_name: string;
+  facility: alert_facility_type;
+  state: alert_state_type;
   key: string;
   s: string
   );
 begin
   if not page.IsStartupScriptRegistered(key) then begin
     page.RegisterStartupScript
-      (key,'<script language="javascript" type="text/javascript">alert("' + s.Replace(NEW_LINE,'\n') + '")</script>');
+      (
+      key,
+      system.string.EMPTY
+      + '<script language="javascript" type="text/javascript">'
+      + ' alert("- - - ---------------------------------------------------- - - -\n'
+      +         '       issuer:  \t' + application_name + '\n'
+      +         '       facility:\t' + enum(facility).tostring.tolower + '\n'
+      +         '       state:   \t' + enum(state).tostring.tolower + '\n'
+      +         '       key:     \t' + key.tolower + '\n'
+      +         '- - - ---------------------------------------------------- - - -\n\n\n'
+      +    s.Replace(NEW_LINE,'\n') + '\n\n"'
+      + ' )'
+      + '</script>'
+      );
   end;
 end;
 
@@ -213,6 +252,8 @@ begin
       allow := 'a-zA-z0-9\-';
     HYPHENATED_NUM:
       allow := '0-9\-';
+    HYPHENATED_UNDERSCORED_ALPHANUM:
+      allow := 'a-zA-z0-9\-_';
     KI_SORT_EXPRESSION:
       allow := 'a-zA-z%,\. ';
     MAKE_MODEL:
