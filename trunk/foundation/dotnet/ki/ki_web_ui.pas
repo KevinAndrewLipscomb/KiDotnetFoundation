@@ -12,7 +12,7 @@ type
   strict protected
     procedure Alert
       (
-      facility: alert_facility_type;
+      cause: alert_cause_type;
       state: alert_state_type;
       key: string;
       value: string
@@ -27,7 +27,7 @@ type
   strict protected
     procedure Alert
       (
-      facility: alert_facility_type;
+      cause: alert_cause_type;
       state: alert_state_type;
       key: string;
       value: string
@@ -58,13 +58,13 @@ end;
 
 procedure page_class.Alert
   (
-  facility: alert_facility_type;
+  cause: alert_cause_type;
   state: alert_state_type;
   key: string;
   value: string
   );
 begin
-  ki.Alert(page,configurationsettings.appsettings['application_name'],facility,state,key,value);
+  ki.Alert(page,configurationsettings.appsettings['application_name'],cause,state,key,value);
 end;
 
 procedure page_class.OnInit(e: system.eventargs);
@@ -99,13 +99,13 @@ end;
 
 procedure usercontrol_class.Alert
   (
-  facility: alert_facility_type;
+  cause: alert_cause_type;
   state: alert_state_type;
   key: string;
   value: string
   );
 begin
-  ki.Alert(page,configurationsettings.appsettings['application_name'],facility,state,key,value);
+  ki.Alert(page,configurationsettings.appsettings['application_name'],cause,state,key,value);
 end;
 
 procedure usercontrol_class.OnInit(e: system.eventargs);
