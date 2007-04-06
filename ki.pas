@@ -28,7 +28,7 @@ const
   TAB = #9;
 
 type
-  alert_facility_type =
+  alert_cause_type =
     (
     APPDATA,
     DBMS,
@@ -42,7 +42,7 @@ type
   //
   alert_state_type =
     (
-    INFORMATIVE,
+    NORMAL,
     SUCCESS,
     WARNING,
     FAILURE,
@@ -82,7 +82,7 @@ procedure Alert
   (
   page: page;
   application_name: string;
-  facility: alert_facility_type;
+  cause: alert_cause_type;
   state: alert_state_type;
   key: string;
   s: string
@@ -91,6 +91,8 @@ procedure Alert
 function BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 
 function Digest(source_string: string): string;
+
+function DomainNameOfIpAddress(ip_address: string): string;
 
 procedure ExportToExcel
   (
@@ -137,7 +139,7 @@ PROCEDURE Alert
   (
   page: page;
   application_name: string;
-  facility: alert_facility_type;
+  cause: alert_cause_type;
   state: alert_state_type;
   key: string;
   s: string
@@ -151,7 +153,7 @@ begin
       + '<script language="javascript" type="text/javascript">'
       + ' alert("- - - ---------------------------------------------------- - - -\n'
       +         '       issuer:  \t' + application_name + '\n'
-      +         '       facility:\t' + enum(facility).tostring.tolower + '\n'
+      +         '       cause:   \t' + enum(cause).tostring.tolower + '\n'
       +         '       state:   \t' + enum(state).tostring.tolower + '\n'
       +         '       key:     \t' + key.tolower + '\n'
       +         '- - - ---------------------------------------------------- - - -\n\n\n'
@@ -189,7 +191,12 @@ begin
   Digest := target_string;
 end;
 
-procedure ExportToExcel
+FUNCTION DomainNameOfIpAddress(ip_address: string): string;
+begin
+  DomainNameOfIpAddress := dns.GetHostByAddress(ip_address).HostName;
+end;
+
+PROCEDURE ExportToExcel
   (
   page: system.web.ui.page;
   filename_sans_extension: string;
