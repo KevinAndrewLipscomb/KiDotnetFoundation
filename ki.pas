@@ -101,6 +101,13 @@ procedure ExportToExcel
   excel_string: string
   );
 
+function Has
+  (
+  the_string_array: string_array;
+  the_string: string
+  )
+  : boolean;
+
 function Safe
   (
   source_string: string;
@@ -214,6 +221,24 @@ begin
   page.enableviewstate := FALSE;
   page.response.Write(excel_string);
   page.response.&End;
+end;
+
+FUNCTION Has
+  (
+  the_string_array: string_array;
+  the_string: string
+  )
+  : boolean;
+var
+  i: cardinal;
+  len: cardinal;
+begin
+  len := system.array(the_string_array).length;
+  i := 0;
+  while (i < len - 1) and (the_string_array[i] <> the_string) do begin
+    i := i + 1;
+  end;
+  Has := (i < len);
 end;
 
 FUNCTION Safe
