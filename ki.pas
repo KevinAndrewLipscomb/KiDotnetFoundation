@@ -163,6 +163,7 @@ begin
       +         '       cause:   \t' + enum(cause).tostring.tolower + '\n'
       +         '       state:   \t' + enum(state).tostring.tolower + '\n'
       +         '       key:     \t' + key.tolower + '\n'
+      +         '       time:    \t' + datetime.Now.tostring('s') + '\n'
       +         '- - - ---------------------------------------------------- - - -\n\n\n'
       +    s.Replace(NEW_LINE,'\n') + '\n\n"'
       + ' )'
