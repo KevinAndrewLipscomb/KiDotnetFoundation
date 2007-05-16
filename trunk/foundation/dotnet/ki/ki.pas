@@ -134,7 +134,8 @@ procedure SmtpMailSend
   from: string;
   &to: string;
   subject: string;
-  message_text: string
+  message_string: string;
+  be_html: boolean = FALSE
   );
   overload;
 
@@ -416,7 +417,8 @@ procedure SmtpMailSend
   from: string;
   &to: string;
   subject: string;
-  message_text: string
+  message_string: string;
+  be_html: boolean = FALSE
   );
 var
   mail_message: mailmessage;
@@ -425,7 +427,10 @@ begin
   mail_message.from := from;
   mail_message.&to := &to;
   mail_message.subject := subject;
-  mail_message.body := message_text;
+  mail_message.body := message_string;
+  if be_html then begin
+    mail_message.bodyformat := system.web.mail.mailformat.HTML;
+  end;
   SmtpMailSend(mail_message);
 end;
 
