@@ -90,6 +90,8 @@ procedure Alert
 
 function BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 
+function BooleanOfYesNo(yn: string): boolean;
+
 function Digest(source_string: string): string;
 
 function DomainNameOfIpAddress(ip_address: string): string;
@@ -141,6 +143,8 @@ procedure SmtpMailSend
 
 function StringOfControl(c: control): string;
 
+function YesNoOf(b: boolean): string;
+
 IMPLEMENTATION
 
 PROCEDURE Alert
@@ -184,6 +188,11 @@ begin
     be_valid_domain_part_of_email_address := FALSE;
   end;
   BeValidDomainPartOfEmailAddress := be_valid_domain_part_of_email_address;
+end;
+
+function BooleanOfYesNo(yn: string): boolean;
+begin
+  BooleanOfYesNo := (yn.ToUpper = 'YES');
 end;
 
 FUNCTION Digest(source_string: string): string;
@@ -432,6 +441,15 @@ begin
     mail_message.bodyformat := system.web.mail.mailformat.HTML;
   end;
   SmtpMailSend(mail_message);
+end;
+
+function YesNoOf(b: boolean): string;
+begin
+  if b then begin
+    YesNoOf := 'Yes';
+  end else begin
+    YesNoOf := 'No';
+  end;
 end;
 
 END.
