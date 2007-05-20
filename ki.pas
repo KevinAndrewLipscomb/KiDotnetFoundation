@@ -96,6 +96,8 @@ function Digest(source_string: string): string;
 
 function DomainNameOfIpAddress(ip_address: string): string;
 
+function ExpandTildePath(s: string): string;
+
 procedure ExportToExcel
   (
   page: system.web.ui.page;
@@ -212,6 +214,13 @@ end;
 FUNCTION DomainNameOfIpAddress(ip_address: string): string;
 begin
   DomainNameOfIpAddress := dns.GetHostByAddress(ip_address).HostName;
+end;
+
+FUNCTION ExpandTildePath(s: string): string;
+begin
+  ExpandTildePath := s
+    .Replace('\','/')
+    .Replace('~','/' + configurationsettings.appsettings['virtual_directory_name']);
 end;
 
 PROCEDURE ExportToExcel
