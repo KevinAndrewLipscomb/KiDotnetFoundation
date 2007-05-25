@@ -4,6 +4,7 @@ INTERFACE
 
 uses
   borland.data.provider,
+  system.collections,
   system.configuration,
   system.data,
   system.io,
@@ -88,6 +89,13 @@ procedure Alert
   s: string
   );
 
+function AverageDeviation
+  (
+  array_list: arraylist;
+  median_value: decimal
+  )
+  : decimal;
+
 function BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 
 function BooleanOfYesNo(yn: string): boolean;
@@ -111,6 +119,15 @@ function Has
   the_string: string
   )
   : boolean;
+
+function Median(array_list: arraylist): decimal;
+
+function Percentile
+  (
+  p: cardinal;
+  array_list: arraylist
+  )
+  : decimal;
 
 function Safe
   (
@@ -177,6 +194,24 @@ begin
       + '</script>'
       );
   end;
+end;
+
+FUNCTION AverageDeviation
+  (
+  array_list: arraylist;
+  median_value: decimal
+  )
+  : decimal;
+var
+  i: cardinal;
+  n: cardinal;
+  sum: decimal;
+begin
+  n := array_list.Count;
+  for i := 0 to (n - 1) do begin
+    sum := sum + math.Abs(decimal(array_list[i]) - median_value);
+  end;
+  AverageDeviation := sum/n;
 end;
 
 FUNCTION BeValidDomainPartOfEmailAddress(email_address: string): boolean;
@@ -259,6 +294,41 @@ begin
     i := i + 1;
   end;
   Has := (i < len);
+end;
+
+FUNCTION Median(array_list: arraylist): decimal;
+begin
+  Median := Percentile(50,array_list);
+end;
+
+FUNCTION Percentile
+  (
+  p: cardinal;
+  array_list: arraylist
+  )
+  : decimal;
+var
+  interpolation_factor: decimal;
+  practical_index: integer;
+  lower_value: decimal;
+  n: cardinal;
+  virtual_index: decimal;
+begin
+  array_list.Sort;
+  n := array_list.Count;
+  if n = 1 then begin
+    Percentile := decimal(array_list[0]);
+  end else begin
+    virtual_index := p*(n + 1)/100;
+    if virtual_index >= (n - 1) then begin
+      Percentile := decimal(array_list[n - 1]);
+    end else begin
+      practical_index := decimal.ToInt32(decimal.Floor(virtual_index));
+      interpolation_factor := virtual_index - practical_index;
+      lower_value := decimal(array_list[practical_index - 1]);
+      Percentile := lower_value + interpolation_factor*(decimal(array_list[practical_index]) - lower_value);
+    end;
+  end;
 end;
 
 FUNCTION Safe
