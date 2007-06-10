@@ -120,12 +120,12 @@ function Has
   )
   : boolean;
 
-function Median(array_list: arraylist): decimal;
+function Median(sorted_array_list: arraylist): decimal;
 
 function Percentile
   (
   p: cardinal;
-  array_list: arraylist
+  sorted_array_list: arraylist
   )
   : decimal;
 
@@ -296,15 +296,15 @@ begin
   Has := (i < len);
 end;
 
-FUNCTION Median(array_list: arraylist): decimal;
+FUNCTION Median(sorted_array_list: arraylist): decimal;
 begin
-  Median := Percentile(50,array_list);
+  Median := Percentile(50,sorted_array_list);
 end;
 
 FUNCTION Percentile
   (
   p: cardinal;
-  array_list: arraylist
+  sorted_array_list: arraylist
   )
   : decimal;
 var
@@ -314,19 +314,22 @@ var
   n: cardinal;
   virtual_index: decimal;
 begin
-  array_list.Sort;
-  n := array_list.Count;
-  if n = 1 then begin
-    Percentile := decimal(array_list[0]);
+  n := sorted_array_list.Count;
+  if n = 0 then begin
+    Percentile := 0;
   end else begin
-    virtual_index := p*(n + 1)/100;
-    if virtual_index >= (n - 1) then begin
-      Percentile := decimal(array_list[n - 1]);
+    if n = 1 then begin
+      Percentile := decimal(sorted_array_list[0]);
     end else begin
-      practical_index := decimal.ToInt32(decimal.Floor(virtual_index));
-      interpolation_factor := virtual_index - practical_index;
-      lower_value := decimal(array_list[practical_index - 1]);
-      Percentile := lower_value + interpolation_factor*(decimal(array_list[practical_index]) - lower_value);
+      virtual_index := p*(n - 1)/100;
+      if virtual_index >= (n - 1) then begin
+        Percentile := decimal(sorted_array_list[n - 1]);
+      end else begin
+        practical_index := decimal.ToInt32(decimal.Floor(virtual_index));
+        interpolation_factor := virtual_index - practical_index;
+        lower_value := decimal(sorted_array_list[practical_index]);
+        Percentile := lower_value + interpolation_factor*(decimal(sorted_array_list[practical_index + 1]) - lower_value);
+      end;
     end;
   end;
 end;
