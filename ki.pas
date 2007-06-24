@@ -156,7 +156,9 @@ procedure SmtpMailSend
   &to: string;
   subject: string;
   message_string: string;
-  be_html: boolean = FALSE
+  be_html: boolean = FALSE;
+  cc: string = '';
+  bcc: string = ''
   );
   overload;
 
@@ -509,7 +511,9 @@ procedure SmtpMailSend
   &to: string;
   subject: string;
   message_string: string;
-  be_html: boolean = FALSE
+  be_html: boolean = FALSE;
+  cc: string = '';
+  bcc: string = ''
   );
 var
   mail_message: mailmessage;
@@ -522,6 +526,8 @@ begin
   if be_html then begin
     mail_message.bodyformat := system.web.mail.mailformat.HTML;
   end;
+  mail_message.cc := cc;
+  mail_message.bcc := bcc;
   SmtpMailSend(mail_message);
 end;
 
