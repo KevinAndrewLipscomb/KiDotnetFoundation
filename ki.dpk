@@ -30,7 +30,7 @@ requires
 
 contains
   ki in 'ki.pas',
-  ki_web_ui in 'ki_web_ui.pas';
+  ki_web_ui in 'ki_web_ui.pas' {ki_web_ui.page_class: system.web.ui.page};
 
 [assembly: AssemblyDescription('')]
 [assembly: AssemblyConfiguration('')]
