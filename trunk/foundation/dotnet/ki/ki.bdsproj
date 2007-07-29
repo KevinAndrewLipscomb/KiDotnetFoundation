@@ -165,7 +165,11 @@
 			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
-		</VersionInfoKeys>  <FileList>
+		</VersionInfoKeys>  
+    
+    
+    
+    <FileList>
       <File FileName="c:\program files\common files\borland shared\bds\shared assemblies\4.0\Borland.Delphi.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Delphi" AssemblyName="borland.delphi" Version="10.0.4143.0" LinkUnits="False"/>
       <File FileName="c:\program files\common files\borland shared\bds\shared assemblies\4.0\Borland.Data.Provider.dll" ContainerId="DelphiDotNetAssemblyCompiler" ModuleName="Borland.Data.Provider" AssemblyName="Borland.Data.Provider" Version="2.5.0.0" LinkUnits="False"/>
       <File FileName="ki.pas" ContainerId="" ModuleName="ki"/>

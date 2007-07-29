@@ -33,6 +33,7 @@ type
       key: string;
       value: string
       );
+    procedure Focus(c: control);
     procedure OnInit(e: eventargs); override;
     procedure ValidationAlert;
   public
@@ -70,7 +71,7 @@ end;
 
 procedure page_class.Focus(c: control);
 begin
-  self.RegisterStartupScript
+  RegisterStartupScript
     (
     'SetFocus',
     '<script language="javascript" type="text/javascript">'
@@ -118,6 +119,17 @@ procedure usercontrol_class.Alert
   );
 begin
   ki.Alert(page,configurationsettings.appsettings['application_name'],cause,state,key,value);
+end;
+
+procedure usercontrol_class.Focus(c: control);
+begin
+  page.RegisterStartupScript
+    (
+    'SetFocus',
+    '<script language="javascript" type="text/javascript">'
+    + 'document.getElementById("' + c.clientid + '").focus();'
+    + '</script>'
+    );
 end;
 
 procedure usercontrol_class.OnInit(e: system.eventargs);
