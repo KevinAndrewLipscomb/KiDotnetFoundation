@@ -17,6 +17,7 @@ type
       key: string;
       value: string
       );
+    procedure Focus(c: control);
     procedure OnInit(e: eventargs); override;
     procedure ValidationAlert;
   public
@@ -65,6 +66,17 @@ procedure page_class.Alert
   );
 begin
   ki.Alert(page,configurationsettings.appsettings['application_name'],cause,state,key,value);
+end;
+
+procedure page_class.Focus(c: control);
+begin
+  self.RegisterStartupScript
+    (
+    'SetFocus',
+    '<script language="javascript" type="text/javascript">'
+    + 'document.getElementById("' + c.clientid + '").focus();'
+    + '</script>'
+    );
 end;
 
 procedure page_class.OnInit(e: system.eventargs);
