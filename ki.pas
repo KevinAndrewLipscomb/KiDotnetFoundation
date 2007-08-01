@@ -129,6 +129,13 @@ function Percentile
   )
   : decimal;
 
+procedure RequireConfirmation
+  (
+  c: webcontrol;
+  prompt: string;
+  application_name: string
+  );
+
 function Safe
   (
   source_string: string;
@@ -334,6 +341,26 @@ begin
       end;
     end;
   end;
+end;
+
+PROCEDURE RequireConfirmation
+  (
+  c: webcontrol;
+  prompt: string;
+  application_name: string
+  );
+begin
+  c.attributes.Add
+    (
+    'onclick',
+    'return confirm("- - - ---------------------------------------------------- - - -\n'
+    +               '       issuer:  \t' + application_name + '\n'
+    +               '       state:   \twarning\n'
+    +               '       time:    \t' + datetime.Now.tostring('s') + '\n'
+    +               '- - - ---------------------------------------------------- - - -\n\n\n'
+    +               prompt.Replace(NEW_LINE,'\n') + '\n\n"'
+    + ');'
+    );
 end;
 
 FUNCTION Safe

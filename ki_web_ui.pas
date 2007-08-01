@@ -4,7 +4,8 @@ interface
 
 uses
   ki,
-  system.web.ui;
+  system.web.ui,
+  system.web.ui.webcontrols;
 
 type
   //
@@ -19,6 +20,11 @@ type
       );
     procedure Focus(c: control);
     procedure OnInit(e: eventargs); override;
+    procedure RequireConfirmation
+      (
+      c: webcontrol;
+      prompt: string
+      );
     procedure ValidationAlert;
   public
     constructor Create;
@@ -35,6 +41,11 @@ type
       );
     procedure Focus(c: control);
     procedure OnInit(e: eventargs); override;
+    procedure RequireConfirmation
+      (
+      c: webcontrol;
+      prompt: string
+      );
     procedure ValidationAlert;
   public
     constructor Create;
@@ -95,6 +106,15 @@ begin
   end;
 end;
 
+procedure page_class.RequireConfirmation
+  (
+  c: webcontrol;
+  prompt: string
+  );
+begin
+  ki.RequireConfirmation(c,prompt,configurationsettings.appsettings['application_name']);
+end;
+
 procedure page_class.ValidationAlert;
 begin
   Alert(ki.USER,ki.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
@@ -135,6 +155,15 @@ end;
 procedure usercontrol_class.OnInit(e: system.eventargs);
 begin
   inherited OnInit(e);
+end;
+
+procedure usercontrol_class.RequireConfirmation
+  (
+  c: webcontrol;
+  prompt: string
+  );
+begin
+  ki.RequireConfirmation(c,prompt,configurationsettings.appsettings['application_name']);
 end;
 
 procedure usercontrol_class.ValidationAlert;
