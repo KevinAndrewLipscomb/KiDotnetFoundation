@@ -297,12 +297,15 @@ var
   i: cardinal;
   len: cardinal;
 begin
-  len := system.array(the_string_array).length;
-  i := 0;
-  while (i < len) and (the_string_array[i] <> the_string) do begin
-    i := i + 1;
+  Has := FALSE;
+  if the_string_array <> nil then begin
+    len := system.array(the_string_array).length;
+    i := 0;
+    while (i < len) and (the_string_array[i] <> the_string) do begin
+      i := i + 1;
+    end;
+    Has := (i < len);
   end;
-  Has := (i < len);
 end;
 
 FUNCTION Median(sorted_array_list: arraylist): decimal;
