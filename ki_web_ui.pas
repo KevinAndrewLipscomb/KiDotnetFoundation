@@ -11,6 +11,13 @@ type
   //
   page_class = class(System.Web.UI.Page)
   strict protected
+    function AddIdentifiedControlToPlaceHolder
+      (
+      c: control;
+      id: string;
+      p: placeholder
+      )
+      : string;
     procedure Alert
       (
       cause: alert_cause_type;
@@ -32,6 +39,13 @@ type
   //
   usercontrol_class = class(system.web.ui.usercontrol)
   strict protected
+    function AddIdentifiedControlToPlaceHolder
+      (
+      c: control;
+      id: string;
+      p: placeholder
+      )
+      : string;
     procedure Alert
       (
       cause: alert_cause_type;
@@ -67,6 +81,25 @@ constructor page_class.Create;
 begin
   inherited Create;
   // TODO: Add any constructor code here
+end;
+
+//
+// Without specifying an ID for a dynamically-added control, ASP.NET supplies its own ID for the control.  The problem is that
+// ASP.NET may specify one ID for the control at initial page presentation time and another ID at postback page presentation.
+// Because postback events are tied to the ID of the control generating the postback, ASP.NET's ID assignment behavior may result
+// in a postback event that is ignored the first time (but not subsequent times). 
+//
+function page_class.AddIdentifiedControlToPlaceHolder
+  (
+  c: control;
+  id: string;
+  p: placeholder
+  )
+  : string;
+begin
+  c.id := id;
+  p.controls.Add(c);
+  AddIdentifiedControlToPlaceHolder := id;
 end;
 
 procedure page_class.Alert
@@ -128,6 +161,19 @@ constructor usercontrol_class.Create;
 begin
   inherited Create;
   // TODO: Add any constructor code here
+end;
+
+function usercontrol_class.AddIdentifiedControlToPlaceHolder
+  (
+  c: control;
+  id: string;
+  p: placeholder
+  )
+  : string;
+begin
+  c.id := id;
+  p.controls.Add(c);
+  AddIdentifiedControlToPlaceHolder := id;
 end;
 
 procedure usercontrol_class.Alert
