@@ -1,9 +1,8 @@
-UNIT ki;
+UNIT kix;
 
 INTERFACE
 
 uses
-  borland.data.provider,
   system.collections,
   system.configuration,
   system.data,
@@ -20,12 +19,25 @@ uses
   system.Web.UI.WebControls;
 
 const
+  ACUTE_ACCENT = #180;  //´
   APOSTROPHE = '''';
+  CENT_SIGN = #155;  //¢
+  COMMA = ',';
+  COMMA_SPACE = ', ';
+  DIAERESIS = #168;  //¨
   DOUBLE_APOSTROPHE = '''''';
   DOUBLE_QUOTE = '""';
+  EMPTY = '';
+  HYPHEN = '-';
+  INVERTED_EXCLAMATION_MARK = #161;  //¡
   NEW_LINE = #10;
+  OPEN_PARENTHESIS = '(';
+  PERIOD = '.';
   QUOTE = '"';
+  SEMICOLON = ';';
   SPACE = #32;
+  SPACE_HYPHEN_SPACE = ' - ';
+  SPACE_HYPHENS_SPACE = ' -- ';
   TAB = #9;
 
 type
@@ -40,7 +52,6 @@ type
     OTHER,
     USER
     );
-  //
   alert_state_type =
     (
     NORMAL,
@@ -49,7 +60,17 @@ type
     FAILURE,
     DAMAGE
     );
-  //
+  client_side_function_enumeral_type =
+    (
+    EL,
+    KGS_TO_LBS,
+    LBS_TO_KGS
+    );
+  client_side_function_rec_type =
+    RECORD
+    profile: string;
+    body: string;
+    END;
   safe_hint_type =
     (
     NONE,
@@ -59,6 +80,7 @@ type
     DATE_TIME,
     ECMASCRIPT_WORD,
     EMAIL_ADDRESS,
+    FINANCIAL_TERMS,
     HOSTNAME,
     HUMAN_NAME,
     HUMAN_NAME_CSV,
@@ -68,12 +90,13 @@ type
     HYPHENATED_UNDERSCORED_ALPHANUM,
     KI_SORT_EXPRESSION,
     MAKE_MODEL,
-    NARRATIVE,
+    MEMO,
     NUM,
     ORG_NAME,
     PHONE_NUM,
     POSTAL_CITY,
     POSTAL_STREET_ADDRESS,
+    PUNCTUATED,
     REAL_NUM,
     REAL_NUM_INCLUDING_NEGATIVE
     );
@@ -104,6 +127,29 @@ function Digest(source_string: string): string;
 
 function DomainNameOfIpAddress(ip_address: string): string;
 
+procedure EstablishClientSideFunction
+  (
+  page: page;
+  profile: string;
+  body: string;
+  usercontrol_clientid: string= ''
+  );
+  overload;
+
+procedure EstablishClientSideFunction
+  (
+  page: page;
+  enumeral: client_side_function_enumeral_type
+  );
+  overload;
+
+procedure EstablishClientSideFunction
+  (
+  page: page;
+  r: client_side_function_rec_type
+  );
+  overload;
+
 function ExpandTildePath(s: string): string;
 
 procedure ExportToExcel
@@ -111,6 +157,12 @@ procedure ExportToExcel
   page: system.web.ui.page;
   filename_sans_extension: string;
   excel_string: string
+  );
+
+procedure FileDownload
+  (
+  the_page: page;
+  filename: string
   );
 
 function Has
@@ -185,24 +237,21 @@ PROCEDURE Alert
   s: string
   );
 begin
-  if not page.IsStartupScriptRegistered(key) then begin
-    page.RegisterStartupScript
-      (
-      key,
-      system.string.EMPTY
-      + '<script language="javascript" type="text/javascript">'
-      + ' alert("- - - ---------------------------------------------------- - - -\n'
-      +         '       issuer:  \t' + application_name + '\n'
-      +         '       cause:   \t' + enum(cause).tostring.tolower + '\n'
-      +         '       state:   \t' + enum(state).tostring.tolower + '\n'
-      +         '       key:     \t' + key.tolower + '\n'
-      +         '       time:    \t' + datetime.Now.tostring('s') + '\n'
-      +         '- - - ---------------------------------------------------- - - -\n\n\n'
-      +    s.Replace(NEW_LINE,'\n') + '\n\n"'
-      + ' )'
-      + '</script>'
-      );
-  end;
+  page.clientscript.RegisterStartupScript
+    (
+    page.GetType,
+    key,
+    'alert("- - - ---------------------------------------------------- - - -\n'
+    +      '       issuer:  \t' + application_name + '\n'
+    +      '       cause:   \t' + enum(cause).tostring.tolower + '\n'
+    +      '       state:   \t' + enum(state).tostring.tolower + '\n'
+    +      '       key:     \t' + key.tolower + '\n'
+    +      '       time:    \t' + datetime.Now.tostring('s') + '\n'
+    +      '- - - ---------------------------------------------------- - - -\n\n\n'
+    +    s.Replace(NEW_LINE,'\n') + '\n\n"'
+    + ' );',
+    TRUE
+    );
 end;
 
 FUNCTION AverageDeviation
@@ -229,7 +278,7 @@ var
 begin
   be_valid_domain_part_of_email_address := TRUE;
   try
-    dns.GetHostByName(email_address.Substring(email_address.LastIndexOf('@') + 1));
+    dns.GetHostEntry(email_address.Substring(email_address.LastIndexOf('@') + 1));
   except
     be_valid_domain_part_of_email_address := FALSE;
   end;
@@ -247,7 +296,7 @@ var
   i: cardinal;
   target_string: string;
 begin
-  target_string := system.string.EMPTY;
+  target_string := EMPTY;
   byte_buf := sha1managed.Create.ComputeHash(asciiencoding.Create.GetBytes(source_string));
   for i := 1 to 20 do begin
     target_string := target_string + byte_buf[i].tostring('x2');
@@ -257,14 +306,59 @@ end;
 
 FUNCTION DomainNameOfIpAddress(ip_address: string): string;
 begin
-  DomainNameOfIpAddress := dns.GetHostByAddress(ip_address).HostName;
+  DomainNameOfIpAddress := dns.GetHostEntry(ip_address).HostName;
+end;
+
+PROCEDURE EstablishClientSideFunction
+  (
+  page: page;
+  profile: string;
+  body: string;
+  usercontrol_clientid: string = ''
+  );
+begin
+  page.clientscript.RegisterClientScriptBlock
+    (
+    page.GetType,
+    usercontrol_clientid + '__' + profile.Remove(profile.IndexOf(OPEN_PARENTHESIS)),
+    'function ' + profile + NEW_LINE
+    + ' {' + NEW_LINE
+    + ' ' + body.Replace(NEW_LINE,NEW_LINE + SPACE) + NEW_LINE
+    + ' }' + NEW_LINE,
+    TRUE
+    );
+end;
+
+PROCEDURE EstablishClientSideFunction
+  (
+  page: page;
+  enumeral: client_side_function_enumeral_type
+  );
+begin
+  case enumeral of
+  EL:
+    EstablishClientSideFunction(page,'El(id)','return document.getElementById(id);');
+  KGS_TO_LBS:
+    EstablishClientSideFunction(page,'KgsToLbs(num_kgs)','return Math.round(+num_kgs*2.204622);');
+  LBS_TO_KGS:
+    EstablishClientSideFunction(page,'LbsToKgs(num_lbs)','return Math.round(+num_lbs/2.204622);');
+  end;
+end;
+
+procedure EstablishClientSideFunction
+  (
+  page: page;
+  r: client_side_function_rec_type
+  );
+begin
+  EstablishClientSideFunction(page,r.profile,r.body);
 end;
 
 FUNCTION ExpandTildePath(s: string): string;
 begin
   ExpandTildePath := s
     .Replace('\','/')
-    .Replace('~','/' + configurationsettings.appsettings['virtual_directory_name']);
+    .Replace('~','/' + configurationmanager.appsettings['virtual_directory_name']);
 end;
 
 PROCEDURE ExportToExcel
@@ -285,6 +379,21 @@ begin
   page.enableviewstate := FALSE;
   page.response.Write(excel_string);
   page.response.&End;
+end;
+
+PROCEDURE FileDownload
+  (
+  the_page: page;
+  filename: string
+  );
+begin
+  the_page.response.Clear;
+  the_page.response.AppendHeader('Content-Disposition','attachment; filename=' + system.io.path.GetFileName(filename));
+  the_page.response.bufferoutput := TRUE;
+  the_page.response.contenttype := 'application/octet-stream';
+  the_page.enableviewstate := FALSE;
+  the_page.response.TransmitFile(filename);
+  the_page.response.&End;
 end;
 
 FUNCTION Has
@@ -372,78 +481,84 @@ FUNCTION Safe
   hint: safe_hint_type = NONE
   )
   : string;
+const
+  MODIFIED_LIBERAL_SET = '0-9a-zA-Z@#$%&()\-+=,/. ' + ACUTE_ACCENT + CENT_SIGN + DIAERESIS + INVERTED_EXCLAMATION_MARK;
 var
   allow: string;
   scratch_string: string;
 begin
-  allow := system.string.EMPTY;
+  allow := EMPTY;
   case hint of
-    //
-    // Be extremely protective here:
-    // -  Escape ("\") the following twelve characters: [\^$.|?*+()-
-    // -  For scalars, do not allow punctuation.
-    // -  When in doubt, don't allow it.
-    //
-    // This routine is not intended to assure that data is submitted in proper
-    // format.  It is intended to protect against SQL insertion attacks.
-    //
-    ALPHA:
-      allow := 'a-zA-Z';
-    ALPHANUM:
-      allow := '0-9a-zA-Z';
-    CURRENCY_USA:
-      allow := '0-9\$\,\.';
-    DATE_TIME:
-      allow := '0-9:\-\/ ';
-    ECMASCRIPT_WORD:
-      allow := '0-9a-zA-Z_';
-    EMAIL_ADDRESS:
-      allow := '0-9a-zA-Z_\.@\-';
-    HOSTNAME:
-      allow := '0-9a-zA-Z_\-\.';
-    HUMAN_NAME:
-      allow := 'a-zA-Z\-\. ' + APOSTROPHE;
-    HUMAN_NAME_CSV:
-      allow := 'a-zA-Z\-,\. ' + APOSTROPHE;
-    HYPHENATED_ALPHA:
-      allow := 'a-zA-z\-';
-    HYPHENATED_ALPHANUM:
-      allow := 'a-zA-z0-9\-';
-    HYPHENATED_NUM:
-      allow := '0-9\-';
-    HYPHENATED_UNDERSCORED_ALPHANUM:
-      allow := 'a-zA-z0-9\-_';
-    KI_SORT_EXPRESSION:
-      allow := 'a-zA-z%,\. ';
-    MAKE_MODEL:
-      allow := '0-9a-zA-Z#\*\(\)\-\+/\. ';
-    NARRATIVE:
-      allow := '0-9a-zA-Z#\(\)\-,/\. ';
-    NUM:
-      allow := '0-9';
-    ORG_NAME:
-      allow := '0-9a-zA-Z#&\-,\. ' + APOSTROPHE;
-    PHONE_NUM:
-      allow := '0-9-\+\(\) ';
-    POSTAL_CITY:
-      allow := 'a-zA-Z\-\. ' + APOSTROPHE;
-    POSTAL_STREET_ADDRESS:
-      allow := '0-9a-zA-Z#\-,\(\)\. ' + APOSTROPHE;
-    REAL_NUM:
-      allow := '0-9\.';
-    REAL_NUM_INCLUDING_NEGATIVE:
-      allow := '0-9\.\-';
+  //
+  // Be extremely protective here:
+  // -  Escape ("\") the following four characters: ]\^-
+  // -  For scalars, do not allow punctuation.
+  // -  When in doubt, don't allow it.
+  //
+  // This routine is not intended to assure that data is submitted in proper
+  // format.  It is intended to protect against SQL insertion attacks.
+  //
+  ALPHA:
+    allow := 'a-zA-Z';
+  ALPHANUM:
+    allow := '0-9a-zA-Z';
+  CURRENCY_USA:
+    allow := '0-9$,.';
+  DATE_TIME:
+    allow := '0-9:\-/ ';
+  ECMASCRIPT_WORD:
+    allow := '0-9a-zA-Z_';
+  EMAIL_ADDRESS:
+    allow := '0-9a-zA-Z_.@\-';
+  FINANCIAL_TERMS:
+    allow := '0-9a-zA-Z@#$%()\-+=,/. ' + CENT_SIGN;
+  HOSTNAME:
+    allow := '0-9a-zA-Z_\-.';
+  HUMAN_NAME:
+    allow := 'a-zA-Z\-. ' + ACUTE_ACCENT;
+  HUMAN_NAME_CSV:
+    allow := 'a-zA-Z\-,. ' + ACUTE_ACCENT;
+  HYPHENATED_ALPHA:
+    allow := 'a-zA-z\-';
+  HYPHENATED_ALPHANUM:
+    allow := 'a-zA-z0-9\-';
+  HYPHENATED_NUM:
+    allow := '0-9\-';
+  HYPHENATED_UNDERSCORED_ALPHANUM:
+    allow := 'a-zA-z0-9\-_';
+  KI_SORT_EXPRESSION:
+    allow := 'a-zA-z%,. ';
+  MAKE_MODEL:
+    allow := '0-9a-zA-Z#*()\-+/. ';
+  MEMO:
+    allow := MODIFIED_LIBERAL_SET + '\n\r\t';
+  NUM:
+    allow := '0-9';
+  ORG_NAME:
+    allow := '0-9a-zA-Z#&\-,. ' + ACUTE_ACCENT;
+  PHONE_NUM:
+    allow := '0-9-+() ';
+  POSTAL_CITY:
+    allow := 'a-zA-Z\-. ' + ACUTE_ACCENT;
+  POSTAL_STREET_ADDRESS:
+    allow := '0-9a-zA-Z#\-,(). ' + ACUTE_ACCENT;
+  PUNCTUATED:
+    allow := MODIFIED_LIBERAL_SET;
+  REAL_NUM:
+    allow := '0-9.';
+  REAL_NUM_INCLUDING_NEGATIVE:
+    allow := '0-9.\-';
   end;
   //
-  if allow = system.string.EMPTY then
-    scratch_string := system.string.EMPTY
-  else
-    begin
-    scratch_string := regex.Replace(source_string,'[^' + allow + ']',system.string.EMPTY);
-    regex.Replace(scratch_string,APOSTROPHE,DOUBLE_APOSTROPHE);
-    regex.Replace(scratch_string,QUOTE,DOUBLE_QUOTE);
-    regex.Replace(scratch_string,';',':,');
-    end;
+  if allow = EMPTY then begin
+    scratch_string := EMPTY;
+  end else begin
+    scratch_string := source_string;
+    scratch_string := scratch_string.Replace(QUOTE,DIAERESIS);
+    scratch_string := scratch_string.Replace(APOSTROPHE,ACUTE_ACCENT);
+    scratch_string := scratch_string.Replace(SEMICOLON,INVERTED_EXCLAMATION_MARK);
+    scratch_string := regex.Replace(scratch_string,'[^' + allow + ']',EMPTY);
+  end;
   //
   Safe := scratch_string;
 end;
@@ -459,7 +574,7 @@ procedure SendControlAsAttachmentToEmailMessage
   body: string
   );
 var
-  msg: system.web.mail.mailmessage;
+  msg: mailmessage;
   streamwriter: system.io.streamwriter;
 begin
   //
@@ -467,13 +582,13 @@ begin
   system.web.ui.control(c).RenderControl(system.web.ui.htmltextwriter.Create(streamwriter));
   streamwriter.Close;
   //
-  msg := system.web.mail.mailmessage.Create;
+  msg := mailmessage.Create;
   msg.from := from_address;
   msg.&to := to_target;
   msg.cc := cc_target;
   msg.subject := subject;
   msg.body := body;
-  msg.attachments.Add(system.web.mail.mailattachment.Create(scratch_pathname));
+  msg.attachments.Add(mailattachment.Create(scratch_pathname));
   //
   SmtpMailSend(msg);
   //
@@ -494,8 +609,8 @@ PROCEDURE SilentAlarm(e: exception);
 begin
   SmtpMailSend
     (
-    configurationsettings.appsettings['sender_email_address'],
-    configurationsettings.appsettings['sender_email_address'],
+    configurationmanager.appsettings['sender_email_address'],
+    configurationmanager.appsettings['sender_email_address'],
     'SILENT ALARM',
     '[MESSAGE]' + NEW_LINE
     + e.message + NEW_LINE
@@ -514,14 +629,14 @@ var
   smtp_server: string;
   smtp_username: string;
 begin
-  smtp_server := ConfigurationSettings.AppSettings['smtp_server'];
-  smtp_username := ConfigurationSettings.AppSettings['smtp_username'];
-  smtp_password := ConfigurationSettings.AppSettings['smtp_password'];
+  smtp_server := configurationmanager.appsettings['smtp_server'];
+  smtp_username := configurationmanager.appsettings['smtp_username'];
+  smtp_password := configurationmanager.appsettings['smtp_password'];
   with mail_message do begin
     fields.Add('http://schemas.microsoft.com/cdo/configuration/smtpserver',smtp_server);
     fields.Add('http://schemas.microsoft.com/cdo/configuration/smtpserverport',system.object(25));
     fields.Add('http://schemas.microsoft.com/cdo/configuration/sendusing',system.object(CDO_SEND_USING_PORT));
-    if (smtp_username <> system.string.Empty) and (smtp_password <> system.string.Empty) then begin
+    if (smtp_username <> EMPTY) and (smtp_password <> EMPTY) then begin
       fields.Add('http://schemas.microsoft.com/cdo/configuration/smtpauthenticate',system.object(CDO_BASIC));
       fields.Add('http://schemas.microsoft.com/cdo/configuration/sendusername',smtp_username);
       fields.Add('http://schemas.microsoft.com/cdo/configuration/sendpassword',smtp_password);
@@ -554,7 +669,7 @@ begin
   mail_message.subject := subject;
   mail_message.body := message_string;
   if be_html then begin
-    mail_message.bodyformat := system.web.mail.mailformat.HTML;
+    mail_message.bodyformat := mailformat.HTML;
   end;
   mail_message.cc := cc;
   mail_message.bcc := bcc;
