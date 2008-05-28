@@ -12,12 +12,12 @@ package ki;
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
-{$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS ON}
 {$REFERENCEINFO ON}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
-{$TYPEDADDRESS OFF}
+{$TYPEDADDRESS ON}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
@@ -26,11 +26,12 @@ package ki;
 
 requires
   Borland.Delphi,
-  Borland.Data.Provider;
+  System.Data,
+  System.Drawing;
 
 contains
-  ki in 'ki.pas',
-  ki_web_ui in 'ki_web_ui.pas' {ki_web_ui.page_class: system.web.ui.page};
+  kix in 'kix.pas',
+  ki_web_ui in 'ki_web_ui.pas' {ki_web_ui.page_class: System.Web.UI.Page};
 
 [assembly: AssemblyDescription('')]
 [assembly: AssemblyConfiguration('')]

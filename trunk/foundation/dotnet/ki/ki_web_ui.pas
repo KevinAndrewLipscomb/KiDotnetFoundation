@@ -3,13 +3,15 @@ unit ki_web_ui;
 interface
 
 uses
-  ki,
+  kix,
   system.web.ui,
   system.web.ui.webcontrols;
 
 type
   //
   page_class = class(System.Web.UI.Page)
+  protected
+    procedure OnInit(e: EventArgs); override;
   strict protected
     function AddIdentifiedControlToPlaceHolder
       (
@@ -25,8 +27,16 @@ type
       key: string;
       value: string
       );
+    procedure EstablishClientSideFunction
+      (
+      profile: string;
+      body: string
+      );
+      overload;
+    procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
+    procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
     procedure Focus(c: control);
-    procedure OnInit(e: eventargs); override;
+  protected
     procedure RequireConfirmation
       (
       c: webcontrol;
@@ -38,6 +48,8 @@ type
   end;
   //
   usercontrol_class = class(system.web.ui.usercontrol)
+  protected
+    procedure OnInit(e: EventArgs); override;
   strict protected
     function AddIdentifiedControlToPlaceHolder
       (
@@ -53,8 +65,16 @@ type
       key: string;
       value: string
       );
+    procedure EstablishClientSideFunction
+      (
+      profile: string;
+      body: string
+      );
+      overload;
+    procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
+    procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
     procedure Focus(c: control);
-    procedure OnInit(e: eventargs); override;
+  protected
     procedure RequireConfirmation
       (
       c: webcontrol;
@@ -110,18 +130,31 @@ procedure page_class.Alert
   value: string
   );
 begin
-  ki.Alert(page,configurationsettings.appsettings['application_name'],cause,state,key,value);
+  kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value);
+end;
+
+procedure page_class.EstablishClientSideFunction
+  (
+  profile: string;
+  body: string
+  );
+begin
+  kix.EstablishClientSideFunction(page,profile,body);
+end;
+
+procedure page_class.EstablishClientSideFunction(enumeral: client_side_function_enumeral_type);
+begin
+  kix.EstablishClientSideFunction(page,enumeral);
+end;
+
+procedure page_class.EstablishClientSideFunction(r: client_side_function_rec_type);
+begin
+  kix.EstablishClientSideFunction(page,r);
 end;
 
 procedure page_class.Focus(c: control);
 begin
-  RegisterStartupScript
-    (
-    'SetFocus',
-    '<script language="javascript" type="text/javascript">'
-    + 'document.getElementById("' + c.clientid + '").focus();'
-    + '</script>'
-    );
+  clientscript.RegisterStartupScript(page.GetType,'SetFocus','document.getElementById("' + c.clientid + '").focus();',TRUE);
 end;
 
 procedure page_class.OnInit(e: system.eventargs);
@@ -145,12 +178,12 @@ procedure page_class.RequireConfirmation
   prompt: string
   );
 begin
-  ki.RequireConfirmation(c,prompt,configurationsettings.appsettings['application_name']);
+  kix.RequireConfirmation(c,prompt,configurationmanager.appsettings['application_name']);
 end;
 
 procedure page_class.ValidationAlert;
 begin
-  Alert(ki.USER,ki.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
+  Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
 end;
 
 //
@@ -184,17 +217,36 @@ procedure usercontrol_class.Alert
   value: string
   );
 begin
-  ki.Alert(page,configurationsettings.appsettings['application_name'],cause,state,key,value);
+  kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value);
+end;
+
+procedure usercontrol_class.EstablishClientSideFunction
+  (
+  profile: string;
+  body: string
+  );
+begin
+  kix.EstablishClientSideFunction(page,profile,body,self.clientid);
+end;
+
+procedure usercontrol_class.EstablishClientSideFunction(enumeral: client_side_function_enumeral_type);
+begin
+  kix.EstablishClientSideFunction(page,enumeral);
+end;
+
+procedure usercontrol_class.EstablishClientSideFunction(r: client_side_function_rec_type);
+begin
+  kix.EstablishClientSideFunction(page,r);
 end;
 
 procedure usercontrol_class.Focus(c: control);
 begin
-  page.RegisterStartupScript
+  page.clientscript.RegisterStartupScript
     (
+    page.GetType,
     'SetFocus',
-    '<script language="javascript" type="text/javascript">'
-    + 'document.getElementById("' + c.clientid + '").focus();'
-    + '</script>'
+    'if (!document.getElementById("' + c.clientid + '").disabled) {document.getElementById("' + c.clientid + '").focus();}',
+    TRUE
     );
 end;
 
@@ -209,12 +261,12 @@ procedure usercontrol_class.RequireConfirmation
   prompt: string
   );
 begin
-  ki.RequireConfirmation(c,prompt,configurationsettings.appsettings['application_name']);
+  kix.RequireConfirmation(c,prompt,configurationmanager.appsettings['application_name']);
 end;
 
 procedure usercontrol_class.ValidationAlert;
 begin
-  Alert(ki.USER,ki.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
+  Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
 end;
 
 end.
