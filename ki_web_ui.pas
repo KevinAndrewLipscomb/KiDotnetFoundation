@@ -27,6 +27,8 @@ type
       key: string;
       value: string
       );
+    procedure BeginBreadCrumbTrail;
+    procedure DropCrumbAndTransferTo(the_path: string);
     procedure EstablishClientSideFunction
       (
       profile: string;
@@ -65,6 +67,7 @@ type
       key: string;
       value: string
       );
+    procedure DropCrumbAndTransferTo(the_path: string);
     procedure EstablishClientSideFunction
       (
       profile: string;
@@ -88,7 +91,9 @@ type
 implementation
 
 uses
-  system.configuration;
+  system.collections,
+  system.configuration,
+  system.io;
 
 const
   STD_VALIDATION_ALERT = 'Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.';
@@ -107,7 +112,7 @@ end;
 // Without specifying an ID for a dynamically-added control, ASP.NET supplies its own ID for the control.  The problem is that
 // ASP.NET may specify one ID for the control at initial page presentation time and another ID at postback page presentation.
 // Because postback events are tied to the ID of the control generating the postback, ASP.NET's ID assignment behavior may result
-// in a postback event that is ignored the first time (but not subsequent times). 
+// in a postback event that is ignored the first time (but not subsequent times).
 //
 function page_class.AddIdentifiedControlToPlaceHolder
   (
@@ -131,6 +136,18 @@ procedure page_class.Alert
   );
 begin
   kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value);
+end;
+
+procedure page_class.BeginBreadCrumbTrail;
+begin
+  session.Remove('waypoint_stack');
+  session.Add('waypoint_stack',stack.Create);
+end;
+
+procedure page_class.DropCrumbAndTransferTo(the_path: string);
+begin
+  stack(session['waypoint_stack']).Push(path.GetFileName(request.CurrentExecutionFilePath));
+  server.Transfer(the_path);
 end;
 
 procedure page_class.EstablishClientSideFunction
@@ -218,6 +235,12 @@ procedure usercontrol_class.Alert
   );
 begin
   kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value);
+end;
+
+procedure usercontrol_class.DropCrumbAndTransferTo(the_path: string);
+begin
+  stack(session['waypoint_stack']).Push(path.GetFileName(request.CurrentExecutionFilePath));
+  server.Transfer(the_path);
 end;
 
 procedure usercontrol_class.EstablishClientSideFunction
