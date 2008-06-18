@@ -10,8 +10,6 @@ uses
 type
   //
   page_class = class(System.Web.UI.Page)
-  protected
-    procedure OnInit(e: EventArgs); override;
   strict protected
     function AddIdentifiedControlToPlaceHolder
       (
@@ -39,7 +37,13 @@ type
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
     procedure Focus(c: control);
+    procedure SessionSet
+      (
+      name: string;
+      value: system.object
+      );
   protected
+    procedure OnInit(e: EventArgs); override;
     procedure RequireConfirmation
       (
       c: webcontrol;
@@ -78,6 +82,11 @@ type
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
     procedure Focus(c: control);
+    procedure SessionSet
+      (
+      name: string;
+      value: system.object
+      );
   protected
     procedure RequireConfirmation
       (
@@ -152,8 +161,7 @@ end;
 
 procedure page_class.BeginBreadCrumbTrail;
 begin
-  session.Remove('waypoint_stack');
-  session.Add('waypoint_stack',stack.Create);
+  SessionSet('waypoint_stack',stack.Create);
 end;
 
 procedure page_class.DropCrumbAndTransferTo(the_path: string);
@@ -192,18 +200,8 @@ begin
 end;
 
 procedure page_class.OnInit(e: system.eventargs);
-var
-  cookie_header: string;
 begin
   inherited OnInit(e);
-  if context.session <> nil then begin
-    if session.IsNewSession then begin
-      cookie_header := request.headers['cookie'];
-      if (cookie_header <> nil) and (cookie_header.IndexOf('ASP.NET_SessionId') >= 0) then begin
-        server.Transfer('~/timeout.aspx');
-      end;
-    end;
-  end;
 end;
 
 procedure page_class.RequireConfirmation
@@ -213,6 +211,16 @@ procedure page_class.RequireConfirmation
   );
 begin
   kix.RequireConfirmation(c,prompt,configurationmanager.appsettings['application_name']);
+end;
+
+procedure page_class.SessionSet
+  (
+  name: string;
+  value: system.object
+  );
+begin
+  session.Remove(name);
+  session.Add(name,value);
 end;
 
 procedure page_class.ValidationAlert;
@@ -302,6 +310,16 @@ procedure usercontrol_class.RequireConfirmation
   );
 begin
   kix.RequireConfirmation(c,prompt,configurationmanager.appsettings['application_name']);
+end;
+
+procedure usercontrol_class.SessionSet
+  (
+  name: string;
+  value: system.object
+  );
+begin
+  session.Remove(name);
+  session.Add(name,value);
 end;
 
 procedure usercontrol_class.ValidationAlert;
