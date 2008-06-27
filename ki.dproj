@@ -2,10 +2,11 @@
   <PropertyGroup>
     <ProjectGuid>{0dc03cc2-1348-43b6-ab14-4f4d20aebcfd}</ProjectGuid>
     <MainSource>ki.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>ki.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Bpl\ki.dll</DCC_DependencyCheckOutputName>
+    <DCC_UsePackage>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll;Borland.Delphi</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -13,6 +14,15 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_Define>RELEASE</DCC_Define>
+    <DCC_AssertionsAtRuntime>False</DCC_AssertionsAtRuntime>
+    <DCC_OpenStringParams>False</DCC_OpenStringParams>
+    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+    <DCC_RangeChecking>True</DCC_RangeChecking>
+    <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+    <DCC_StrictVarStrings>False</DCC_StrictVarStrings>
+    <DCC_UnitSearchPath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_UnitSearchPath>
+    <DCC_ResourcePath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_ResourcePath>
+    <DCC_IncludePath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
@@ -21,13 +31,14 @@
     <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
     <DCC_DebugInfoInExe>True</DCC_DebugInfoInExe>
     <DCC_DebugVN>True</DCC_DebugVN>
-    <DCC_Platform>x86</DCC_Platform>
     <DCC_NameSpace>Borland.Vcl</DCC_NameSpace>
     <DCC_BplOutput>.</DCC_BplOutput>
     <DCC_Optimize>False</DCC_Optimize>
     <DCC_UnitSearchPath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_UnitSearchPath>
     <DCC_ResourcePath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_ResourcePath>
     <DCC_IncludePath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_IncludePath>
+    <DCC_OpenStringParams>False</DCC_OpenStringParams>
+    <DCC_StrictVarStrings>False</DCC_StrictVarStrings>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>DelphiDotNet.Personality</Borland.Personality>

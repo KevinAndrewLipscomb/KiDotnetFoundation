@@ -42,6 +42,12 @@ type
       name: string;
       value: system.object
       );
+    procedure TransferToPageBinderTab
+      (
+      page_nick: string;
+      binder_nick: string;
+      tab_index: cardinal
+      );
   protected
     procedure OnInit(e: EventArgs); override;
     procedure RequireConfirmation
@@ -86,6 +92,12 @@ type
       (
       name: string;
       value: system.object
+      );
+    procedure TransferToPageBinderTab
+      (
+      page_nick: string;
+      binder_nick: string;
+      tab_index: cardinal
       );
   protected
     procedure RequireConfirmation
@@ -223,6 +235,17 @@ begin
   session.Add(name,value);
 end;
 
+procedure page_class.TransferToPageBinderTab
+  (
+  page_nick: string;
+  binder_nick: string;
+  tab_index: cardinal
+  );
+begin
+  SessionSet('UserControl_' + binder_nick + '_binder_selected_tab',system.object(tab_index));
+  server.Transfer(page_nick + '.aspx');
+end;
+
 procedure page_class.ValidationAlert;
 begin
   Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
@@ -320,6 +343,17 @@ procedure usercontrol_class.SessionSet
 begin
   session.Remove(name);
   session.Add(name,value);
+end;
+
+procedure usercontrol_class.TransferToPageBinderTab
+  (
+  page_nick: string;
+  binder_nick: string;
+  tab_index: cardinal
+  );
+begin
+  SessionSet('UserControl_' + binder_nick + '_binder_selected_tab',system.object(tab_index));
+  server.Transfer(page_nick + '.aspx');
 end;
 
 procedure usercontrol_class.ValidationAlert;
