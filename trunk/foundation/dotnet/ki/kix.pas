@@ -150,7 +150,7 @@ procedure EstablishClientSideFunction
   );
   overload;
 
-function ExpandAsperandSite(s: string): string;
+function ExpandAsperandBase(s: string): string;
 
 function ExpandTildePath(s: string): string;
 
@@ -356,10 +356,10 @@ begin
   EstablishClientSideFunction(page,r.profile,r.body);
 end;
 
-FUNCTION ExpandAsperandSite(s: string): string;
+FUNCTION ExpandAsperandBase(s: string): string;
 begin
-  ExpandAsperandSite := s
-    .Replace('@',configurationmanager.appsettings['host_domain_name']);
+  ExpandAsperandBase := s
+    .Replace('@',configurationmanager.appsettings['ssl_base_path']);
 end;
 
 FUNCTION ExpandTildePath(s: string): string;
