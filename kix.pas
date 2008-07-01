@@ -150,6 +150,8 @@ procedure EstablishClientSideFunction
   );
   overload;
 
+function ExpandAsperandSite(s: string): string;
+
 function ExpandTildePath(s: string): string;
 
 procedure ExportToExcel
@@ -352,6 +354,12 @@ procedure EstablishClientSideFunction
   );
 begin
   EstablishClientSideFunction(page,r.profile,r.body);
+end;
+
+FUNCTION ExpandAsperandSite(s: string): string;
+begin
+  ExpandAsperandSite := s
+    .Replace('@',configurationmanager.appsettings['host_domain_name']);
 end;
 
 FUNCTION ExpandTildePath(s: string): string;

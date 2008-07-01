@@ -2,10 +2,10 @@
   <PropertyGroup>
     <ProjectGuid>{0dc03cc2-1348-43b6-ab14-4f4d20aebcfd}</ProjectGuid>
     <MainSource>ki.dpk</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Bpl\ki.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>ki.dll</DCC_DependencyCheckOutputName>
     <DCC_UsePackage>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll;Borland.Delphi</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
