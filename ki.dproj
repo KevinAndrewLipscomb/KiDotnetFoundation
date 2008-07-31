@@ -34,9 +34,9 @@
     <DCC_NameSpace>Borland.Vcl</DCC_NameSpace>
     <DCC_BplOutput>.</DCC_BplOutput>
     <DCC_Optimize>False</DCC_Optimize>
-    <DCC_UnitSearchPath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_UnitSearchPath>
-    <DCC_ResourcePath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_ResourcePath>
-    <DCC_IncludePath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727</DCC_IncludePath>
+    <DCC_UnitSearchPath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft ASP.NET\ASP.NET 2.0 AJAX Extensions\v1.0.61025</DCC_UnitSearchPath>
+    <DCC_ResourcePath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft ASP.NET\ASP.NET 2.0 AJAX Extensions\v1.0.61025</DCC_ResourcePath>
+    <DCC_IncludePath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727;C:\Program Files\Microsoft ASP.NET\ASP.NET 2.0 AJAX Extensions\v1.0.61025</DCC_IncludePath>
     <DCC_OpenStringParams>False</DCC_OpenStringParams>
     <DCC_StrictVarStrings>False</DCC_StrictVarStrings>
   </PropertyGroup>
@@ -66,6 +66,14 @@
       <Version>11.0.5000.9245</Version>
       <HintPath>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.Delphi.dll</HintPath>
       <AssemblyTag>C:\Program Files\Common Files\CodeGear Shared\Rad Studio\Shared Assemblies\5.0\Borland.Delphi.dll</AssemblyTag>
+      <LinkUnits>False</LinkUnits>
+    </Reference>
+    <Reference Include="C:\Program Files\Microsoft ASP.NET\ASP.NET 2.0 AJAX Extensions\v1.0.61025\System.Web.Extensions.dll">
+      <AssemblyName>System.Web.Extensions</AssemblyName>
+      <CopyLocal>True</CopyLocal>
+      <Version>1.0.61025.0</Version>
+      <HintPath>C:\Program Files\Microsoft ASP.NET\ASP.NET 2.0 AJAX Extensions\v1.0.61025\System.Web.Extensions.dll</HintPath>
+      <AssemblyTag>C:\Program Files\Microsoft ASP.NET\ASP.NET 2.0 AJAX Extensions\v1.0.61025\System.Web.Extensions.dll</AssemblyTag>
       <LinkUnits>False</LinkUnits>
     </Reference>
   </ItemGroup>

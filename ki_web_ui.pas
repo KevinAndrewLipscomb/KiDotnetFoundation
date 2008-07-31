@@ -23,7 +23,8 @@ type
       cause: alert_cause_type;
       state: alert_state_type;
       key: string;
-      value: string
+      value: string;
+      be_using_scriptmanager: boolean = FALSE
       );
     procedure BackTrack(num_backsteps: cardinal = 1);
     procedure BeginBreadCrumbTrail;
@@ -55,7 +56,7 @@ type
       c: webcontrol;
       prompt: string
       );
-    procedure ValidationAlert;
+    procedure ValidationAlert(be_using_scriptmanager: boolean = FALSE);
   public
     constructor Create;
   end;
@@ -76,7 +77,8 @@ type
       cause: alert_cause_type;
       state: alert_state_type;
       key: string;
-      value: string
+      value: string;
+      be_using_scriptmanager: boolean = FALSE
       );
     procedure DropCrumbAndTransferTo(the_path: string);
     procedure EstablishClientSideFunction
@@ -105,7 +107,7 @@ type
       c: webcontrol;
       prompt: string
       );
-    procedure ValidationAlert;
+    procedure ValidationAlert(be_using_scriptmanager: boolean = FALSE);
   public
     constructor Create;
   end;
@@ -154,10 +156,11 @@ procedure page_class.Alert
   cause: alert_cause_type;
   state: alert_state_type;
   key: string;
-  value: string
+  value: string;
+  be_using_scriptmanager: boolean = FALSE
   );
 begin
-  kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value);
+  kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value,be_using_scriptmanager);
 end;
 
 procedure page_class.BackTrack(num_backsteps: cardinal = 1);
@@ -246,9 +249,9 @@ begin
   server.Transfer(page_nick + '.aspx');
 end;
 
-procedure page_class.ValidationAlert;
+procedure page_class.ValidationAlert(be_using_scriptmanager: boolean = FALSE);
 begin
-  Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
+  Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT,be_using_scriptmanager);
 end;
 
 //
@@ -279,10 +282,11 @@ procedure usercontrol_class.Alert
   cause: alert_cause_type;
   state: alert_state_type;
   key: string;
-  value: string
+  value: string;
+  be_using_scriptmanager: boolean = FALSE
   );
 begin
-  kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value);
+  kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value,be_using_scriptmanager);
 end;
 
 procedure usercontrol_class.DropCrumbAndTransferTo(the_path: string);
@@ -356,9 +360,9 @@ begin
   server.Transfer(page_nick + '.aspx');
 end;
 
-procedure usercontrol_class.ValidationAlert;
+procedure usercontrol_class.ValidationAlert(be_using_scriptmanager: boolean = FALSE);
 begin
-  Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT);
+  Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT,be_using_scriptmanager);
 end;
 
 end.
