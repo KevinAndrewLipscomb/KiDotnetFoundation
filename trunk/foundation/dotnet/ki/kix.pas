@@ -109,7 +109,8 @@ procedure Alert
   cause: alert_cause_type;
   state: alert_state_type;
   key: string;
-  s: string
+  s: string;
+  be_using_scriptmanager: boolean = FALSE
   );
 
 function AverageDeviation
@@ -236,24 +237,30 @@ PROCEDURE Alert
   cause: alert_cause_type;
   state: alert_state_type;
   key: string;
-  s: string
+  s: string;
+  be_using_scriptmanager: boolean = FALSE
   );
+var
+  script: string;
 begin
-  page.clientscript.RegisterStartupScript
-    (
-    page.GetType,
-    key,
-    'alert("- - - ---------------------------------------------------- - - -\n'
-    +      '       issuer:  \t' + application_name + '\n'
-    +      '       cause:   \t' + enum(cause).tostring.tolower + '\n'
-    +      '       state:   \t' + enum(state).tostring.tolower + '\n'
-    +      '       key:     \t' + key.tolower + '\n'
-    +      '       time:    \t' + datetime.Now.tostring('s') + '\n'
-    +      '- - - ---------------------------------------------------- - - -\n\n\n'
-    +    s.Replace(NEW_LINE,'\n') + '\n\n"'
-    + ' );',
-    TRUE
-    );
+  //
+  script := EMPTY
+  + 'alert("- - - ---------------------------------------------------- - - -\n'
+  +      '       issuer:  \t' + application_name + '\n'
+  +      '       cause:   \t' + enum(cause).tostring.tolower + '\n'
+  +      '       state:   \t' + enum(state).tostring.tolower + '\n'
+  +      '       key:     \t' + key.tolower + '\n'
+  +      '       time:    \t' + datetime.Now.tostring('s') + '\n'
+  +      '- - - ---------------------------------------------------- - - -\n\n\n'
+  +    s.Replace(NEW_LINE,'\n') + '\n\n"'
+  + ' );';
+  //
+  if be_using_scriptmanager then begin
+    scriptmanager.RegisterStartupScript(page,page.GetType,key,script,TRUE);
+  end else begin
+    page.clientscript.RegisterStartupScript(page.GetType,key,script,TRUE);
+  end;
+  //
 end;
 
 FUNCTION AverageDeviation
