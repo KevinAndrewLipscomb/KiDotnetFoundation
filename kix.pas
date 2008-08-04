@@ -175,6 +175,8 @@ function Has
   )
   : boolean;
 
+function HresultAnalysis(the_exception: exception): string;
+
 function Median(sorted_array_list: arraylist): decimal;
 
 function Percentile
@@ -229,6 +231,9 @@ function StringOfControl(c: control): string;
 function YesNoOf(b: boolean): string;
 
 IMPLEMENTATION
+
+uses
+  system.runtime.interopservices;
 
 PROCEDURE Alert
   (
@@ -429,6 +434,121 @@ begin
     end;
     Has := (i < len);
   end;
+end;
+
+FUNCTION HresultAnalysis(the_exception: exception): string;
+var
+  code: string;
+  facility: string;
+  facility_id: uint32;
+  hresult: uint32;
+  be_ntstatus: boolean;
+  microsoft_or_not: string;
+  severity: string;
+begin
+  facility := 'unknown';
+  hresult := uint32(marshal.GetHrForException(the_exception));
+  be_ntstatus := boolean(hresult and $10000000);
+  code := uint16(hresult mod $00010000).tostring('X');
+  if not be_ntstatus then begin // "N": it's not an NTSTATUS
+    if boolean(hresult and $80000000) then begin // "S"
+      severity := 'FAILURE';
+    end else begin
+      severity := 'SUCCESS';
+    end;
+  end else begin
+    case hresult div $C0000000 of // NTSTATUS "Sev"
+    3: severity := 'ERROR';
+    2: severity := 'WARNING';
+    1: severity := 'INFO';
+    0: severity := 'SUCCESS';
+    end;
+  end;
+  if boolean(hresult and $20000000) then begin // "C"
+    microsoft_or_not := 'NONMICROSOFT';
+  end else begin
+    microsoft_or_not := 'MICROSOFT';
+    facility_id := (hresult mod $10000000) div $00010000;
+    if not be_ntstatus then begin
+      case facility_id of
+      00: facility := 'NULL';
+      01: facility := 'RPC';
+      02: facility := 'DISPATCH';
+      03: facility := 'STORAGE';
+      04: facility := 'ITF';
+      07: facility := 'WIN32';
+      08: facility := 'WINDOWS';
+      09: facility := 'SECURITY|SSPI';
+      10: facility := 'CONTROL';
+      11: facility := 'CERT';
+      12: facility := 'INTERNET';
+      13: facility := 'MEDIASERVER';
+      14: facility := 'MSMQ';
+      15: facility := 'SETUPAPI';
+      16: facility := 'SCARD';
+      17: facility := 'COMPLUS';
+      18: facility := 'AAF';
+      19: facility := 'URT';
+      20: facility := 'ACS';
+      21: facility := 'DPLAY';
+      22: facility := 'UMI';
+      23: facility := 'SXS';
+      24: facility := 'WINDOWS_CE';
+      25: facility := 'HTTP';
+      26: facility := 'USERMODE_COMMONLOG';
+      31: facility := 'USERMODE_FILTER_MANAGER';
+      32: facility := 'BACKGROUNDCOPY';
+      33: facility := 'CONFIGURATION';
+      34: facility := 'STATE_MANAGEMENT';
+      35: facility := 'METADIRECTORY';
+      36: facility := 'WINDOWSUPDATE';
+      37: facility := 'DIRECTORYSERVICE';
+      38: facility := 'GRAPHICS';
+      39: facility := 'SHELL';
+      40: facility := 'TPM_SERVICES';
+      41: facility := 'TPM_SOFTWARE';
+      48: facility := 'PLA';
+      49: facility := 'FVE';
+      50: facility := 'FWP';
+      51: facility := 'WINRM';
+      52: facility := 'NDIS';
+      53: facility := 'USERMODE_HYPERVISOR';
+      54: facility := 'CMI';
+      80: facility := 'WINDOWS_DEFENDER';
+      end;
+    end else begin // is an NTSTATUS
+      case facility_id of
+      01: facility := 'DEBUGGER';
+      02: facility := 'RPC_RUNTIME';
+      03: facility := 'RPC_STUBS';
+      04: facility := 'IO';
+      07: facility := 'NTWIN32';
+      09: facility := 'NTSSPI';
+      10: facility := 'TERMINAL_SERVER';
+      11: facility := 'MUI';
+      16: facility := 'USB';
+      17: facility := 'HID';
+      18: facility := 'FIREWIRE';
+      19: facility := 'CLUSTER';
+      20: facility := 'ACPI';
+      21: facility := 'SXS';
+      25: facility := 'TRANSACTION';
+      26: facility := 'COMMONLOG';
+      27: facility := 'VIDEO';
+      28: facility := 'FILTER_MANAGER';
+      29: facility := 'MONITOR';
+      30: facility := 'GRAPHICS_KERNEL';
+      32: facility := 'DRIVER_FRAMEWORK';
+      33: facility := 'FVE';
+      34: facility := 'FWP';
+      35: facility := 'NDIS';
+      53: facility := 'HYPERVISOR';
+      54: facility := 'IPSEC';
+      55: facility := 'MAXIMUM_VALUE';
+      end;
+    end;
+  end;
+  HResultAnalysis := '0x' + hresult.tostring('X') + ':  %' + microsoft_or_not + '.' + facility + '--' + severity + '--0x' + code;
 end;
 
 FUNCTION Median(sorted_array_list: arraylist): decimal;
