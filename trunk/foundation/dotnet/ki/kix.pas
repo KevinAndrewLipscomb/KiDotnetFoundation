@@ -211,7 +211,7 @@ procedure SendControlAsAttachmentToEmailMessage
   body: string
   );
 
-procedure SilentAlarm(e: exception);
+procedure SilentAlarm(the_exception: exception);
 
 procedure SmtpMailSend(mail_message: MailMessage); overload;
 procedure SmtpMailSend
@@ -739,18 +739,18 @@ begin
   StringOfControl := stringwriter.tostring;
 end;
 
-PROCEDURE SilentAlarm(e: exception);
+PROCEDURE SilentAlarm(the_exception: exception);
 begin
   SmtpMailSend
     (
     configurationmanager.appsettings['sender_email_address'],
     configurationmanager.appsettings['sender_email_address'],
     'SILENT ALARM',
-    '[MESSAGE]' + NEW_LINE
-    + e.message + NEW_LINE
+    '[EXCEPTION]' + NEW_LINE
+    + the_exception.tostring + NEW_LINE
     + NEW_LINE
-    + '[STACKTRACE]' + NEW_LINE
-    + e.stacktrace + NEW_LINE
+    + '[HRESULT]' + NEW_LINE
+    + HresultAnalysis(the_exception) + NEW_LINE
     );
 end;
 
