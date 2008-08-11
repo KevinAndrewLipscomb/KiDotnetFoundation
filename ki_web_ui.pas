@@ -9,6 +9,14 @@ uses
 
 type
   //
+  nature_of_visit_type =
+    (
+    INITIAL,
+    STANDARD_POSTBACK,
+    STALE_POSTBACK,
+    UNCONTROLLED
+    );
+  //
   page_class = class(System.Web.UI.Page)
   strict protected
     function AddIdentifiedControlToPlaceHolder
@@ -38,6 +46,13 @@ type
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
     procedure Focus(c: control);
+    function NatureOfVisit
+      (
+      expected_session_item_name: string;
+      be_uncontrolled_allowed: boolean = FALSE;
+      be_timeout_behavior_standard: boolean = TRUE
+      )
+      : nature_of_visit_type;
     procedure SessionSet
       (
       name: string;
@@ -90,6 +105,13 @@ type
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
     procedure Focus(c: control);
+    function NatureOfVisit
+      (
+      expected_session_item_name: string;
+      be_uncontrolled_allowed: boolean = FALSE;
+      be_timeout_behavior_standard: boolean = TRUE
+      )
+      : nature_of_visit_type;
     procedure SessionSet
       (
       name: string;
@@ -212,6 +234,40 @@ end;
 procedure page_class.Focus(c: control);
 begin
   clientscript.RegisterStartupScript(page.GetType,'SetFocus','document.getElementById("' + c.clientid + '").focus();',TRUE);
+end;
+
+function page_class.NatureOfVisit
+  (
+  expected_session_item_name: string;
+  be_uncontrolled_allowed: boolean = FALSE;
+  be_timeout_behavior_standard: boolean = TRUE
+  )
+  : nature_of_visit_type;
+begin
+  if not IsPostBack then begin
+    if request.servervariables['URL'] <> request.currentexecutionfilepath then begin
+      NatureOfVisit := INITIAL;
+    end else begin
+      //
+      // The request for this page could not have been the result of a server.Transfer call, and the session state is therefore
+      // unknown.  This is rarely allowed.
+      //
+      NatureOfVisit := UNCONTROLLED;
+      if be_uncontrolled_allowed then begin
+        session.Clear;
+        server.Transfer('~/login.aspx');
+      end;
+    end;
+  end else begin
+    if assigned(session[expected_session_item_name]) then begin
+      NatureOfVisit := STANDARD_POSTBACK;
+    end else begin
+      NatureOfVisit := STALE_POSTBACK;
+      if be_timeout_behavior_standard then begin
+        server.Transfer('~/timeout.aspx');
+      end;
+    end;
+  end;
 end;
 
 procedure page_class.OnInit(e: system.eventargs);
@@ -337,6 +393,40 @@ procedure usercontrol_class.RequireConfirmation
   );
 begin
   kix.RequireConfirmation(c,prompt,configurationmanager.appsettings['application_name']);
+end;
+
+function usercontrol_class.NatureOfVisit
+  (
+  expected_session_item_name: string;
+  be_uncontrolled_allowed: boolean = FALSE;
+  be_timeout_behavior_standard: boolean = TRUE
+  )
+  : nature_of_visit_type;
+begin
+  if not IsPostBack then begin
+    if request.servervariables['URL'] <> request.currentexecutionfilepath then begin
+      NatureOfVisit := INITIAL;
+    end else begin
+      //
+      // The request for this page could not have been the result of a server.Transfer call, and the session state is therefore
+      // unknown.  This is rarely allowed.
+      //
+      NatureOfVisit := UNCONTROLLED;
+      if be_uncontrolled_allowed then begin
+        session.Clear;
+        server.Transfer('~/login.aspx');
+      end;
+    end;
+  end else begin
+    if assigned(session[expected_session_item_name]) then begin
+      NatureOfVisit := STANDARD_POSTBACK;
+    end else begin
+      NatureOfVisit := STALE_POSTBACK;
+      if be_timeout_behavior_standard then begin
+        server.Transfer('~/timeout.aspx');
+      end;
+    end;
+  end;
 end;
 
 procedure usercontrol_class.SessionSet
