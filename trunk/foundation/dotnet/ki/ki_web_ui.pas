@@ -11,13 +11,22 @@ type
   //
   nature_of_visit_type =
     (
-    INITIAL,
-    STANDARD_POSTBACK,
-    STALE_POSTBACK,
-    UNCONTROLLED
+    VISIT_COLD_CALL,
+    VISIT_INITIAL,
+    VISIT_POSTBACK_STANDARD,
+    VISIT_POSTBACK_STALE
     );
   //
   page_class = class(System.Web.UI.Page)
+  private
+    function NatureOfInvocation
+      (
+      expected_session_item_name: string;
+      be_timeout_behavior_standard: boolean;
+      be_landing_from_login: boolean;
+      be_cold_call_allowed: boolean
+      )
+      : nature_of_visit_type;
   strict protected
     function AddIdentifiedControlToPlaceHolder
       (
@@ -46,10 +55,21 @@ type
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
     procedure Focus(c: control);
+    function NatureOfLanding
+      (
+      expected_session_item_name: string;
+      be_timeout_behavior_standard: boolean = TRUE
+      )
+      : nature_of_visit_type;
     function NatureOfVisit
       (
       expected_session_item_name: string;
-      be_uncontrolled_allowed: boolean = FALSE;
+      be_timeout_behavior_standard: boolean = TRUE
+      )
+      : nature_of_visit_type;
+    function NatureOfVisitUnlimited
+      (
+      expected_session_item_name: string;
       be_timeout_behavior_standard: boolean = TRUE
       )
       : nature_of_visit_type;
@@ -229,38 +249,77 @@ begin
   clientscript.RegisterStartupScript(page.GetType,'SetFocus','document.getElementById("' + c.clientid + '").focus();',TRUE);
 end;
 
-function page_class.NatureOfVisit
+function page_class.NatureOfInvocation
   (
   expected_session_item_name: string;
-  be_uncontrolled_allowed: boolean = FALSE;
-  be_timeout_behavior_standard: boolean = TRUE
+  be_timeout_behavior_standard: boolean;
+  be_landing_from_login: boolean;
+  be_cold_call_allowed: boolean
   )
   : nature_of_visit_type;
+var
+  be_cold_call: boolean;
 begin
   if not IsPostBack then begin
-    if request.servervariables['URL'] <> request.currentexecutionfilepath then begin
-      NatureOfVisit := INITIAL;
+    if be_landing_from_login then begin
+      be_cold_call_allowed := FALSE;
+      be_cold_call := (session['user_id'] = nil) or (session['username'] = nil);
     end else begin
-      //
-      // The request for this page could not have been the result of a server.Transfer call, and the session state is therefore
-      // unknown.  This is rarely allowed.
-      //
-      NatureOfVisit := UNCONTROLLED;
-      if not be_uncontrolled_allowed then begin
+      be_cold_call := (request.servervariables['URL'] = request.currentexecutionfilepath);
+        // The request for this page could not have been the result of a server.Transfer call, and the session state is therefore
+        // unknown.  This is rarely allowed.
+    end;
+    //
+    if be_cold_call then begin
+      NatureOfInvocation := VISIT_COLD_CALL;
+      if not be_cold_call_allowed then begin
         session.Clear;
         server.Transfer('~/login.aspx');
       end;
+    end else begin
+      NatureOfInvocation := VISIT_INITIAL;
     end;
+    //
   end else begin
     if assigned(session[expected_session_item_name]) then begin
-      NatureOfVisit := STANDARD_POSTBACK;
+      NatureOfInvocation := VISIT_POSTBACK_STANDARD;
     end else begin
-      NatureOfVisit := STALE_POSTBACK;
+      NatureOfInvocation := VISIT_POSTBACK_STALE;
       if be_timeout_behavior_standard then begin
         server.Transfer('~/timeout.aspx');
       end;
     end;
   end;
+end;
+
+function page_class.NatureOfLanding
+  (
+  expected_session_item_name: string;
+  be_timeout_behavior_standard: boolean = TRUE
+  )
+  : nature_of_visit_type;
+begin
+  NatureOfLanding := NatureOfInvocation(expected_session_item_name,be_timeout_behavior_standard,TRUE,FALSE);
+end;
+
+function page_class.NatureOfVisit
+  (
+  expected_session_item_name: string;
+  be_timeout_behavior_standard: boolean = TRUE
+  )
+  : nature_of_visit_type;
+begin
+  NatureOfVisit := NatureOfInvocation(expected_session_item_name,be_timeout_behavior_standard,FALSE,FALSE);
+end;
+
+function page_class.NatureOfVisitUnlimited
+  (
+  expected_session_item_name: string;
+  be_timeout_behavior_standard: boolean = TRUE
+  )
+  : nature_of_visit_type;
+begin
+  NatureOfVisitUnlimited := NatureOfInvocation(expected_session_item_name,be_timeout_behavior_standard,FALSE,TRUE);
 end;
 
 procedure page_class.OnInit(e: system.eventargs);
