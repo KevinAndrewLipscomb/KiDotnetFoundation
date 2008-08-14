@@ -14,6 +14,7 @@ uses
   system.web,
   system.web.mail,
   system.web.security,
+  system.web.sessionstate,
   system.web.ui,
   system.web.ui.htmlcontrols,
   system.Web.UI.WebControls;
@@ -113,6 +114,16 @@ procedure Alert
   be_using_scriptmanager: boolean = FALSE
   );
 
+function AlertMessage
+  (
+  application_name: string;
+  cause: alert_cause_type;
+  state: alert_state_type;
+  key: string;
+  s: string
+  )
+  : string;
+
 function AverageDeviation
   (
   array_list: arraylist;
@@ -127,6 +138,14 @@ function BooleanOfYesNo(yn: string): boolean;
 function Digest(source_string: string): string;
 
 function DomainNameOfIpAddress(ip_address: string): string;
+
+function EscalatedException
+  (
+  the_exception: exception;
+  user_identity_name: string = EMPTY;
+  session: httpsessionstate = NIL
+  )
+  : string;
 
 procedure EstablishClientSideFunction
   (
@@ -249,16 +268,7 @@ var
   script: string;
 begin
   //
-  script := EMPTY
-  + 'alert("- - - ---------------------------------------------------- - - -\n'
-  +      '       issuer:  \t' + application_name + '\n'
-  +      '       cause:   \t' + enum(cause).tostring.tolower + '\n'
-  +      '       state:   \t' + enum(state).tostring.tolower + '\n'
-  +      '       key:     \t' + key.tolower + '\n'
-  +      '       time:    \t' + datetime.Now.tostring('s') + '\n'
-  +      '- - - ---------------------------------------------------- - - -\n\n\n'
-  +    s.Replace(NEW_LINE,'\n') + '\n\n"'
-  + ' );';
+  script := 'alert("' + AlertMessage(application_name,cause,state,key,s).Replace(NEW_LINE,'\n').Replace(TAB,'\t') + '");';
   //
   if be_using_scriptmanager then begin
     scriptmanager.RegisterStartupScript(page,page.GetType,key,script,TRUE);
@@ -266,6 +276,39 @@ begin
     page.clientscript.RegisterStartupScript(page.GetType,key,script,TRUE);
   end;
   //
+end;
+
+FUNCTION AlertMessage
+  (
+  application_name: string;
+  cause: alert_cause_type;
+  state: alert_state_type;
+  key: string;
+  s: string
+  )
+  : string;
+begin
+//  AlertMessage := EMPTY
+//  + '- - - ---------------------------------------------------- - - -\n'
+//  + '       issuer:  \t' + application_name + '\n'
+//  + '       cause:   \t' + enum(cause).tostring.tolower + '\n'
+//  + '       state:   \t' + enum(state).tostring.tolower + '\n'
+//  + '       key:     \t' + key.tolower + '\n'
+//  + '       time:    \t' + datetime.Now.tostring('s') + '\n'
+//  + '- - - ---------------------------------------------------- - - -\n\n\n'
+//  + s.Replace(NEW_LINE,'\n') + '\n\n';
+  AlertMessage := EMPTY
+  + '- - - ---------------------------------------------------- - - -' + NEW_LINE
+  + '       issuer:  ' + TAB + application_name + NEW_LINE
+  + '       cause:   ' + TAB + enum(cause).tostring.tolower + NEW_LINE
+  + '       state:   ' + TAB + enum(state).tostring.tolower + NEW_LINE
+  + '       key:     ' + TAB + key.tolower + NEW_LINE
+  + '       time:    ' + TAB + datetime.Now.tostring('s') + NEW_LINE
+  + '- - - ---------------------------------------------------- - - -' + NEW_LINE
+  + NEW_LINE
+  + NEW_LINE
+  + s + NEW_LINE
+  + NEW_LINE;
 end;
 
 FUNCTION AverageDeviation
@@ -321,6 +364,68 @@ end;
 FUNCTION DomainNameOfIpAddress(ip_address: string): string;
 begin
   DomainNameOfIpAddress := dns.GetHostEntry(ip_address).HostName;
+end;
+
+FUNCTION EscalatedException
+  (
+  the_exception: exception;
+  user_identity_name: string = EMPTY;
+  session: httpsessionstate = NIL
+  )
+  : string;
+var
+  notification_message: string;
+  lcv: cardinal;
+  user_designator: string;
+begin
+  //
+  if user_identity_name = EMPTY then begin
+    user_designator := 'unknown';
+  end else begin
+    user_designator := user_identity_name;
+  end;
+  //
+  notification_message := EMPTY
+  + '[EXCEPTION]' + NEW_LINE
+  + the_exception.tostring + NEW_LINE
+  + NEW_LINE
+  + '[HRESULT]' + NEW_LINE
+  + HresultAnalysis(the_exception) + NEW_LINE
+  + NEW_LINE;
+  //
+  if user_identity_name <> EMPTY then begin
+    notification_message := notification_message
+    + '[USER]' + NEW_LINE
+    + user_designator + NEW_LINE
+    + NEW_LINE;
+  end;
+  //
+  if assigned(session) then begin
+    notification_message := notification_message
+    + '[SESSION]' + NEW_LINE;
+    if session.count > 0 then begin
+      for lcv := 0 to (session.count - 1) do begin
+        notification_message := notification_message + session.keys[lcv].tostring + ' = ' + session.item[lcv].tostring + NEW_LINE;
+      end;
+    end;
+  end;
+  //
+  SmtpMailSend
+    (
+    configurationmanager.appsettings['sender_email_address'],
+    configurationmanager.appsettings['sender_email_address'],
+    'EXCEPTION REPORT',
+    notification_message
+    );
+  SmtpMailSend
+    (
+    configurationmanager.appsettings['sender_email_address'],
+    configurationmanager.appsettings['sysadmin_sms_address'],
+    'CRASH',
+    user_identity_name
+    );
+  //
+  EscalatedException := notification_message;
 end;
 
 PROCEDURE EstablishClientSideFunction

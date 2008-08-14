@@ -54,7 +54,11 @@ type
       overload;
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
-    procedure Focus(c: control);
+    procedure Focus
+      (
+      c: control;
+      be_using_scriptmanager: boolean = FALSE
+      );
     function NatureOfLanding
       (
       expected_session_item_name: string;
@@ -115,6 +119,14 @@ type
       value: string;
       be_using_scriptmanager: boolean = FALSE
       );
+    function AlertMessage
+      (
+      cause: alert_cause_type;
+      state: alert_state_type;
+      key: string;
+      value: string
+      )
+      : string;
     procedure DropCrumbAndTransferTo(the_path: string);
     procedure EstablishClientSideFunction
       (
@@ -124,7 +136,11 @@ type
       overload;
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
-    procedure Focus(c: control);
+    procedure Focus
+      (
+      c: control;
+      be_using_scriptmanager: boolean = FALSE
+      );
     procedure SessionSet
       (
       name: string;
@@ -244,9 +260,17 @@ begin
   kix.EstablishClientSideFunction(page,r);
 end;
 
-procedure page_class.Focus(c: control);
+procedure page_class.Focus
+  (
+  c: control;
+  be_using_scriptmanager: boolean = FALSE
+  );
 begin
-  clientscript.RegisterStartupScript(page.GetType,'SetFocus','document.getElementById("' + c.clientid + '").focus();',TRUE);
+  if be_using_scriptmanager then begin
+    scriptmanager.RegisterStartupScript(page,page.GetType,'SetFocus','document.getElementById("' + c.clientid + '").focus();',TRUE);
+  end else begin
+    clientscript.RegisterStartupScript(page.GetType,'SetFocus','document.getElementById("' + c.clientid + '").focus();',TRUE);
+  end;
 end;
 
 function page_class.NatureOfInvocation
@@ -397,6 +421,18 @@ begin
   kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value,be_using_scriptmanager);
 end;
 
+function usercontrol_class.AlertMessage
+  (
+  cause: alert_cause_type;
+  state: alert_state_type;
+  key: string;
+  value: string
+  )
+  : string;
+begin
+  AlertMessage := kix.AlertMessage(configurationmanager.appsettings['application_name'],cause,state,key,value);
+end;
+
 procedure usercontrol_class.DropCrumbAndTransferTo(the_path: string);
 begin
   stack(session['waypoint_stack']).Push(path.GetFileName(request.CurrentExecutionFilePath));
@@ -422,15 +458,30 @@ begin
   kix.EstablishClientSideFunction(page,r);
 end;
 
-procedure usercontrol_class.Focus(c: control);
+procedure usercontrol_class.Focus
+  (
+  c: control;
+  be_using_scriptmanager: boolean = FALSE
+  );
 begin
-  page.clientscript.RegisterStartupScript
-    (
-    page.GetType,
-    'SetFocus',
-    'if (!document.getElementById("' + c.clientid + '").disabled) {document.getElementById("' + c.clientid + '").focus();}',
-    TRUE
-    );
+  if be_using_scriptmanager then begin
+    scriptmanager.RegisterStartupScript
+      (
+      page,
+      page.GetType,
+      'SetFocus',
+      'if (!document.getElementById("' + c.clientid + '").disabled) {document.getElementById("' + c.clientid + '").focus();}',
+      TRUE
+      );
+  end else begin
+    page.clientscript.RegisterStartupScript
+      (
+      page.GetType,
+      'SetFocus',
+      'if (!document.getElementById("' + c.clientid + '").disabled) {document.getElementById("' + c.clientid + '").focus();}',
+      TRUE
+      );
+  end;
 end;
 
 procedure usercontrol_class.OnInit(e: system.eventargs);
