@@ -83,6 +83,7 @@ type
     EMAIL_ADDRESS,
     FINANCIAL_TERMS,
     HOSTNAME,
+    HTTP_TARGET,
     HUMAN_NAME,
     HUMAN_NAME_CSV,
     HYPHENATED_ALPHA,
@@ -753,6 +754,8 @@ begin
     allow := '0-9a-zA-Z@#$%()\-+=,/. ' + CENT_SIGN;
   HOSTNAME:
     allow := '0-9a-zA-Z_\-.';
+  HTTP_TARGET:
+    allow := '0-9a-zA-Z\-_./';
   HUMAN_NAME:
     allow := 'a-zA-Z\-. ' + ACUTE_ACCENT;
   HUMAN_NAME_CSV:
