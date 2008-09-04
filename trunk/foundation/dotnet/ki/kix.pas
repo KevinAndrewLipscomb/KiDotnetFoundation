@@ -14,10 +14,7 @@ uses
   system.web,
   system.web.mail,
   system.web.security,
-  system.web.sessionstate,
-  system.web.ui,
-  system.web.ui.htmlcontrols,
-  system.Web.UI.WebControls;
+  system.web.sessionstate;
 
 const
   ACUTE_ACCENT = #180;  //´
@@ -104,27 +101,6 @@ type
     );
   string_array = array of string;
 
-procedure Alert
-  (
-  page: page;
-  application_name: string;
-  cause: alert_cause_type;
-  state: alert_state_type;
-  key: string;
-  s: string;
-  be_using_scriptmanager: boolean = FALSE
-  );
-
-function AlertMessage
-  (
-  application_name: string;
-  cause: alert_cause_type;
-  state: alert_state_type;
-  key: string;
-  s: string
-  )
-  : string;
-
 function AverageDeviation
   (
   array_list: arraylist;
@@ -148,45 +124,9 @@ function EscalatedException
   )
   : string;
 
-procedure EstablishClientSideFunction
-  (
-  page: page;
-  profile: string;
-  body: string;
-  usercontrol_clientid: string= ''
-  );
-  overload;
-
-procedure EstablishClientSideFunction
-  (
-  page: page;
-  enumeral: client_side_function_enumeral_type
-  );
-  overload;
-
-procedure EstablishClientSideFunction
-  (
-  page: page;
-  r: client_side_function_rec_type
-  );
-  overload;
-
 function ExpandAsperand(s: string): string;
 
 function ExpandTildePath(s: string): string;
-
-procedure ExportToExcel
-  (
-  page: system.web.ui.page;
-  filename_sans_extension: string;
-  excel_string: string
-  );
-
-procedure FileDownload
-  (
-  the_page: page;
-  filename: string
-  );
 
 function Has
   (
@@ -205,13 +145,6 @@ function Percentile
   sorted_array_list: arraylist
   )
   : decimal;
-
-procedure RequireConfirmation
-  (
-  c: webcontrol;
-  prompt: string;
-  application_name: string
-  );
 
 function Safe
   (
@@ -246,71 +179,13 @@ procedure SmtpMailSend
   );
   overload;
 
-function StringOfControl(c: control): string;
-
 function YesNoOf(b: boolean): string;
 
 IMPLEMENTATION
 
 uses
-  system.runtime.interopservices;
-
-PROCEDURE Alert
-  (
-  page: page;
-  application_name: string;
-  cause: alert_cause_type;
-  state: alert_state_type;
-  key: string;
-  s: string;
-  be_using_scriptmanager: boolean = FALSE
-  );
-var
-  script: string;
-begin
-  //
-  script := 'alert("' + AlertMessage(application_name,cause,state,key,s).Replace(NEW_LINE,'\n').Replace(TAB,'\t') + '");';
-  //
-  if be_using_scriptmanager then begin
-    scriptmanager.RegisterStartupScript(page,page.GetType,key,script,TRUE);
-  end else begin
-    page.clientscript.RegisterStartupScript(page.GetType,key,script,TRUE);
-  end;
-  //
-end;
-
-FUNCTION AlertMessage
-  (
-  application_name: string;
-  cause: alert_cause_type;
-  state: alert_state_type;
-  key: string;
-  s: string
-  )
-  : string;
-begin
-//  AlertMessage := EMPTY
-//  + '- - - ---------------------------------------------------- - - -\n'
-//  + '       issuer:  \t' + application_name + '\n'
-//  + '       cause:   \t' + enum(cause).tostring.tolower + '\n'
-//  + '       state:   \t' + enum(state).tostring.tolower + '\n'
-//  + '       key:     \t' + key.tolower + '\n'
-//  + '       time:    \t' + datetime.Now.tostring('s') + '\n'
-//  + '- - - ---------------------------------------------------- - - -\n\n\n'
-//  + s.Replace(NEW_LINE,'\n') + '\n\n';
-  AlertMessage := EMPTY
-  + '- - - ---------------------------------------------------- - - -' + NEW_LINE
-  + '       issuer:  ' + TAB + application_name + NEW_LINE
-  + '       cause:   ' + TAB + enum(cause).tostring.tolower + NEW_LINE
-  + '       state:   ' + TAB + enum(state).tostring.tolower + NEW_LINE
-  + '       key:     ' + TAB + key.tolower + NEW_LINE
-  + '       time:    ' + TAB + datetime.Now.tostring('s') + NEW_LINE
-  + '- - - ---------------------------------------------------- - - -' + NEW_LINE
-  + NEW_LINE
-  + NEW_LINE
-  + s + NEW_LINE
-  + NEW_LINE;
-end;
+  system.runtime.interopservices,
+  system.web.ui;
 
 FUNCTION AverageDeviation
   (
@@ -429,51 +304,6 @@ begin
   EscalatedException := notification_message;
 end;
 
-PROCEDURE EstablishClientSideFunction
-  (
-  page: page;
-  profile: string;
-  body: string;
-  usercontrol_clientid: string = ''
-  );
-begin
-  page.clientscript.RegisterClientScriptBlock
-    (
-    page.GetType,
-    usercontrol_clientid + '__' + profile.Remove(profile.IndexOf(OPEN_PARENTHESIS)),
-    'function ' + profile + NEW_LINE
-    + ' {' + NEW_LINE
-    + ' ' + body.Replace(NEW_LINE,NEW_LINE + SPACE) + NEW_LINE
-    + ' }' + NEW_LINE,
-    TRUE
-    );
-end;
-
-PROCEDURE EstablishClientSideFunction
-  (
-  page: page;
-  enumeral: client_side_function_enumeral_type
-  );
-begin
-  case enumeral of
-  EL:
-    EstablishClientSideFunction(page,'El(id)','return document.getElementById(id);');
-  KGS_TO_LBS:
-    EstablishClientSideFunction(page,'KgsToLbs(num_kgs)','return Math.round(+num_kgs*2.204622);');
-  LBS_TO_KGS:
-    EstablishClientSideFunction(page,'LbsToKgs(num_lbs)','return Math.round(+num_lbs/2.204622);');
-  end;
-end;
-
-procedure EstablishClientSideFunction
-  (
-  page: page;
-  r: client_side_function_rec_type
-  );
-begin
-  EstablishClientSideFunction(page,r.profile,r.body);
-end;
-
 FUNCTION ExpandAsperand(s: string): string;
 begin
   ExpandAsperand := s.Replace('@',configurationmanager.appsettings['runtime_root_fullspec']);
@@ -484,41 +314,6 @@ begin
   ExpandTildePath := s
     .Replace('\','/')
     .Replace('~','/' + configurationmanager.appsettings['virtual_directory_name']);
-end;
-
-PROCEDURE ExportToExcel
-  (
-  page: system.web.ui.page;
-  filename_sans_extension: string;
-  excel_string: string
-  );
-begin
-  page.response.Clear;
-  page.response.AppendHeader
-    (
-    'Content-Disposition',
-    'attachment; filename=' + filename_sans_extension + '.xls'
-    );
-  page.response.bufferoutput := TRUE;
-  page.response.contenttype := 'application/vnd.ms-excel';
-  page.enableviewstate := FALSE;
-  page.response.Write(excel_string);
-  page.response.&End;
-end;
-
-PROCEDURE FileDownload
-  (
-  the_page: page;
-  filename: string
-  );
-begin
-  the_page.response.Clear;
-  the_page.response.AppendHeader('Content-Disposition','attachment; filename=' + system.io.path.GetFileName(filename));
-  the_page.response.bufferoutput := TRUE;
-  the_page.response.contenttype := 'application/octet-stream';
-  the_page.enableviewstate := FALSE;
-  the_page.response.TransmitFile(filename);
-  the_page.response.&End;
 end;
 
 FUNCTION Has
@@ -695,26 +490,6 @@ begin
   end;
 end;
 
-PROCEDURE RequireConfirmation
-  (
-  c: webcontrol;
-  prompt: string;
-  application_name: string
-  );
-begin
-  c.attributes.Add
-    (
-    'onclick',
-    'return confirm("- - - ---------------------------------------------------- - - -\n'
-    +               '       issuer:  \t' + application_name + '\n'
-    +               '       state:   \twarning\n'
-    +               '       time:    \t' + datetime.Now.tostring('s') + '\n'
-    +               '- - - ---------------------------------------------------- - - -\n\n\n'
-    +               prompt.Replace(NEW_LINE,'\n') + '\n\n"'
-    + ');'
-    );
-end;
-
 FUNCTION Safe
   (
   source_string: string;
@@ -805,7 +580,7 @@ begin
   Safe := scratch_string;
 end;
 
-procedure SendControlAsAttachmentToEmailMessage
+PROCEDURE SendControlAsAttachmentToEmailMessage
   (
   c: system.object;
   scratch_pathname: string;
@@ -821,7 +596,7 @@ var
 begin
   //
   streamwriter := system.io.streamwriter.Create(scratch_pathname);
-  system.web.ui.control(c).RenderControl(system.web.ui.htmltextwriter.Create(streamwriter));
+  control(c).RenderControl(system.web.ui.htmltextwriter.Create(streamwriter));
   streamwriter.Close;
   //
   msg := mailmessage.Create;
@@ -836,15 +611,6 @@ begin
   //
   &file.Delete(scratch_pathname);
   //
-end;
-
-function StringOfControl(c: control): string;
-var
-  stringwriter: system.io.stringwriter;
-begin
-  stringwriter := system.io.stringwriter.Create;
-  c.RenderControl(system.web.ui.htmltextwriter.Create(stringwriter));
-  StringOfControl := stringwriter.tostring;
 end;
 
 PROCEDURE SilentAlarm(the_exception: exception);

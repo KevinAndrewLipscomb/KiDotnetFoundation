@@ -84,7 +84,7 @@
     <DCCReference Include="kix.pas" />
     <DCCReference Include="ki_web_ui.pas">
       <Form>ki_web_ui.page_class</Form>
-      <DesignClass>System.Web.UI.Page</DesignClass>
+      <DesignClass>system.web.ui.page</DesignClass>
     </DCCReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />

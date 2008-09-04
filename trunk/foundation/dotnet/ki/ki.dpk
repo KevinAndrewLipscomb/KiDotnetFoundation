@@ -27,11 +27,12 @@ package ki;
 requires
   Borland.Delphi,
   System.Data,
-  System.Drawing;
+  System.Drawing,
+  System.Web.Extensions;
 
 contains
   kix in 'kix.pas',
-  ki_web_ui in 'ki_web_ui.pas' {ki_web_ui.page_class: System.Web.UI.Page};
+  ki_web_ui in 'ki_web_ui.pas' {ki_web_ui.page_class: system.web.ui.page};
 
 [assembly: AssemblyDescription('')]
 [assembly: AssemblyConfiguration('')]
