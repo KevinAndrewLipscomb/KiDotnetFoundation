@@ -1,6 +1,6 @@
 unit ki_web_ui;
 
-interface
+INTERFACE
 
 uses
   kix,
@@ -8,25 +8,121 @@ uses
   system.web.ui.webcontrols;
 
 type
+
+  //--------------------------------------------------------------------------------------------------------------------------------
   //
-  nature_of_visit_type =
-    (
-    VISIT_COLD_CALL,
-    VISIT_INITIAL,
-    VISIT_POSTBACK_STANDARD,
-    VISIT_POSTBACK_STALE
-    );
+  // templatecontrol_class
   //
-  page_class = class(System.Web.UI.Page)
-  private
-    function NatureOfInvocation
+  //--------------------------------------------------------------------------------------------------------------------------------
+  templatecontrol_class = class(system.web.ui.templatecontrol)
+  published
+    function AddIdentifiedControlToPlaceHolder
       (
-      expected_session_item_name: string;
-      be_timeout_behavior_standard: boolean;
-      be_landing_from_login: boolean;
-      be_cold_call_allowed: boolean
+      c: control;
+      id: string;
+      p: placeholder
       )
-      : nature_of_visit_type;
+      : string;
+    procedure Alert
+      (
+      the_page: page;
+      cause: alert_cause_type;
+      state: alert_state_type;
+      key: string;
+      value: string;
+      be_using_scriptmanager: boolean = FALSE
+      );
+    function AlertMessage
+      (
+      application_name: string;
+      cause: alert_cause_type;
+      state: alert_state_type;
+      key: string;
+      s: string
+      )
+      : string;
+    procedure ExportToExcel
+      (
+      the_page: page;
+      filename_sans_extension: string;
+      excel_string: string
+      );
+    procedure FileDownload
+      (
+      the_page: page;
+      filename: string
+      );
+    procedure Focus
+      (
+      the_page: page;
+      c: control;
+      be_using_scriptmanager: boolean = FALSE
+      );
+    procedure RequireConfirmation
+      (
+      c: webcontrol;
+      prompt: string
+      );
+    procedure SessionSet
+      (
+      the_page: page;
+      name: string;
+      value: system.object
+      );
+    function StringOfControl(c: control): string;
+    procedure TransferToPageBinderTab
+      (
+      the_page: page;
+      page_nick: string;
+      binder_nick: string;
+      tab_index: cardinal
+      );
+    procedure ValidationAlert
+      (
+      the_page: page;
+      be_using_scriptmanager: boolean = FALSE
+      );
+  public
+    constructor Create;
+    procedure EstablishClientSideFunction
+      (
+      the_page: page;
+      profile: string;
+      body: string;
+      usercontrol_clientid: string = ''
+      ); overload;
+    procedure EstablishClientSideFunction
+      (
+      the_page: page;
+      enumeral: client_side_function_enumeral_type
+      ); overload;
+    procedure EstablishClientSideFunction
+      (
+      the_page: page;
+      r: client_side_function_rec_type
+      ); overload;
+  protected
+    procedure OnInit(e: EventArgs); override;
+  end;
+
+  //--------------------------------------------------------------------------------------------------------------------------------
+  //
+  // page_class
+  //
+  //--------------------------------------------------------------------------------------------------------------------------------
+  page_class = class(System.Web.UI.Page)
+  published
+    type nature_of_visit_type =
+      (
+      VISIT_COLD_CALL,
+      VISIT_INITIAL,
+      VISIT_POSTBACK_STANDARD,
+      VISIT_POSTBACK_STALE
+      );
+  public
+    constructor Create;
+  protected
+    procedure OnInit(e: EventArgs); override;
   strict protected
     function AddIdentifiedControlToPlaceHolder
       (
@@ -54,6 +150,17 @@ type
       overload;
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
+    procedure ExportToExcel
+      (
+      the_page: page;
+      filename_sans_extension: string;
+      excel_string: string
+      );
+    procedure FileDownload
+      (
+      the_page: page;
+      filename: string
+      );
     procedure Focus
       (
       c: control;
@@ -77,30 +184,44 @@ type
       be_timeout_behavior_standard: boolean = TRUE
       )
       : nature_of_visit_type;
+    procedure RequireConfirmation
+      (
+      c: webcontrol;
+      prompt: string
+      );
     procedure SessionSet
       (
       name: string;
       value: system.object
       );
+    function StringOfControl(c: control): string;
     procedure TransferToPageBinderTab
       (
       page_nick: string;
       binder_nick: string;
       tab_index: cardinal
       );
-  protected
-    procedure OnInit(e: EventArgs); override;
-    procedure RequireConfirmation
-      (
-      c: webcontrol;
-      prompt: string
-      );
     procedure ValidationAlert(be_using_scriptmanager: boolean = FALSE);
+  strict private
+    templatecontrol: templatecontrol_class;
+    function NatureOfInvocation
+      (
+      expected_session_item_name: string;
+      be_timeout_behavior_standard: boolean;
+      be_landing_from_login: boolean;
+      be_cold_call_allowed: boolean
+      )
+      : nature_of_visit_type;
+  end;
+
+  //--------------------------------------------------------------------------------------------------------------------------------
+  //
+  // usercontrol_class
+  //
+  //--------------------------------------------------------------------------------------------------------------------------------
+  usercontrol_class = class(system.web.ui.usercontrol)
   public
     constructor Create;
-  end;
-  //
-  usercontrol_class = class(system.web.ui.usercontrol)
   protected
     procedure OnInit(e: EventArgs); override;
   strict protected
@@ -136,59 +257,322 @@ type
       overload;
     procedure EstablishClientSideFunction(enumeral: client_side_function_enumeral_type); overload;
     procedure EstablishClientSideFunction(r: client_side_function_rec_type); overload;
+    procedure ExportToExcel
+      (
+      the_page: page;
+      filename_sans_extension: string;
+      excel_string: string
+      );
+    procedure FileDownload
+      (
+      the_page: page;
+      filename: string
+      );
     procedure Focus
       (
       c: control;
       be_using_scriptmanager: boolean = FALSE
+      );
+    procedure RequireConfirmation
+      (
+      c: webcontrol;
+      prompt: string
       );
     procedure SessionSet
       (
       name: string;
       value: system.object
       );
+    function StringOfControl(c: control): string;
     procedure TransferToPageBinderTab
       (
       page_nick: string;
       binder_nick: string;
       tab_index: cardinal
       );
-  protected
-    procedure RequireConfirmation
-      (
-      c: webcontrol;
-      prompt: string
-      );
     procedure ValidationAlert(be_using_scriptmanager: boolean = FALSE);
-  public
-    constructor Create;
+  strict private
+    templatecontrol: templatecontrol_class;
   end;
 
-implementation
+IMPLEMENTATION
 
 uses
   system.collections,
   system.configuration,
-  system.io;
+  system.io,
+  system.web.mail;
 
 const
   STD_VALIDATION_ALERT = 'Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.';
 
+//==================================================================================================================================
 //
-// PAGE_CLASS
+// templatecontrol_class
 //
+//==================================================================================================================================
 
-constructor page_class.Create;
+constructor templatecontrol_class.Create;
 begin
   inherited Create;
   // TODO: Add any constructor code here
 end;
 
+procedure templatecontrol_class.OnInit(e: system.eventargs);
+begin
+  inherited OnInit(e);
+  templatecontrol := templatecontrol_class.Create;
+end;
+
+function templatecontrol_class.AddIdentifiedControlToPlaceHolder
+  (
+  c: control;
+  id: string;
+  p: placeholder
+  )
+  : string;
+  //
+  // Without specifying an ID for a dynamically-added control, ASP.NET supplies its own ID for the control.  The problem is that
+  // ASP.NET may specify one ID for the control at initial page presentation time and another ID at postback page presentation.
+  // Because postback events are tied to the ID of the control generating the postback, ASP.NET's ID assignment behavior may result
+  // in a postback event that is ignored the first time (but not subsequent times).
+  //
+begin
+  c.id := id;
+  p.controls.Add(c);
+  AddIdentifiedControlToPlaceHolder := id;
+end;
+
+procedure templatecontrol_class.Alert
+  (
+  the_page: page;
+  cause: alert_cause_type;
+  state: alert_state_type;
+  key: string;
+  value: string;
+  be_using_scriptmanager: boolean = FALSE
+  );
+var
+  script: string;
+begin
+  //
+  script := EMPTY
+  + 'alert("'
+  + AlertMessage(configurationmanager.appsettings['application_name'],cause,state,key,value)
+    .Replace(NEW_LINE,'\n')
+    .Replace(TAB,'\t') + '");';
+  //
+  if be_using_scriptmanager then begin
+    scriptmanager.RegisterStartupScript(the_page,the_page.GetType,key,script,TRUE);
+  end else begin
+    the_page.clientscript.RegisterStartupScript(the_page.GetType,key,script,TRUE);
+  end;
+  //
+end;
+
+function templatecontrol_class.AlertMessage
+  (
+  application_name: string;
+  cause: alert_cause_type;
+  state: alert_state_type;
+  key: string;
+  s: string
+  )
+  : string;
+begin
+  AlertMessage := EMPTY
+  + '- - - ---------------------------------------------------- - - -' + NEW_LINE
+  + '       issuer:  ' + TAB + application_name + NEW_LINE
+  + '       cause:   ' + TAB + enum(cause).tostring.tolower + NEW_LINE
+  + '       state:   ' + TAB + enum(state).tostring.tolower + NEW_LINE
+  + '       key:     ' + TAB + key.tolower + NEW_LINE
+  + '       time:    ' + TAB + datetime.Now.tostring('s') + NEW_LINE
+  + '- - - ---------------------------------------------------- - - -' + NEW_LINE
+  + NEW_LINE
+  + NEW_LINE
+  + s + NEW_LINE
+  + NEW_LINE;
+end;
+
+procedure templatecontrol_class.EstablishClientSideFunction
+  (
+  the_page: page;
+  profile: string;
+  body: string;
+  usercontrol_clientid: string = ''
+  );
+begin
+  the_page.clientscript.RegisterClientScriptBlock
+    (
+    the_page.GetType,
+    usercontrol_clientid + '__' + profile.Remove(profile.IndexOf(OPEN_PARENTHESIS)),
+    'function ' + profile + NEW_LINE
+    + ' {' + NEW_LINE
+    + ' ' + body.Replace(NEW_LINE,NEW_LINE + SPACE) + NEW_LINE
+    + ' }' + NEW_LINE,
+    TRUE
+    );
+end;
+
+procedure templatecontrol_class.EstablishClientSideFunction
+  (
+  the_page: page;
+  enumeral: client_side_function_enumeral_type
+  );
+begin
+  case enumeral of
+  EL:
+    EstablishClientSideFunction(the_page,'El(id)','return document.getElementById(id);');
+  KGS_TO_LBS:
+    EstablishClientSideFunction(the_page,'KgsToLbs(num_kgs)','return Math.round(+num_kgs*2.204622);');
+  LBS_TO_KGS:
+    EstablishClientSideFunction(the_page,'LbsToKgs(num_lbs)','return Math.round(+num_lbs/2.204622);');
+  end;
+end;
+
+procedure templatecontrol_class.EstablishClientSideFunction
+  (
+  the_page: page;
+  r: client_side_function_rec_type
+  );
+begin
+  EstablishClientSideFunction(the_page,r.profile,r.body);
+end;
+
+procedure templatecontrol_class.ExportToExcel
+  (
+  the_page: system.web.ui.page;
+  filename_sans_extension: string;
+  excel_string: string
+  );
+begin
+  the_page.response.Clear;
+  the_page.response.AppendHeader
+    (
+    'Content-Disposition',
+    'attachment; filename=' + filename_sans_extension + '.xls'
+    );
+  the_page.response.bufferoutput := TRUE;
+  the_page.response.contenttype := 'application/vnd.ms-excel';
+  the_page.enableviewstate := FALSE;
+  the_page.response.Write(excel_string);
+  the_page.response.&End;
+end;
+
+procedure templatecontrol_class.FileDownload
+  (
+  the_page: page;
+  filename: string
+  );
+begin
+  the_page.response.Clear;
+  the_page.response.AppendHeader('Content-Disposition','attachment; filename=' + system.io.path.GetFileName(filename));
+  the_page.response.bufferoutput := TRUE;
+  the_page.response.contenttype := 'application/octet-stream';
+  the_page.enableviewstate := FALSE;
+  the_page.response.TransmitFile(filename);
+  the_page.response.&End;
+end;
+
+procedure templatecontrol_class.Focus
+  (
+  the_page: page;
+  c: control;
+  be_using_scriptmanager: boolean = FALSE
+  );
+begin
+  if be_using_scriptmanager then begin
+    scriptmanager.RegisterStartupScript
+      (
+      the_page,
+      the_page.GetType,
+      'SetFocus',
+      'if (!document.getElementById("' + c.clientid + '").disabled) {document.getElementById("' + c.clientid + '").focus();}',
+      TRUE
+      );
+  end else begin
+    page.clientscript.RegisterStartupScript
+      (
+      the_page.GetType,
+      'SetFocus',
+      'if (!document.getElementById("' + c.clientid + '").disabled) {document.getElementById("' + c.clientid + '").focus();}',
+      TRUE
+      );
+  end;
+end;
+
+procedure templatecontrol_class.RequireConfirmation
+  (
+  c: webcontrol;
+  prompt: string
+  );
+begin
+  c.attributes.Add
+    (
+    'onclick',
+    'return confirm("- - - ---------------------------------------------------- - - -\n'
+    +               '       issuer:  \t' + configurationmanager.appsettings['application_name'] + '\n'
+    +               '       state:   \twarning\n'
+    +               '       time:    \t' + datetime.Now.tostring('s') + '\n'
+    +               '- - - ---------------------------------------------------- - - -\n\n\n'
+    +               prompt.Replace(NEW_LINE,'\n') + '\n\n"'
+    + ');'
+    );
+end;
+
+procedure templatecontrol_class.SessionSet
+  (
+  the_page: page;
+  name: string;
+  value: system.object
+  );
+begin
+  the_page.session.Remove(name);
+  the_page.session.Add(name,value);
+end;
+
+function templatecontrol_class.StringOfControl(c: control): string;
+var
+  stringwriter: system.io.stringwriter;
+begin
+  stringwriter := system.io.stringwriter.Create;
+  c.RenderControl(system.web.ui.htmltextwriter.Create(stringwriter));
+  StringOfControl := stringwriter.tostring;
+end;
+
+procedure templatecontrol_class.TransferToPageBinderTab
+  (
+  the_page: page;
+  page_nick: string;
+  binder_nick: string;
+  tab_index: cardinal
+  );
+begin
+  SessionSet(the_page,'UserControl_' + binder_nick + '_binder_selected_tab',system.object(tab_index));
+  the_page.server.Transfer(page_nick + '.aspx');
+end;
+
+procedure templatecontrol_class.ValidationAlert
+  (
+  the_page: page;
+  be_using_scriptmanager: boolean = FALSE
+  );
+begin
+  Alert(the_page,kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT,be_using_scriptmanager);
+end;
+
+//==================================================================================================================================
 //
-// Without specifying an ID for a dynamically-added control, ASP.NET supplies its own ID for the control.  The problem is that
-// ASP.NET may specify one ID for the control at initial page presentation time and another ID at postback page presentation.
-// Because postback events are tied to the ID of the control generating the postback, ASP.NET's ID assignment behavior may result
-// in a postback event that is ignored the first time (but not subsequent times).
+// PAGE_CLASS
 //
+//==================================================================================================================================
+
+constructor page_class.Create;
+begin
+  inherited Create;
+  templatecontrol := templatecontrol_class.Create;
+end;
+
 function page_class.AddIdentifiedControlToPlaceHolder
   (
   c: control;
@@ -197,9 +581,7 @@ function page_class.AddIdentifiedControlToPlaceHolder
   )
   : string;
 begin
-  c.id := id;
-  p.controls.Add(c);
-  AddIdentifiedControlToPlaceHolder := id;
+  templatecontrol.AddIdentifiedControlToPlaceHolder(c,id,p);
 end;
 
 procedure page_class.Alert
@@ -211,7 +593,7 @@ procedure page_class.Alert
   be_using_scriptmanager: boolean = FALSE
   );
 begin
-  kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value,be_using_scriptmanager);
+  templatecontrol.Alert(page,cause,state,key,value,be_using_scriptmanager);
 end;
 
 procedure page_class.BackTrack(num_backsteps: cardinal = 1);
@@ -247,17 +629,36 @@ procedure page_class.EstablishClientSideFunction
   body: string
   );
 begin
-  kix.EstablishClientSideFunction(page,profile,body);
+  templatecontrol.EstablishClientSideFunction(page,profile,body);
 end;
 
 procedure page_class.EstablishClientSideFunction(enumeral: client_side_function_enumeral_type);
 begin
-  kix.EstablishClientSideFunction(page,enumeral);
+  templatecontrol.EstablishClientSideFunction(page,enumeral);
 end;
 
 procedure page_class.EstablishClientSideFunction(r: client_side_function_rec_type);
 begin
-  kix.EstablishClientSideFunction(page,r);
+  templatecontrol.EstablishClientSideFunction(page,r);
+end;
+
+procedure page_class.ExportToExcel
+  (
+  the_page: system.web.ui.page;
+  filename_sans_extension: string;
+  excel_string: string
+  );
+begin
+  templatecontrol.ExportToExcel(page,filename_sans_extension,excel_string);
+end;
+
+procedure page_class.FileDownload
+  (
+  the_page: page;
+  filename: string
+  );
+begin
+  templatecontrol.FileDownload(page,filename);
 end;
 
 procedure page_class.Focus
@@ -266,11 +667,7 @@ procedure page_class.Focus
   be_using_scriptmanager: boolean = FALSE
   );
 begin
-  if be_using_scriptmanager then begin
-    scriptmanager.RegisterStartupScript(page,page.GetType,'SetFocus','document.getElementById("' + c.clientid + '").focus();',TRUE);
-  end else begin
-    clientscript.RegisterStartupScript(page.GetType,'SetFocus','document.getElementById("' + c.clientid + '").focus();',TRUE);
-  end;
+  templatecontrol.Focus(page,c,be_using_scriptmanager);
 end;
 
 function page_class.NatureOfInvocation
@@ -357,7 +754,7 @@ procedure page_class.RequireConfirmation
   prompt: string
   );
 begin
-  kix.RequireConfirmation(c,prompt,configurationmanager.appsettings['application_name']);
+  templatecontrol.RequireConfirmation(c,prompt);
 end;
 
 procedure page_class.SessionSet
@@ -366,8 +763,12 @@ procedure page_class.SessionSet
   value: system.object
   );
 begin
-  session.Remove(name);
-  session.Add(name,value);
+  templatecontrol.SessionSet(page,name,value);
+end;
+
+function page_class.StringOfControl(c: control): string;
+begin
+  templatecontrol.StringOfControl(c);
 end;
 
 procedure page_class.TransferToPageBinderTab
@@ -377,23 +778,24 @@ procedure page_class.TransferToPageBinderTab
   tab_index: cardinal
   );
 begin
-  SessionSet('UserControl_' + binder_nick + '_binder_selected_tab',system.object(tab_index));
-  server.Transfer(page_nick + '.aspx');
+  templatecontrol.TransferToPageBinderTab(page,page_nick,binder_nick,tab_index);
 end;
 
 procedure page_class.ValidationAlert(be_using_scriptmanager: boolean = FALSE);
 begin
-  Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT,be_using_scriptmanager);
+  templatecontrol.ValidationAlert(page,be_using_scriptmanager);
 end;
 
+//==================================================================================================================================
 //
 // USERCONTROL_CLASS
 //
+//==================================================================================================================================
 
 constructor usercontrol_class.Create;
 begin
   inherited Create;
-  // TODO: Add any constructor code here
+  templatecontrol := templatecontrol_class.Create;
 end;
 
 function usercontrol_class.AddIdentifiedControlToPlaceHolder
@@ -404,9 +806,7 @@ function usercontrol_class.AddIdentifiedControlToPlaceHolder
   )
   : string;
 begin
-  c.id := id;
-  p.controls.Add(c);
-  AddIdentifiedControlToPlaceHolder := id;
+  templatecontrol.AddIdentifiedControlToPlaceHolder(c,id,p);
 end;
 
 procedure usercontrol_class.Alert
@@ -418,7 +818,7 @@ procedure usercontrol_class.Alert
   be_using_scriptmanager: boolean = FALSE
   );
 begin
-  kix.Alert(page,configurationmanager.appsettings['application_name'],cause,state,key,value,be_using_scriptmanager);
+  templatecontrol.Alert(page,cause,state,key,value,be_using_scriptmanager);
 end;
 
 function usercontrol_class.AlertMessage
@@ -430,7 +830,7 @@ function usercontrol_class.AlertMessage
   )
   : string;
 begin
-  AlertMessage := kix.AlertMessage(configurationmanager.appsettings['application_name'],cause,state,key,value);
+  AlertMessage := templatecontrol.AlertMessage(configurationmanager.appsettings['application_name'],cause,state,key,value);
 end;
 
 procedure usercontrol_class.DropCrumbAndTransferTo(the_path: string);
@@ -445,17 +845,36 @@ procedure usercontrol_class.EstablishClientSideFunction
   body: string
   );
 begin
-  kix.EstablishClientSideFunction(page,profile,body,self.clientid);
+  templatecontrol.EstablishClientSideFunction(page,profile,body,self.clientid);
 end;
 
 procedure usercontrol_class.EstablishClientSideFunction(enumeral: client_side_function_enumeral_type);
 begin
-  kix.EstablishClientSideFunction(page,enumeral);
+  templatecontrol.EstablishClientSideFunction(page,enumeral);
 end;
 
 procedure usercontrol_class.EstablishClientSideFunction(r: client_side_function_rec_type);
 begin
-  kix.EstablishClientSideFunction(page,r);
+  templatecontrol.EstablishClientSideFunction(page,r);
+end;
+
+procedure usercontrol_class.ExportToExcel
+  (
+  the_page: system.web.ui.page;
+  filename_sans_extension: string;
+  excel_string: string
+  );
+begin
+  templatecontrol.ExportToExcel(page,filename_sans_extension,excel_string);
+end;
+
+procedure usercontrol_class.FileDownload
+  (
+  the_page: page;
+  filename: string
+  );
+begin
+  templatecontrol.FileDownload(page,filename);
 end;
 
 procedure usercontrol_class.Focus
@@ -464,24 +883,7 @@ procedure usercontrol_class.Focus
   be_using_scriptmanager: boolean = FALSE
   );
 begin
-  if be_using_scriptmanager then begin
-    scriptmanager.RegisterStartupScript
-      (
-      page,
-      page.GetType,
-      'SetFocus',
-      'if (!document.getElementById("' + c.clientid + '").disabled) {document.getElementById("' + c.clientid + '").focus();}',
-      TRUE
-      );
-  end else begin
-    page.clientscript.RegisterStartupScript
-      (
-      page.GetType,
-      'SetFocus',
-      'if (!document.getElementById("' + c.clientid + '").disabled) {document.getElementById("' + c.clientid + '").focus();}',
-      TRUE
-      );
-  end;
+  templatecontrol.Focus(page,c,be_using_scriptmanager);
 end;
 
 procedure usercontrol_class.OnInit(e: system.eventargs);
@@ -495,7 +897,7 @@ procedure usercontrol_class.RequireConfirmation
   prompt: string
   );
 begin
-  kix.RequireConfirmation(c,prompt,configurationmanager.appsettings['application_name']);
+  templatecontrol.RequireConfirmation(c,prompt);
 end;
 
 procedure usercontrol_class.SessionSet
@@ -504,8 +906,12 @@ procedure usercontrol_class.SessionSet
   value: system.object
   );
 begin
-  session.Remove(name);
-  session.Add(name,value);
+  templatecontrol.SessionSet(page,name,value);
+end;
+
+function usercontrol_class.StringOfControl(c: control): string;
+begin
+  templatecontrol.StringOfControl(c);
 end;
 
 procedure usercontrol_class.TransferToPageBinderTab
@@ -515,13 +921,12 @@ procedure usercontrol_class.TransferToPageBinderTab
   tab_index: cardinal
   );
 begin
-  SessionSet('UserControl_' + binder_nick + '_binder_selected_tab',system.object(tab_index));
-  server.Transfer(page_nick + '.aspx');
+  templatecontrol.TransferToPageBinderTab(page,page_nick,binder_nick,tab_index);
 end;
 
 procedure usercontrol_class.ValidationAlert(be_using_scriptmanager: boolean = FALSE);
 begin
-  Alert(kix.USER,kix.FAILURE,'stdsvrval',STD_VALIDATION_ALERT,be_using_scriptmanager);
+  templatecontrol.ValidationAlert(page,be_using_scriptmanager);
 end;
 
 end.
