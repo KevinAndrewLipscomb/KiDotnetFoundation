@@ -581,7 +581,7 @@ function page_class.AddIdentifiedControlToPlaceHolder
   )
   : string;
 begin
-  templatecontrol.AddIdentifiedControlToPlaceHolder(c,id,p);
+  AddIdentifiedControlToPlaceHolder := templatecontrol.AddIdentifiedControlToPlaceHolder(c,id,p);
 end;
 
 procedure page_class.Alert
@@ -768,7 +768,7 @@ end;
 
 function page_class.StringOfControl(c: control): string;
 begin
-  templatecontrol.StringOfControl(c);
+  StringOfControl := templatecontrol.StringOfControl(c);
 end;
 
 procedure page_class.TransferToPageBinderTab
@@ -806,7 +806,7 @@ function usercontrol_class.AddIdentifiedControlToPlaceHolder
   )
   : string;
 begin
-  templatecontrol.AddIdentifiedControlToPlaceHolder(c,id,p);
+  AddIdentifiedControlToPlaceHolder := templatecontrol.AddIdentifiedControlToPlaceHolder(c,id,p);
 end;
 
 procedure usercontrol_class.Alert
@@ -911,7 +911,7 @@ end;
 
 function usercontrol_class.StringOfControl(c: control): string;
 begin
-  templatecontrol.StringOfControl(c);
+  StringOfControl := templatecontrol.StringOfControl(c);
 end;
 
 procedure usercontrol_class.TransferToPageBinderTab
