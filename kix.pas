@@ -110,6 +110,8 @@ function AverageDeviation
 
 function BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 
+function BeValidDomainPartOfWebAddress(web_address: string): boolean;
+
 function BooleanOfYesNo(yn: string): boolean;
 
 function Digest(source_string: string): string;
@@ -208,14 +210,47 @@ end;
 FUNCTION BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 var
   be_valid_domain_part_of_email_address: boolean;
+  significant_part: string;
 begin
   be_valid_domain_part_of_email_address := TRUE;
+  significant_part := email_address.Substring(email_address.LastIndexOf('@') + 1);
   try
-    dns.GetHostEntry(email_address.Substring(email_address.LastIndexOf('@') + 1));
+    dns.GetHostEntry(significant_part);
   except
-    be_valid_domain_part_of_email_address := FALSE;
+    //
+    // Assume that if http://www.~ resolves to a website, then @~ resolves to a mail server.  This is true for ~=upmc.edu,
+    // ~=city.pittsburgh.pa.us, and others.
+    //
+    try
+      dns.GetHostEntry('www.' + significant_part);
+    except
+      be_valid_domain_part_of_email_address := FALSE;
+    end;
   end;
   BeValidDomainPartOfEmailAddress := be_valid_domain_part_of_email_address;
+end;
+
+FUNCTION BeValidDomainPartOfWebAddress(web_address: string): boolean;
+const
+  LENGTH_OF_SHORTEST_PRACTICAL_DOMAIN_NAME = 4;  // a.com
+var
+  be_valid_domain_part_of_web_address: boolean;
+  index_of_slash: integer;
+  significant_length: integer;
+begin
+  be_valid_domain_part_of_web_address := TRUE;
+  index_of_slash := web_address.IndexOf('/');
+  if index_of_slash > LENGTH_OF_SHORTEST_PRACTICAL_DOMAIN_NAME then begin
+    significant_length := index_of_slash
+  end else begin
+    significant_length := web_address.length;
+  end;
+  try
+    dns.GetHostEntry(web_address.Substring(0,significant_length));
+  except
+    be_valid_domain_part_of_web_address := FALSE;
+  end;
+  BeValidDomainPartOfWebAddress := be_valid_domain_part_of_web_address;
 end;
 
 function BooleanOfYesNo(yn: string): boolean;
