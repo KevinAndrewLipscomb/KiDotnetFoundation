@@ -601,12 +601,13 @@ var
   i: cardinal;
   p: string;
 begin
+  p := '~/Default.aspx';
   if assigned(session['waypoint_stack']) then begin
     for i := 1 to num_backsteps do begin
-      p := stack(session['waypoint_stack']).Pop.tostring;
+      if stack(session['waypoint_stack']).count > 0 then begin
+        p := stack(session['waypoint_stack']).Pop.tostring;
+      end;
     end;
-  end else begin
-    p := '~/Default.aspx';
   end;
   server.Transfer(p);
 end;

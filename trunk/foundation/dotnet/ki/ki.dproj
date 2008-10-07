@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCCIL</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>ki.dll</DCC_DependencyCheckOutputName>
-    <DCC_UsePackage>C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll;Borland.Delphi</DCC_UsePackage>
+    <DCC_UsePackage>"C:\Program Files\Microsoft ASP.NET\ASP.NET 2.0 AJAX Extensions\v1.0.61025\System.Web.Extensions.dll";C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Drawing.dll;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\System.Data.dll;Borland.Delphi</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
