@@ -248,6 +248,7 @@ type
       value: string
       )
       : string;
+    procedure BackTrack(num_backsteps: cardinal = 1);
     procedure DropCrumbAndTransferTo(the_path: string);
     procedure EstablishClientSideFunction
       (
@@ -836,6 +837,22 @@ function usercontrol_class.AlertMessage
   : string;
 begin
   AlertMessage := templatecontrol.AlertMessage(configurationmanager.appsettings['application_name'],cause,state,key,value);
+end;
+
+procedure usercontrol_class.BackTrack(num_backsteps: cardinal = 1);
+var
+  i: cardinal;
+  p: string;
+begin
+  p := '~/Default.aspx';
+  if assigned(session['waypoint_stack']) then begin
+    for i := 1 to num_backsteps do begin
+      if stack(session['waypoint_stack']).count > 0 then begin
+        p := stack(session['waypoint_stack']).Pop.tostring;
+      end;
+    end;
+  end;
+  server.Transfer(p);
 end;
 
 procedure usercontrol_class.DropCrumbAndTransferTo(the_path: string);
