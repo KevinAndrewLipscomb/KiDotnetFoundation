@@ -186,6 +186,7 @@ function YesNoOf(b: boolean): string;
 IMPLEMENTATION
 
 uses
+  system.diagnostics,
   system.runtime.interopservices,
   system.web.ui;
 
@@ -209,25 +210,24 @@ end;
 
 FUNCTION BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 var
-  be_valid_domain_part_of_email_address: boolean;
+  process_start_info: processstartinfo;
   significant_part: string;
+  work: process;
 begin
-  be_valid_domain_part_of_email_address := TRUE;
+  //
   significant_part := email_address.Substring(email_address.LastIndexOf('@') + 1);
-  try
-    dns.GetHostEntry(significant_part);
-  except
-    //
-    // Assume that if http://www.~ resolves to a website, then @~ resolves to a mail server.  This is true for ~=upmc.edu,
-    // ~=city.pittsburgh.pa.us, and others.
-    //
-    try
-      dns.GetHostEntry('www.' + significant_part);
-    except
-      be_valid_domain_part_of_email_address := FALSE;
-    end;
-  end;
-  BeValidDomainPartOfEmailAddress := be_valid_domain_part_of_email_address;
+  //
+  process_start_info := processstartinfo.Create('nslookup','-type=MX ' + significant_part.Trim);
+  process_start_info.RedirectStandardOutput := TRUE;
+  process_start_info.RedirectStandardError := TRUE;
+  process_start_info.UseShellExecute := FALSE;
+  //
+  work := process.Start(process_start_info);
+  work.WaitForExit;
+  work.Refresh;
+  //
+  BeValidDomainPartOfEmailAddress := work.StandardOutput.ReadToEnd.Contains('mail exchanger = ');
+  //
 end;
 
 FUNCTION BeValidDomainPartOfWebAddress(web_address: string): boolean;
