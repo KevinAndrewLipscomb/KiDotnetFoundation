@@ -176,8 +176,9 @@ procedure SmtpMailSend
   subject: string;
   message_string: string;
   be_html: boolean = FALSE;
-  cc: string = '';
-  bcc: string = ''
+  cc: string = EMPTY;
+  bcc: string = EMPTY;
+  reply_to: string = EMPTY
   );
   overload;
 
@@ -700,8 +701,9 @@ procedure SmtpMailSend
   subject: string;
   message_string: string;
   be_html: boolean = FALSE;
-  cc: string = '';
-  bcc: string = ''
+  cc: string = EMPTY;
+  bcc: string = EMPTY;
+  reply_to: string = EMPTY
   );
 var
   mail_message: mailmessage;
@@ -716,6 +718,7 @@ begin
   end;
   mail_message.cc := cc;
   mail_message.bcc := bcc;
+  mail_message.headers.Add('Reply-To',reply_to);
   SmtpMailSend(mail_message);
 end;
 
