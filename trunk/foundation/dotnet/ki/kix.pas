@@ -69,6 +69,7 @@ type
     profile: string;
     body: string;
     END;
+  positive = 1..MAXINT;
   safe_hint_type =
     (
     NONE,
@@ -112,6 +113,8 @@ function BeValidDomainPartOfEmailAddress(email_address: string): boolean;
 
 function BeValidDomainPartOfWebAddress(web_address: string): boolean;
 
+function BeValidNanpNumber(s: string): boolean;
+
 function BooleanOfYesNo(yn: string): boolean;
 
 function Digest(source_string: string): string;
@@ -129,6 +132,13 @@ function EscalatedException
 function ExpandAsperand(s: string): string;
 
 function ExpandTildePath(s: string): string;
+
+function FormatAsNanpPhoneNum
+  (
+  digits: string;
+  be_for_international_audience: boolean = FALSE
+  )
+  : string;
 
 function Has
   (
@@ -254,7 +264,42 @@ begin
   BeValidDomainPartOfWebAddress := be_valid_domain_part_of_web_address;
 end;
 
-function BooleanOfYesNo(yn: string): boolean;
+FUNCTION BeValidNanpNumber(s: string): boolean;
+var
+  be_valid_nanp_number: boolean;
+  digits: string;
+  nanp_nxx_start: cardinal;
+begin
+  //
+  be_valid_nanp_number := FALSE;
+  digits := Safe(s,NUM);
+  nanp_nxx_start := 0;
+  //
+  // These rules are taken from http://en.wikipedia.org/wiki/North_American_Numbering_Plan
+  //
+  case digits.Length of
+  7:
+    BEGIN
+    be_valid_nanp_number := TRUE;
+    END;
+  10:
+    BEGIN
+    be_valid_nanp_number := (digits.Substring(0,1) >= '2')
+      and (digits.Substring(1,1) <= '8')
+      and (digits.Substring(0,3) <> '900');
+    nanp_nxx_start := 3;
+    END;
+  end;
+  //
+  BeValidNanpNumber := be_valid_nanp_number
+    and (digits.Substring(nanp_nxx_start,1) >= '2')
+    and not (digits.Substring((nanp_nxx_start + 1),2) = '11')
+    and not ((digits.Substring(nanp_nxx_start) >= '5550100') and (digits.Substring(nanp_nxx_start) <= '5550199'))
+    and (digits.Substring(nanp_nxx_start,3) <> '976');
+  //
+end;
+
+FUNCTION BooleanOfYesNo(yn: string): boolean;
 begin
   BooleanOfYesNo := (yn.ToUpper = 'YES');
 end;
@@ -350,6 +395,26 @@ begin
   ExpandTildePath := s
     .Replace('\','/')
     .Replace('~','/' + configurationmanager.appsettings['virtual_directory_name']);
+end;
+
+FUNCTION FormatAsNanpPhoneNum
+  (
+  digits: string;
+  be_for_international_audience: boolean = FALSE
+  )
+  : string;
+var
+  format_as_nanp_phone_num: string;
+begin
+  format_as_nanp_phone_num := EMPTY;
+  if (digits.Length = 10) and BeValidNanpNumber(digits) then begin
+    if be_for_international_audience then begin
+      format_as_nanp_phone_num := '+1-';
+    end;
+    format_as_nanp_phone_num := format_as_nanp_phone_num
+    + digits.Substring(0,3) + HYPHEN + digits.Substring(3,3) + HYPHEN + digits.Substring(6);
+  end;
+  FormatAsNanpPhoneNum := format_as_nanp_phone_num;
 end;
 
 FUNCTION Has
