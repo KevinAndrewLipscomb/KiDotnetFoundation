@@ -295,6 +295,7 @@ begin
     and (digits.Substring(nanp_nxx_start,1) >= '2')
     and not (digits.Substring((nanp_nxx_start + 1),2) = '11')
     and not ((digits.Substring(nanp_nxx_start) >= '5550100') and (digits.Substring(nanp_nxx_start) <= '5550199'))
+    and (digits.Substring(nanp_nxx_start) <> '5551212')
     and (digits.Substring(nanp_nxx_start,3) <> '976');
   //
 end;
