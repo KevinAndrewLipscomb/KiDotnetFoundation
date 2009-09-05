@@ -14,80 +14,7 @@ using System.Web.UI;
 
 namespace kix
 {
-    public struct client_side_function_rec_type
-    {
-        public string profile;
-        public string body;
-    } // end client_side_function_rec_type
-
-    // ´
-    // ¢
-    // ¨
-    // ¡
-    public enum alert_cause_type
-    {
-        APPDATA,
-        DBMS,
-        FILESYSTEM,
-        LOGIC,
-        MEMORY,
-        NETWORK,
-        OTHER,
-        USER,
-    } // end alert_cause_type
-
-    public enum alert_state_type
-    {
-        NORMAL,
-        SUCCESS,
-        WARNING,
-        FAILURE,
-        DAMAGE,
-    } // end alert_state_type
-
-    public enum client_side_function_enumeral_type
-    {
-        EL,
-        KGS_TO_LBS,
-        LBS_TO_KGS,
-    } // end client_side_function_enumeral_type
-
-    public enum safe_hint_type
-    {
-        NONE,
-        ALPHA,
-        ALPHANUM,
-        CURRENCY_USA,
-        DATE_TIME,
-        ECMASCRIPT_WORD,
-        EMAIL_ADDRESS,
-        FINANCIAL_TERMS,
-        HOSTNAME,
-        HTTP_TARGET,
-        HUMAN_NAME,
-        HUMAN_NAME_CSV,
-        HYPHENATED_ALPHA,
-        HYPHENATED_ALPHANUM,
-        HYPHENATED_NUM,
-        HYPHENATED_UNDERSCORED_ALPHANUM,
-        KI_SORT_EXPRESSION,
-        MAKE_MODEL,
-        MEMO,
-        NUM,
-        ORG_NAME,
-        PHONE_NUM,
-        POSTAL_CITY,
-        POSTAL_STREET_ADDRESS,
-        PUNCTUATED,
-        REAL_NUM,
-        REAL_NUM_INCLUDING_NEGATIVE,
-    } // end safe_hint_type
-
-}
-
-namespace kix.Units
-{
-    public class kix
+    public static class k
     {
         public const char ACUTE_ACCENT = '´';
         // ´
@@ -113,6 +40,77 @@ namespace kix.Units
         public const string SPACE_HYPHEN_SPACE = " - ";
         public const string SPACE_HYPHENS_SPACE = " -- ";
         public const string TAB = "\09";
+
+        public struct client_side_function_rec_type
+        {
+            public string profile;
+            public string body;
+        } // end client_side_function_rec_type
+
+        // ´
+        // ¢
+        // ¨
+        // ¡
+        public enum alert_cause_type
+        {
+            APPDATA,
+            DBMS,
+            FILESYSTEM,
+            LOGIC,
+            MEMORY,
+            NETWORK,
+            OTHER,
+            USER,
+        } // end alert_cause_type
+
+        public enum alert_state_type
+        {
+            NORMAL,
+            SUCCESS,
+            WARNING,
+            FAILURE,
+            DAMAGE,
+        } // end alert_state_type
+
+        public enum client_side_function_enumeral_type
+        {
+            EL,
+            KGS_TO_LBS,
+            LBS_TO_KGS,
+        } // end client_side_function_enumeral_type
+
+        public enum safe_hint_type
+        {
+            NONE,
+            ALPHA,
+            ALPHANUM,
+            CURRENCY_USA,
+            DATE_TIME,
+            ECMASCRIPT_WORD,
+            EMAIL_ADDRESS,
+            FINANCIAL_TERMS,
+            HOSTNAME,
+            HTTP_TARGET,
+            HUMAN_NAME,
+            HUMAN_NAME_CSV,
+            HYPHENATED_ALPHA,
+            HYPHENATED_ALPHANUM,
+            HYPHENATED_NUM,
+            HYPHENATED_UNDERSCORED_ALPHANUM,
+            KI_SORT_EXPRESSION,
+            MAKE_MODEL,
+            MEMO,
+            NUM,
+            ORG_NAME,
+            PHONE_NUM,
+            POSTAL_CITY,
+            POSTAL_STREET_ADDRESS,
+            PUNCTUATED,
+            REAL_NUM,
+            REAL_NUM_INCLUDING_NEGATIVE,
+        } // end safe_hint_type
+
+
         public static decimal AverageDeviation(ArrayList array_list, decimal median_value)
         {
             decimal result;
@@ -123,9 +121,6 @@ namespace kix.Units
             sum = 0;
             for (i = 0; i <= (n - 1); i ++ )
             {
-
-
-
                 sum = sum + Math.Abs((decimal)(array_list[i]) - median_value);
             }
             result = sum / n;
@@ -226,7 +221,7 @@ namespace kix.Units
             byte_buf = new SHA1Managed().ComputeHash(new ASCIIEncoding().GetBytes(source_string));
             for (i = 1; i <= 20; i ++ )
             {
-                target_string = target_string + byte_buf[i].ToString("x2");
+                target_string = target_string + byte_buf[i - 1].ToString("x2");
             }
             result = target_string;
             return result;
@@ -905,7 +900,7 @@ namespace kix.Units
             SmtpMailSend(from, to, subject, message_string, be_html, cc, bcc, EMPTY);
         }
 
-        public string WrapText
+        public static string WrapText
           (
           string
             s,

@@ -1,12 +1,19 @@
+using kix;
 using System;
 using System.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.IO;
 using System.Collections;
-using kix;
+
 namespace ki_web_ui
 {
+
+    static class common
+    {
+        public const string STD_VALIDATION_ALERT = "Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.";
+    }
+  
     // --------------------------------------------------------------------------------------------------------------------------------
     // templatecontrol_class
     // --------------------------------------------------------------------------------------------------------------------------------
@@ -40,16 +47,16 @@ namespace ki_web_ui
             return result;
         }
 
-        public void Alert(Page the_page, alert_cause_type cause, alert_state_type state, string key, string value, bool be_using_scriptmanager)
+        public void Alert(Page the_page, k.alert_cause_type cause, k.alert_state_type state, string key, string value, bool be_using_scriptmanager)
         {
             string script;
 
 
-            script = kix.Units.kix.EMPTY
+            script = k.EMPTY
             + "alert(\""
             + AlertMessage(ConfigurationManager.AppSettings["application_name"], cause, state, key, value)
-              .Replace(Convert.ToString(kix.Units.kix.NEW_LINE), "\\n")
-              .Replace(kix.Units.kix.TAB, "\\t") + "\");";
+              .Replace(Convert.ToString(k.NEW_LINE), "\\n")
+              .Replace(k.TAB, "\\t") + "\");";
             if (be_using_scriptmanager)
             {
 
@@ -63,12 +70,12 @@ namespace ki_web_ui
 
         }
 
-        public void Alert(Page the_page, alert_cause_type cause, alert_state_type state, string key, string value)
+        public void Alert(Page the_page, k.alert_cause_type cause, k.alert_state_type state, string key, string value)
         {
             Alert(the_page, cause, state, key, value, false);
         }
 
-        public string AlertMessage(string application_name, alert_cause_type cause, alert_state_type state, string key, string s)
+        public string AlertMessage(string application_name, k.alert_cause_type cause, k.alert_state_type state, string key, string s)
         {
             string result;
 
@@ -80,19 +87,19 @@ namespace ki_web_ui
 
 
 
-            result = kix.Units.kix.EMPTY
+            result = k.EMPTY
             + "- - - ---------------------------------------------------- - - -"
-            + kix.Units.kix.NEW_LINE
-            + "       issuer:  " + kix.Units.kix.TAB + application_name + kix.Units.kix.NEW_LINE
-            + "       cause:   " + kix.Units.kix.TAB + ((alert_cause_type)(cause)).ToString().ToLower() + kix.Units.kix.NEW_LINE
-            + "       state:   " + kix.Units.kix.TAB + ((alert_state_type)(state)).ToString().ToLower() + kix.Units.kix.NEW_LINE
-            + "       key:     " + kix.Units.kix.TAB + key.ToLower() + kix.Units.kix.NEW_LINE
-            + "       time:    " + kix.Units.kix.TAB + DateTime.Now.ToString("s") + kix.Units.kix.NEW_LINE
-            + "- - - ---------------------------------------------------- - - -" + kix.Units.kix.NEW_LINE
-            + kix.Units.kix.NEW_LINE
-            + kix.Units.kix.NEW_LINE
-            + s + kix.Units.kix.NEW_LINE
-            + kix.Units.kix.NEW_LINE;
+            + k.NEW_LINE
+            + "       issuer:  " + k.TAB + application_name + k.NEW_LINE
+            + "       cause:   " + k.TAB + ((k.alert_cause_type)(cause)).ToString().ToLower() + k.NEW_LINE
+            + "       state:   " + k.TAB + ((k.alert_state_type)(state)).ToString().ToLower() + k.NEW_LINE
+            + "       key:     " + k.TAB + key.ToLower() + k.NEW_LINE
+            + "       time:    " + k.TAB + DateTime.Now.ToString("s") + k.NEW_LINE
+            + "- - - ---------------------------------------------------- - - -" + k.NEW_LINE
+            + k.NEW_LINE
+            + k.NEW_LINE
+            + s + k.NEW_LINE
+            + k.NEW_LINE;
             return result;
         }
 
@@ -101,11 +108,11 @@ namespace ki_web_ui
             the_page.ClientScript.RegisterClientScriptBlock
               (
               the_page.GetType(),
-              usercontrol_clientid + "__" + profile.Remove(profile.IndexOf(kix.Units.kix.OPEN_PARENTHESIS)),
-              "function " + profile + kix.Units.kix.NEW_LINE
-              + " {" + kix.Units.kix.NEW_LINE
-              + ' ' + body.Replace(Convert.ToString(kix.Units.kix.NEW_LINE), Convert.ToString(kix.Units.kix.NEW_LINE + kix.Units.kix.SPACE)) + kix.Units.kix.NEW_LINE
-              + " }" + kix.Units.kix.NEW_LINE,
+              usercontrol_clientid + "__" + profile.Remove(profile.IndexOf(k.OPEN_PARENTHESIS)),
+              "function " + profile + k.NEW_LINE
+              + " {" + k.NEW_LINE
+              + ' ' + body.Replace(Convert.ToString(k.NEW_LINE), Convert.ToString(k.NEW_LINE + k.SPACE)) + k.NEW_LINE
+              + " }" + k.NEW_LINE,
               true
               );
         }
@@ -115,23 +122,23 @@ namespace ki_web_ui
             EstablishClientSideFunction(the_page, profile, body, "");
         }
 
-        public void EstablishClientSideFunction(Page the_page, client_side_function_enumeral_type enumeral)
+        public void EstablishClientSideFunction(Page the_page, k.client_side_function_enumeral_type enumeral)
         {
             switch(enumeral)
             {
-                case kix.client_side_function_enumeral_type.EL:
+                case k.client_side_function_enumeral_type.EL:
                     EstablishClientSideFunction(the_page, "El(id)", "return document.getElementById(id);");
                     break;
-                case kix.client_side_function_enumeral_type.KGS_TO_LBS:
+                case k.client_side_function_enumeral_type.KGS_TO_LBS:
                     EstablishClientSideFunction(the_page, "KgsToLbs(num_kgs)", "return Math.round(+num_kgs*2.204622);");
                     break;
-                case kix.client_side_function_enumeral_type.LBS_TO_KGS:
+                case k.client_side_function_enumeral_type.LBS_TO_KGS:
                     EstablishClientSideFunction(the_page, "LbsToKgs(num_lbs)", "return Math.round(+num_lbs/2.204622);");
                     break;
             }
         }
 
-        public void EstablishClientSideFunction(Page the_page, client_side_function_rec_type r)
+        public void EstablishClientSideFunction(Page the_page, k.client_side_function_rec_type r)
         {
             EstablishClientSideFunction(the_page, r.profile, r.body);
         }
@@ -184,7 +191,7 @@ namespace ki_web_ui
 
 
 
-            c.Attributes.Add("onclick", "return confirm(\"- - - ---------------------------------------------------- - - -\\n" + "       issuer:  \\t" + ConfigurationManager.AppSettings["application_name"] + "\\n" + "       state:   \\twarning\\n" + "       time:    \\t" + DateTime.Now.ToString("s") + "\\n" + "- - - ---------------------------------------------------- - - -\\n\\n\\n" + prompt.Replace(Convert.ToString(kix.Units.kix.NEW_LINE), "\\n") + "\\n\\n\"" + ");");
+            c.Attributes.Add("onclick", "return confirm(\"- - - ---------------------------------------------------- - - -\\n" + "       issuer:  \\t" + ConfigurationManager.AppSettings["application_name"] + "\\n" + "       state:   \\twarning\\n" + "       time:    \\t" + DateTime.Now.ToString("s") + "\\n" + "- - - ---------------------------------------------------- - - -\\n\\n\\n" + prompt.Replace(Convert.ToString(k.NEW_LINE), "\\n") + "\\n\\n\"" + ");");
         }
 
         public void SessionSet(Page the_page, string name, object value)
@@ -211,7 +218,7 @@ namespace ki_web_ui
 
         public void ValidationAlert(Page the_page, bool be_using_scriptmanager)
         {
-            Alert(the_page, kix.alert_cause_type.USER, kix.alert_state_type.FAILURE, "stdsvrval", Units.ki_web_ui.STD_VALIDATION_ALERT, be_using_scriptmanager);
+            Alert(the_page, k.alert_cause_type.USER, k.alert_state_type.FAILURE, "stdsvrval", common.STD_VALIDATION_ALERT, be_using_scriptmanager);
         }
 
         public void ValidationAlert(Page the_page)
@@ -242,12 +249,12 @@ namespace ki_web_ui
             return result;
         }
 
-        protected void Alert(alert_cause_type cause, alert_state_type state, string key, string value, bool be_using_scriptmanager)
+        protected void Alert(k.alert_cause_type cause, k.alert_state_type state, string key, string value, bool be_using_scriptmanager)
         {
             templatecontrol.Alert(this.Page, cause, state, key, value, be_using_scriptmanager);
         }
 
-        protected void Alert(alert_cause_type cause, alert_state_type state, string key, string value)
+        protected void Alert(k.alert_cause_type cause, k.alert_state_type state, string key, string value)
         {
             Alert(cause, state, key, value, false);
         }
@@ -296,12 +303,12 @@ namespace ki_web_ui
             templatecontrol.EstablishClientSideFunction(this.Page, profile, body);
         }
 
-        protected void EstablishClientSideFunction(client_side_function_enumeral_type enumeral)
+        protected void EstablishClientSideFunction(k.client_side_function_enumeral_type enumeral)
         {
             templatecontrol.EstablishClientSideFunction(this.Page, enumeral);
         }
 
-        protected void EstablishClientSideFunction(client_side_function_rec_type r)
+        protected void EstablishClientSideFunction(k.client_side_function_rec_type r)
         {
             templatecontrol.EstablishClientSideFunction(this.Page, r);
         }
@@ -479,17 +486,17 @@ namespace ki_web_ui
             return result;
         }
 
-        protected void Alert(alert_cause_type cause, alert_state_type state, string key, string value, bool be_using_scriptmanager)
+        protected void Alert(k.alert_cause_type cause, k.alert_state_type state, string key, string value, bool be_using_scriptmanager)
         {
             templatecontrol.Alert(this.Page, cause, state, key, value, be_using_scriptmanager);
         }
 
-        protected void Alert(alert_cause_type cause, alert_state_type state, string key, string value)
+        protected void Alert(k.alert_cause_type cause, k.alert_state_type state, string key, string value)
         {
             Alert(cause, state, key, value, false);
         }
 
-        protected string AlertMessage(alert_cause_type cause, alert_state_type state, string key, string value)
+        protected string AlertMessage(k.alert_cause_type cause, k.alert_state_type state, string key, string value)
         {
             string result;
 
@@ -532,12 +539,12 @@ namespace ki_web_ui
             templatecontrol.EstablishClientSideFunction(this.Page, profile, body, this.ClientID);
         }
 
-        protected void EstablishClientSideFunction(client_side_function_enumeral_type enumeral)
+        protected void EstablishClientSideFunction(k.client_side_function_enumeral_type enumeral)
         {
             templatecontrol.EstablishClientSideFunction(this.Page, enumeral);
         }
 
-        protected void EstablishClientSideFunction(client_side_function_rec_type r)
+        protected void EstablishClientSideFunction(k.client_side_function_rec_type r)
         {
             templatecontrol.EstablishClientSideFunction(this.Page, r);
         }
@@ -602,13 +609,3 @@ namespace ki_web_ui
     } // end usercontrol_class
 
 }
-
-namespace ki_web_ui.Units
-{
-    public class ki_web_ui
-    {
-        public const string STD_VALIDATION_ALERT = "Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.";
-    } // end ki_web_ui
-
-}
-
