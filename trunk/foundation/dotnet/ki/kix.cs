@@ -19,7 +19,7 @@ namespace kix
         public const char ACUTE_ACCENT = '´';
         // ´
         public const char APOSTROPHE = '\'';
-        public const char CENT_SIGN = '?';
+        public const char CENT_SIGN = '¢';
         // ¢
         public const char COMMA= ',';
         public const string COMMA_SPACE = ", ";
@@ -39,7 +39,7 @@ namespace kix
         public const char SPACE = ' ';
         public const string SPACE_HYPHEN_SPACE = " - ";
         public const string SPACE_HYPHENS_SPACE = " -- ";
-        public const string TAB = "\09";
+        public const string TAB = "\t";
 
         public struct client_side_function_rec_type
         {
