@@ -16,27 +16,23 @@ namespace kix
 {
     public static class k
     {
-        public const char ACUTE_ACCENT = '´';
-        // ´
-        public const char APOSTROPHE = '\'';
-        public const char CENT_SIGN = '¢';
-        // ¢
-        public const char COMMA= ',';
+        public const string ACUTE_ACCENT = "\u00B4"; // ´
+        public const string APOSTROPHE = "\'";
+        public const string CENT_SIGN = "\u00A2"; // ¢
+        public const string COMMA= ",";
         public const string COMMA_SPACE = ", ";
-        public const char DIAERESIS = '¨';
-        // ¨
-        public const string DOUBLE_APOSTROPHE = "\'\'";
+        public const string DIAERESIS = "\u00A8"; // ¨
+        public const string DOUBLE_APOSTROPHE = "''";
         public const string DOUBLE_QUOTE = "\"\"";
         public const string EMPTY = "";
-        public const char HYPHEN = '-';
-        public const char INVERTED_EXCLAMATION_MARK = '¡';
-        // ¡
-        public const char NEW_LINE = '\n';
-        public const char OPEN_PARENTHESIS = '(';
-        public const char PERIOD = '.';
-        public const char QUOTE = '\"';
-        public const char SEMICOLON = ';';
-        public const char SPACE = ' ';
+        public const string HYPHEN = "-";
+        public const string INVERTED_EXCLAMATION_MARK = "\u00A1"; // ¡
+        public const string NEW_LINE = "\n";
+        public const string OPEN_PARENTHESIS = "(";
+        public const string PERIOD = ".";
+        public const string QUOTE = "\"";
+        public const string SEMICOLON = ";";
+        public const string SPACE = "\u0020";
         public const string SPACE_HYPHEN_SPACE = " - ";
         public const string SPACE_HYPHENS_SPACE = " -- ";
         public const string TAB = "\t";
