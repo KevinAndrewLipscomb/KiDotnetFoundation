@@ -684,6 +684,37 @@ namespace kix
             return result;
         }
 
+        public static void RunCommandIteratedOverArguments
+          (
+          string command,
+          ArrayList arguments,
+          string working_directory,
+          out string stdout,
+          out string stderr
+          )
+          {
+          //
+          stderr = k.EMPTY;
+          stdout = k.EMPTY;
+          //
+          if (arguments.Count > 0)
+            {
+            for (uint i = 0; i < arguments.Count; i++)
+              {
+              ProcessStartInfo process_start_info = new ProcessStartInfo(command, (arguments[(int)i] as string));
+              process_start_info.RedirectStandardOutput = true;
+              process_start_info.RedirectStandardError = true;
+              process_start_info.UseShellExecute = false;
+              process_start_info.WorkingDirectory = working_directory;
+              Process work = Process.Start(process_start_info);
+              work.WaitForExit();
+              work.Refresh();
+              stderr = stderr + work.StandardError.ReadToEnd() + k.NEW_LINE;
+              stdout = stdout + work.StandardOutput.ReadToEnd() + k.NEW_LINE;
+              }
+            }
+          }
+
         public static string Safe(string source_string, safe_hint_type hint)
         {
             string result;
