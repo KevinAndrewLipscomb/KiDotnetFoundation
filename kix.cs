@@ -106,6 +106,7 @@ namespace kix
             REAL_NUM_INCLUDING_NEGATIVE,
         } // end safe_hint_type
 
+        private static bool be_smtp_mail_send_reliable = true;
 
         public static decimal AverageDeviation(ArrayList array_list, decimal median_value)
         {
@@ -851,7 +852,9 @@ namespace kix
 
         public static void SilentAlarm(System.Exception the_exception)
           {
+          be_smtp_mail_send_reliable = false;
           SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "SILENT ALARM", "[EXCEPTION]" + NEW_LINE + the_exception.ToString() + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE);
+          be_smtp_mail_send_reliable = true;
           }
 
         public static void SmtpMailSend(MailMessage mail_message)
@@ -880,12 +883,21 @@ namespace kix
                 mail_message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendpassword", smtp_password);
             }
             SmtpMail.SmtpServer = smtp_server;
-            try {
-                SmtpMail.Send(mail_message);
-            }
-            catch(System.Exception e) {
+            try
+              {
+              SmtpMail.Send(mail_message);
+              }
+            catch(System.Exception e)
+              {
+              if (be_smtp_mail_send_reliable)
+                {
                 SilentAlarm(e);
-            }
+                }
+              else
+                {
+                throw;
+                }
+              }
         }
 
         public static void SmtpMailSend(string from, string to, string subject, string message_string, bool be_html, string cc, string bcc, string reply_to)
