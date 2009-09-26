@@ -1,15 +1,14 @@
 using System;
 using System.Collections;
 using System.Configuration;
-using System.Web.SessionState;
-using System.Web.Mail;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
-using System.Text;
-using System.Security.Cryptography;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Web.SessionState;
 using System.Web.UI;
 
 namespace kix
@@ -839,13 +838,21 @@ namespace kix
             ((c) as Control).RenderControl(new System.Web.UI.HtmlTextWriter(streamwriter));
             streamwriter.Close();
             msg = new MailMessage();
-            msg.From = from_address;
-            msg.To = to_target;
-            msg.Cc = cc_target;
+            msg.From = new MailAddress(from_address);
+            if (to_target != k.EMPTY)
+              {
+              msg.To.Add(to_target);
+              }
+            if (cc_target != k.EMPTY)
+              {
+              msg.CC.Add(cc_target);
+              }
             msg.Subject = subject;
             msg.Body = body;
-            msg.Attachments.Add(new MailAttachment(scratch_pathname));
+            Attachment the_attachment = new Attachment(scratch_pathname);
+            msg.Attachments.Add(the_attachment);
             SmtpMailSend(msg);
+            the_attachment.Dispose(); // .NET does not do this automatically, and unless it gets disposed, the subsequent Delete call will fail.
             System.IO.File.Delete(scratch_pathname);
 
         }
@@ -859,33 +866,9 @@ namespace kix
 
         public static void SmtpMailSend(MailMessage mail_message)
         {
-            const int CDO_BASIC = 1;
-            const int CDO_SEND_USING_PORT = 2;
-            string smtp_password;
-            string smtp_server;
-            string smtp_username;
-
-
-            smtp_server = ConfigurationManager.AppSettings["smtp_server"];
-
-
-            smtp_username = ConfigurationManager.AppSettings["smtp_username"];
-
-
-            smtp_password = ConfigurationManager.AppSettings["smtp_password"];
-            mail_message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserver", smtp_server);
-            mail_message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserverport", (25));
-            mail_message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusing", (CDO_SEND_USING_PORT));
-            if ((smtp_username != EMPTY) && (smtp_password != EMPTY))
-            {
-                mail_message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate", (CDO_BASIC));
-                mail_message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusername", smtp_username);
-                mail_message.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendpassword", smtp_password);
-            }
-            SmtpMail.SmtpServer = smtp_server;
             try
               {
-              SmtpMail.Send(mail_message);
+              (new SmtpClient(ConfigurationManager.AppSettings["smtp_server"])).Send(mail_message);
               }
             catch(System.Exception e)
               {
@@ -904,18 +887,26 @@ namespace kix
         {
             MailMessage mail_message;
             mail_message = new MailMessage();
-            mail_message.From = from;
-            mail_message.To = to;
+            mail_message.From = new MailAddress(from);
+            if (to != k.EMPTY)
+              {
+              mail_message.To.Add(to);
+              }
             mail_message.Subject = subject;
             mail_message.Body = message_string;
-            if (be_html)
-            {
-
-                mail_message.BodyFormat = MailFormat.Html;
-            }
-            mail_message.Cc = cc;
-            mail_message.Bcc = bcc;
-            mail_message.Headers.Add("Reply-To", reply_to);
+            mail_message.IsBodyHtml = be_html;
+            if (cc != k.EMPTY)
+              {
+              mail_message.CC.Add(cc);
+              }
+            if (bcc != k.EMPTY)
+              {
+              mail_message.Bcc.Add(bcc);
+              }
+            if (reply_to != k.EMPTY)
+              {
+              mail_message.Headers.Add("Reply-To", reply_to);
+              }
             SmtpMailSend(mail_message);
         }
 
