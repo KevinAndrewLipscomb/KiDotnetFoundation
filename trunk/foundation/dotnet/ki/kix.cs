@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -832,12 +833,11 @@ namespace kix
 
         public static void SendControlAsAttachmentToEmailMessage(object c, string scratch_pathname, string from_address, string to_target, string cc_target, string subject, string body)
         {
-            MailMessage msg;
-            System.IO.StreamWriter streamwriter;
-            streamwriter = new System.IO.StreamWriter(scratch_pathname);
+            System.IO.StreamWriter streamwriter = new System.IO.StreamWriter(scratch_pathname);
             ((c) as Control).RenderControl(new System.Web.UI.HtmlTextWriter(streamwriter));
             streamwriter.Close();
-            msg = new MailMessage();
+            //
+            MailMessage msg = new MailMessage();
             msg.From = new MailAddress(from_address);
             if (to_target != k.EMPTY)
               {
@@ -849,10 +849,9 @@ namespace kix
               }
             msg.Subject = subject;
             msg.Body = body;
-            Attachment the_attachment = new Attachment(scratch_pathname);
-            msg.Attachments.Add(the_attachment);
+            msg.Attachments.Add(new Attachment(scratch_pathname));
             SmtpMailSend(msg);
-            the_attachment.Dispose(); // .NET does not do this automatically, and unless it gets disposed, the subsequent Delete call will fail.
+            //
             System.IO.File.Delete(scratch_pathname);
 
         }
@@ -866,6 +865,13 @@ namespace kix
 
         public static void SmtpMailSend(MailMessage mail_message)
         {
+            //
+            // Instead of supplying a Body, which System.Net.Mail encodes as quoted-printable, supply an AlternateView and force its encoding to 7bit.
+            //
+            AlternateView alternate_view = AlternateView.CreateAlternateViewFromString(mail_message.Body,mail_message.BodyEncoding,(mail_message.IsBodyHtml ? "text/html" : null));
+            alternate_view.TransferEncoding = TransferEncoding.SevenBit;
+            mail_message.AlternateViews.Add(alternate_view);
+            mail_message.Body = null;
             try
               {
               (new SmtpClient(ConfigurationManager.AppSettings["smtp_server"])).Send(mail_message);
@@ -881,12 +887,12 @@ namespace kix
                 throw;
                 }
               }
+            mail_message.Dispose();
         }
 
         public static void SmtpMailSend(string from, string to, string subject, string message_string, bool be_html, string cc, string bcc, string reply_to)
         {
-            MailMessage mail_message;
-            mail_message = new MailMessage();
+            MailMessage mail_message = new MailMessage();
             mail_message.From = new MailAddress(from);
             if (to != k.EMPTY)
               {
