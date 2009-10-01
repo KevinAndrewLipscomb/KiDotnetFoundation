@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Net;
@@ -939,16 +940,49 @@ namespace kix
         public static string WrapText
           (
           string
-            s,
+            t,
           string
-            p,
+            insert_string,
           char[]
-            p_3,
+            break_char_array,
           short
-            p_4
+            max_line_len
           )
           {
-          return s;
+          var line_list = new List<string>();
+          if (t.Length != 0)
+            {
+            var current_line = k.EMPTY;
+            var word_array = t.Split(break_char_array);
+            foreach (var current_word in word_array)
+              {
+              if ((current_line.Length > max_line_len) || ((current_line.Length + current_word.Length) > max_line_len))
+                {
+                line_list.Add(current_line);
+                current_line = k.EMPTY;
+                }
+              if (current_line.Length > 0)
+                {
+                current_line += k.SPACE + current_word;
+                }
+              else
+                {
+                current_line += current_word;
+                }
+              }
+            if (current_line.Length > 0)
+              {
+              line_list.Add(current_line);
+              }
+            }
+          var i = 1;
+          var wrap_text = k.EMPTY;
+          while (i < line_list.Count)
+            {
+            wrap_text += line_list[i - 1].Trim() + insert_string;
+            i++;
+            }
+          return wrap_text;
           }
 
         public static string YesNoOf(bool b)
