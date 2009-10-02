@@ -109,6 +109,57 @@ namespace kix
 
         private static bool be_smtp_mail_send_reliable = true;
 
+        public struct int_subtype
+          {
+          public static Exception CONSTRAINT_ERROR = new Exception("kix.k.int_subtype.CONSTRAINT_ERROR");
+          public struct p_type
+            {
+            public int FIRST;
+            public int current;
+            public int LAST;
+            }
+          public int_subtype
+            (
+            int first,
+            int last
+            )
+            {
+            p.FIRST = first;
+            p.current = first;
+            p.LAST = last;
+            }
+          public int val
+            {
+            get
+              {
+              return p.current;
+              }
+            set
+              {
+              if ((value < p.FIRST) || (value > p.LAST))
+                {
+                throw CONSTRAINT_ERROR;
+                }
+              p.current = value;
+              }
+            }
+          public int FIRST
+            {
+            get
+              {
+              return p.FIRST;
+              }
+            }
+          public int LAST
+            {
+            get
+              {
+              return p.LAST;
+              }
+            }
+          private p_type p;
+          }
+
         public static decimal AverageDeviation(ArrayList array_list, decimal median_value)
         {
             decimal result;
@@ -177,10 +228,11 @@ namespace kix
             bool result;
             bool be_valid_nanp_number;
             string digits;
-            uint nanp_nxx_start;
+            //uint nanp_nxx_start;
+            var nanp_nxx_start = new int_subtype(0,3);
             be_valid_nanp_number = false;
             digits = Safe(s, safe_hint_type.NUM);
-            nanp_nxx_start = 0;
+            nanp_nxx_start.val = 0;
             switch(digits.Length)
             {
                 case 7:
@@ -189,15 +241,15 @@ namespace kix
                     break;
                 case 10:
                     be_valid_nanp_number = (digits.Substring(0, 1).ToCharArray()[0] >= '2') && (digits.Substring(1, 1).ToCharArray()[0] <= '8') && (digits.Substring(0, 3) != "900");
-                    nanp_nxx_start = 3;
+                    nanp_nxx_start.val = 3;
                     break;
             }
             result = be_valid_nanp_number
-              && (digits.Substring((int)nanp_nxx_start, 1).ToCharArray()[0] >= '2')
-              && !(digits.Substring(((int)nanp_nxx_start + 1), 2) == "11")
-              && !((digits.Substring((int)nanp_nxx_start).CompareTo("5550100") >= 0) && (digits.Substring((int)nanp_nxx_start).CompareTo("5550199") <= 0))
-              && (digits.Substring((int)nanp_nxx_start) != "5551212")
-              && (digits.Substring((int)nanp_nxx_start, 3) != "976");
+              && (digits.Substring(nanp_nxx_start.val, 1).ToCharArray()[0] >= '2')
+              && !(digits.Substring((nanp_nxx_start.val + 1), 2) == "11")
+              && !((digits.Substring(nanp_nxx_start.val).CompareTo("5550100") >= 0) && (digits.Substring(nanp_nxx_start.val).CompareTo("5550199") <= 0))
+              && (digits.Substring(nanp_nxx_start.val) != "5551212")
+              && (digits.Substring(nanp_nxx_start.val, 3) != "976");
 
             return result;
         }
@@ -343,7 +395,9 @@ namespace kix
         }
 
         public static string HresultAnalysis(System.Exception the_exception)
-        {
+          {
+          unchecked
+            {
             string result;
             string code;
             string facility;
@@ -631,7 +685,8 @@ namespace kix
 
             result = "0x" + hresult.ToString("X") + ":  %" + microsoft_or_not + '.' + facility + "--" + severity + "--0x" + code;
             return result;
-        }
+            }
+          }
 
         public static decimal Median(ArrayList sorted_array_list)
         {
@@ -975,14 +1030,15 @@ namespace kix
               line_list.Add(current_line);
               }
             }
-          var i = 1;
+          var line_list_count = line_list.Count;
+          var i = new int_subtype(1,line_list_count);
           var wrap_text = k.EMPTY;
-          while (i < line_list.Count)
+          while (i.val < line_list.Count)
             {
-            wrap_text += line_list[i - 1].Trim() + insert_string;
-            i++;
+            wrap_text += line_list[i.val - 1].Trim() + insert_string;
+            i.val++;
             }
-          return wrap_text;
+          return wrap_text + line_list[i.val - 1];
           }
 
         public static string YesNoOf(bool b)
@@ -999,7 +1055,7 @@ namespace kix
             return result;
         }
 
-    } // end kix
+    } // end k
 
 }
 
