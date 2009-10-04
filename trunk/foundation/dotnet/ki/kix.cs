@@ -109,55 +109,136 @@ namespace kix
 
         private static bool be_smtp_mail_send_reliable = true;
 
-        public struct int_subtype
+        public struct subtype<TComparable> where TComparable : IComparable
           {
-          public static Exception CONSTRAINT_ERROR = new Exception("kix.k.int_subtype.CONSTRAINT_ERROR");
-          public struct p_type
-            {
-            public int FIRST;
-            public int current;
-            public int LAST;
-            }
-          public int_subtype
+          //
+          private TComparable first;
+          private TComparable current;
+          private TComparable last;
+          //
+          public static Exception CONSTRAINT_ERROR = new Exception("kix.k.subtype<TComparable>.CONSTRAINT_ERROR");
+          public subtype
             (
-            int first,
-            int last
+            TComparable the_first,
+            TComparable the_last
             )
             {
-            p.FIRST = first;
-            p.current = first;
-            p.LAST = last;
+            first = the_first;
+            current = the_first;
+            last = the_last;
+            }
+          public TComparable val
+            {
+            get
+              {
+              return current;
+              }
+            set
+              {
+              if ((value.CompareTo(first) < 0) || (value.CompareTo(last) > 0))
+                {
+                throw CONSTRAINT_ERROR;
+                }
+              unchecked
+                {
+                current = value;
+                }
+              }
+            }
+          public TComparable FIRST
+            {
+            get
+              {
+              return first;
+              }
+            }
+          public TComparable LAST
+            {
+            get
+              {
+              return last;
+              }
+            }
+          }
+
+        public class int_nonnegative
+          {
+          private subtype<int> current;
+          public int_nonnegative()
+            {
+            current = new subtype<int>(0,int.MaxValue);
             }
           public int val
             {
             get
               {
-              return p.current;
+              return current.val;
               }
             set
               {
-              if ((value < p.FIRST) || (value > p.LAST))
-                {
-                throw CONSTRAINT_ERROR;
-                }
-              p.current = value;
+              current.val = value;
               }
             }
-          public int FIRST
+          }
+
+        public class int_positive
+          {
+          private subtype<int> current;
+          public int_positive()
+            {
+            current = new subtype<int>(1,int.MaxValue);
+            }
+          public int val
             {
             get
               {
-              return p.FIRST;
+              return current.val;
+              }
+            set
+              {
+              current.val = value;
               }
             }
-          public int LAST
+          }
+
+        public class decimal_nonnegative
+          {
+          private subtype<decimal> current;
+          public decimal_nonnegative()
+            {
+            current = new subtype<decimal>(0,decimal.MaxValue);
+            }
+          public decimal val
             {
             get
               {
-              return p.LAST;
+              return current.val;
+              }
+            set
+              {
+              current.val = value;
               }
             }
-          private p_type p;
+          }
+
+        public class decimal_positive
+          {
+          private subtype<decimal> current;
+          public decimal_positive()
+            {
+            current = new subtype<decimal>(1,decimal.MaxValue);
+            }
+          public decimal val
+            {
+            get
+              {
+              return current.val;
+              }
+            set
+              {
+              current.val = value;
+              }
+            }
           }
 
         public static decimal AverageDeviation(ArrayList array_list, decimal median_value)
@@ -229,7 +310,7 @@ namespace kix
             bool be_valid_nanp_number;
             string digits;
             //uint nanp_nxx_start;
-            var nanp_nxx_start = new int_subtype(0,3);
+            var nanp_nxx_start = new subtype<int>(0,3);
             be_valid_nanp_number = false;
             digits = Safe(s, safe_hint_type.NUM);
             nanp_nxx_start.val = 0;
@@ -1031,7 +1112,7 @@ namespace kix
               }
             }
           var line_list_count = line_list.Count;
-          var i = new int_subtype(1,line_list_count);
+          var i = new subtype<int>(1,line_list_count);
           var wrap_text = k.EMPTY;
           while (i.val < line_list.Count)
             {
