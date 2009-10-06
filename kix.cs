@@ -1048,7 +1048,7 @@ namespace kix
               }
             if (reply_to != k.EMPTY)
               {
-              mail_message.Headers.Add("Reply-To", reply_to);
+              mail_message.ReplyTo = new MailAddress(reply_to);
               }
             SmtpMailSend(mail_message);
         }
