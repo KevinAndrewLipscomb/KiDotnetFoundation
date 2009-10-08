@@ -1033,18 +1033,18 @@ namespace kix
             mail_message.From = new MailAddress(from);
             if (to != k.EMPTY)
               {
-              mail_message.To.Add(to);
+              mail_message.To.Add(to.Trim(new char[] {Convert.ToChar(k.COMMA),Convert.ToChar(k.SPACE)}));
               }
             mail_message.Subject = subject;
             mail_message.Body = message_string;
             mail_message.IsBodyHtml = be_html;
             if (cc != k.EMPTY)
               {
-              mail_message.CC.Add(cc);
+              mail_message.CC.Add(cc.Trim(new char[] {Convert.ToChar(k.COMMA),Convert.ToChar(k.SPACE)}));
               }
             if (bcc != k.EMPTY)
               {
-              mail_message.Bcc.Add(bcc);
+              mail_message.Bcc.Add(bcc.Trim(new char[] {Convert.ToChar(k.COMMA),Convert.ToChar(k.SPACE)}));
               }
             if (reply_to != k.EMPTY)
               {
