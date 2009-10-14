@@ -1029,22 +1029,42 @@ namespace kix
 
         public static void SmtpMailSend(string from, string to, string subject, string message_string, bool be_html, string cc, string bcc, string reply_to)
         {
+            const string DOUBLE_COMMA = k.COMMA + k.COMMA;
             MailMessage mail_message = new MailMessage();
+            //
+            to = to.Trim(new char[] {Convert.ToChar(k.COMMA)}).Replace(k.SPACE,k.EMPTY);
+            while (to.Contains(DOUBLE_COMMA))
+              {
+              to = to.Replace(DOUBLE_COMMA,k.COMMA);
+              }
+            //
+            cc = cc.Trim(new char[] {Convert.ToChar(k.COMMA)}).Replace(k.SPACE,k.EMPTY);
+            while (cc.Contains(DOUBLE_COMMA))
+              {
+              cc = cc.Replace(DOUBLE_COMMA,k.COMMA);
+              }
+            //
+            bcc = bcc.Trim(new char[] {Convert.ToChar(k.COMMA)}).Replace(k.SPACE,k.EMPTY);
+            while (bcc.Contains(DOUBLE_COMMA))
+              {
+              bcc = bcc.Replace(DOUBLE_COMMA,k.COMMA);
+              }
+            //
             mail_message.From = new MailAddress(from);
             if (to != k.EMPTY)
               {
-              mail_message.To.Add(to.Trim(new char[] {Convert.ToChar(k.COMMA),Convert.ToChar(k.SPACE)}));
+              mail_message.To.Add(to);
               }
             mail_message.Subject = subject;
             mail_message.Body = message_string;
             mail_message.IsBodyHtml = be_html;
             if (cc != k.EMPTY)
               {
-              mail_message.CC.Add(cc.Trim(new char[] {Convert.ToChar(k.COMMA),Convert.ToChar(k.SPACE)}));
+              mail_message.CC.Add(cc);
               }
             if (bcc != k.EMPTY)
               {
-              mail_message.Bcc.Add(bcc.Trim(new char[] {Convert.ToChar(k.COMMA),Convert.ToChar(k.SPACE)}));
+              mail_message.Bcc.Add(bcc);
               }
             if (reply_to != k.EMPTY)
               {
