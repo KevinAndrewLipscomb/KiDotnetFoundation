@@ -80,6 +80,7 @@ namespace kix
         {
             NONE,
             ALPHA,
+            ALPHA_WORDS,
             ALPHANUM,
             CURRENCY_USA,
             DATE_TIME,
@@ -862,14 +863,19 @@ namespace kix
             allow = EMPTY;
             switch(hint)
             {
+                //
+                // Be extremely protective here:
+                // -  Escape ("\") the following four characters: ]\^-
+                // -  For scalars, do not allow punctuation.
+                // -  When in doubt, don't allow it.
+                // This routine is not intended to assure that data is submitted in proper
+                // format.  It is intended to protect against SQL insertion attacks.
+                //
                 case safe_hint_type.ALPHA:
-                    // Be extremely protective here:
-                    // -  Escape ("\") the following four characters: ]\^-
-                    // -  For scalars, do not allow punctuation.
-                    // -  When in doubt, don't allow it.
-                    // This routine is not intended to assure that data is submitted in proper
-                    // format.  It is intended to protect against SQL insertion attacks.
                     allow = "a-zA-Z";
+                    break;
+                case safe_hint_type.ALPHA_WORDS:
+                    allow = "a-zA-Z ";
                     break;
                 case safe_hint_type.ALPHANUM:
                     allow = "0-9a-zA-Z";
@@ -914,7 +920,7 @@ namespace kix
                     allow = "a-zA-z0-9\\-_";
                     break;
                 case safe_hint_type.KI_SORT_EXPRESSION:
-                    allow = "a-zA-z%,. ";
+                    allow = "a-zA-z%(),. ";
                     break;
                 case safe_hint_type.MAKE_MODEL:
                     allow = "0-9a-zA-Z#*()\\-+/. ";
