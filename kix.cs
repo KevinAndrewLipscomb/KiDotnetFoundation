@@ -162,12 +162,52 @@ namespace kix
             }
           }
 
+        public class int_negative
+          {
+          private subtype<int> current;
+          public int_negative()
+            {
+            current = new subtype<int>(int.MinValue,-1);
+            }
+          public int val
+            {
+            get
+              {
+              return current.val;
+              }
+            set
+              {
+              current.val = value;
+              }
+            }
+          }
+
         public class int_nonnegative
           {
           private subtype<int> current;
           public int_nonnegative()
             {
             current = new subtype<int>(0,int.MaxValue);
+            }
+          public int val
+            {
+            get
+              {
+              return current.val;
+              }
+            set
+              {
+              current.val = value;
+              }
+            }
+          }
+
+        public class int_nonpositive
+          {
+          private subtype<int> current;
+          public int_nonpositive()
+            {
+            current = new subtype<int>(int.MinValue,0);
             }
           public int val
             {
