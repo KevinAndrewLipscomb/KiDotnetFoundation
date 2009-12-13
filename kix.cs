@@ -1154,27 +1154,44 @@ namespace kix
           var line_list = new List<string>();
           if (t.Length != 0)
             {
-            var current_line = k.EMPTY;
-            var word_array = t.Split(break_char_array);
-            foreach (var current_word in word_array)
+            var scratch_line = k.EMPTY;
+            var source_line_array = t.Split(new string[] {NEW_LINE,"\r\n"},StringSplitOptions.None);
+            foreach (var current_phrase in source_line_array)
               {
-              if ((current_line.Length > max_line_len) || ((current_line.Length + current_word.Length) > max_line_len))
+              var word_array = current_phrase.Split(break_char_array);
+              foreach (var current_word in word_array)
                 {
-                line_list.Add(current_line);
-                current_line = k.EMPTY;
+                if ((scratch_line.Length > max_line_len) || ((scratch_line.Length + current_word.Length) > max_line_len))
+                  {
+                  //
+                  // Add what has accumulated on the current_line to the line_list, and reinitialize the scratch_line.
+                  //
+                  line_list.Add(scratch_line);
+                  scratch_line = k.EMPTY;
+                  }
+                if (scratch_line.Length > 0)
+                  {
+                  //
+                  // Append a space and the current_word to the non-empty scratch_line.
+                  //
+                  scratch_line += k.SPACE + current_word;
+                  }
+                else
+                  {
+                  //
+                  // Start the empty scratch_line with the current_word.
+                  //
+                  scratch_line += current_word;
+                  }
                 }
-              if (current_line.Length > 0)
+              if (scratch_line.Length > 0)
                 {
-                current_line += k.SPACE + current_word;
+                //
+                // Add what has accumulated on the current_line to the line_list, and reinitialize the scratch_line.
+                //
+                line_list.Add(scratch_line);
+                scratch_line = k.EMPTY;
                 }
-              else
-                {
-                current_line += current_word;
-                }
-              }
-            if (current_line.Length > 0)
-              {
-              line_list.Add(current_line);
               }
             }
           var line_list_count = line_list.Count;
