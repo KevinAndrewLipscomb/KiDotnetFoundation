@@ -1152,7 +1152,11 @@ namespace kix
           )
           {
           var line_list = new List<string>();
-          if (t.Length != 0)
+          if (t.Length == 0)
+            {
+            return t;
+            }
+          else
             {
             var scratch_line = k.EMPTY;
             var source_line_array = t.Split(new string[] {NEW_LINE,"\r\n"},StringSplitOptions.None);
@@ -1193,16 +1197,16 @@ namespace kix
                 scratch_line = k.EMPTY;
                 }
               }
+            var line_list_count = line_list.Count;
+            var i = new subtype<int>(1,line_list_count);
+            var wrap_text = k.EMPTY;
+            while (i.val < line_list.Count)
+              {
+              wrap_text += line_list[i.val - 1].Trim() + insert_string;
+              i.val++;
+              }
+            return wrap_text + line_list[i.val - 1];
             }
-          var line_list_count = line_list.Count;
-          var i = new subtype<int>(1,line_list_count);
-          var wrap_text = k.EMPTY;
-          while (i.val < line_list.Count)
-            {
-            wrap_text += line_list[i.val - 1].Trim() + insert_string;
-            i.val++;
-            }
-          return wrap_text + line_list[i.val - 1];
           }
 
         public static string YesNoOf(bool b)
