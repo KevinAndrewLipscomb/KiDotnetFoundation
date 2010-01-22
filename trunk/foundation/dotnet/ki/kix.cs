@@ -92,6 +92,7 @@ namespace kix
             HUMAN_NAME,
             HUMAN_NAME_CSV,
             HYPHENATED_ALPHA,
+            HYPHENATED_ALPHA_WORDS,
             HYPHENATED_ALPHANUM,
             HYPHENATED_NUM,
             HYPHENATED_UNDERSCORED_ALPHANUM,
@@ -948,19 +949,22 @@ namespace kix
                     allow = "a-zA-Z\\-,. " + ACUTE_ACCENT;
                     break;
                 case safe_hint_type.HYPHENATED_ALPHA:
-                    allow = "a-zA-z\\-";
+                    allow = "a-zA-Z\\-";
+                    break;
+                case safe_hint_type.HYPHENATED_ALPHA_WORDS:
+                    allow = "a-zA-Z\\- ";
                     break;
                 case safe_hint_type.HYPHENATED_ALPHANUM:
-                    allow = "a-zA-z0-9\\-";
+                    allow = "a-zA-Z0-9\\-";
                     break;
                 case safe_hint_type.HYPHENATED_NUM:
                     allow = "0-9\\-";
                     break;
                 case safe_hint_type.HYPHENATED_UNDERSCORED_ALPHANUM:
-                    allow = "a-zA-z0-9\\-_";
+                    allow = "a-zA-Z0-9\\-_";
                     break;
                 case safe_hint_type.KI_SORT_EXPRESSION:
-                    allow = "a-zA-z%\\*()\\-+,./ ";
+                    allow = "a-zA-Z%\\*()\\-+,./ ";
                     break;
                 case safe_hint_type.MAKE_MODEL:
                     allow = "0-9a-zA-Z#*()\\-+/. ";
