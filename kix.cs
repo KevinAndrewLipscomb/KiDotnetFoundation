@@ -951,7 +951,7 @@ namespace kix
                     allow = "0-9a-zA-Z_";
                     break;
                 case safe_hint_type.EMAIL_ADDRESS:
-                    allow = "0-9a-zA-Z_.@\\-";
+                    allow = "0-9a-zA-Z_.@\\-+";
                     break;
                 case safe_hint_type.FINANCIAL_TERMS:
                     allow = "0-9a-zA-Z@#$%()\\-+=,/. " + CENT_SIGN;
