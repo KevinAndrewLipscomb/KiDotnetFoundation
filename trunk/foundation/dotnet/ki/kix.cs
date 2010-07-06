@@ -103,6 +103,7 @@ namespace kix
             ORG_NAME,
             PHONE_NUM,
             POSTAL_CITY,
+            POSTAL_CITY_CSV,
             POSTAL_STREET_ADDRESS,
             PUNCTUATED,
             REAL_NUM,
@@ -1003,6 +1004,9 @@ namespace kix
                     break;
                 case safe_hint_type.POSTAL_CITY:
                     allow = "a-zA-Z\\-. " + ACUTE_ACCENT;
+                    break;
+                case safe_hint_type.POSTAL_CITY_CSV:
+                    allow = "a-zA-Z\\-,. " + ACUTE_ACCENT;
                     break;
                 case safe_hint_type.POSTAL_STREET_ADDRESS:
                     allow = "0-9a-zA-Z#\\-,(). " + ACUTE_ACCENT;
