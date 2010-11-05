@@ -429,44 +429,43 @@ namespace kix
         }
 
         public static string EscalatedException(System.Exception the_exception, string user_identity_name, HttpSessionState session)
-        {
-            string result;
-            string notification_message;
-            uint lcv;
-            string user_designator;
-
-            notification_message = EMPTY;
-
-            if (user_identity_name == EMPTY)
+          {
+          var user_designator = k.EMPTY;
+          if (user_identity_name == EMPTY)
             {
-                user_designator = "unknown";
+            user_designator = "unknown";
             }
-            else
+          else
             {
-                user_designator = user_identity_name;
+            user_designator = user_identity_name;
             }
-
-            notification_message = EMPTY + "[EXCEPTION]" + NEW_LINE + the_exception.ToString() + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE + NEW_LINE;
-            if (user_identity_name != EMPTY)
+          var notification_message = k.EMPTY;
+          var e = the_exception;
+          while (e != null)
             {
-                notification_message = notification_message + "[USER]" + NEW_LINE + user_designator + NEW_LINE + NEW_LINE;
+            notification_message += "[EXCEPTION]" + NEW_LINE + e.ToString() + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(e) + NEW_LINE + NEW_LINE;
+            e = e.InnerException;
             }
-            if ((session != null))
+          if (user_identity_name != EMPTY)
             {
-                notification_message = notification_message + "[SESSION]" + NEW_LINE;
-                if (session.Count > 0)
+            notification_message += "[USER]" + NEW_LINE + user_designator + NEW_LINE + NEW_LINE;
+            }
+          if ((session != null))
+            {
+            notification_message += "[SESSION]" + NEW_LINE;
+            if (session.Count > 0)
+              {
+              var i = new subtype<int>(0,session.Count);
+              for (i.val = 0; i.val <= (session.Count - 1); i.val++ )
                 {
-                    for (lcv = 0; lcv <= (session.Count - 1); lcv ++ )
-                    {
-                        notification_message = notification_message + session.Keys[(int)lcv].ToString() + " = " + session[(int)lcv].ToString() + NEW_LINE;
-                    }
+                notification_message += session.Keys[i.val].ToString() + " = " + session[i.val].ToString() + NEW_LINE;
                 }
+              }
             }
-            SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "EXCEPTION REPORT", notification_message);
-            SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sysadmin_sms_address"], "CRASH", user_identity_name);
-            result = notification_message;
-            return result;
-        }
+          SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "EXCEPTION REPORT", notification_message);
+          SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sysadmin_sms_address"], "CRASH", user_identity_name);
+          return notification_message;
+          }
 
         public static string EscalatedException(System.Exception the_exception)
         {
