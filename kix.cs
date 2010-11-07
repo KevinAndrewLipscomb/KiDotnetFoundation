@@ -439,13 +439,7 @@ namespace kix
             {
             user_designator = user_identity_name;
             }
-          var notification_message = k.EMPTY;
-          var e = the_exception;
-          while (e != null)
-            {
-            notification_message += "[EXCEPTION]" + NEW_LINE + e.ToString() + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(e) + NEW_LINE + NEW_LINE;
-            e = e.InnerException;
-            }
+          var notification_message = "[EXCEPTION]" + NEW_LINE + the_exception.ToString() + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE + NEW_LINE;
           if (user_identity_name != EMPTY)
             {
             notification_message += "[USER]" + NEW_LINE + user_designator + NEW_LINE + NEW_LINE;
