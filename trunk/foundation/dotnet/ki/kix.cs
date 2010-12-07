@@ -1038,7 +1038,7 @@ namespace kix
         public static void SendControlAsAttachmentToEmailMessage(object c, string scratch_pathname, string from_address, string to_target, string cc_target, string subject, string body)
         {
             //
-            // For this to work, the ASP.NET Machine Account (ASPNET) must have write permission for the folder specified by p.path.  Configure this on the Security tab of the folder's Properties.  If the Security tab is missing, open Windows Explorer / Tools /
+            // For this to work, the ASP.NET Machine Account (ASPNET) [on IIS5] or the NETWORK SERVICE account [on IIS7] must have write permission for the folder specified by p.path.  Configure this on the Security tab of the folder's Properties.  If the Security tab is missing, open Windows Explorer / Tools /
             // Folder Options... / View, and in the Advanced Settings, clear the "Use simple file sharing" checkbox.
             //
             System.IO.StreamWriter streamwriter = new System.IO.StreamWriter(scratch_pathname);
