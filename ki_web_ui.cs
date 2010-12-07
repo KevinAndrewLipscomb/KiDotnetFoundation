@@ -291,7 +291,7 @@ namespace ki_web_ui
         {
             string current;
             current = Path.GetFileName(this.Request.CurrentExecutionFilePath);
-            if ((((this.Session["waypoint_stack"]) as Stack).Count == 0) || (((this.Session["waypoint_stack"]) as Stack).Peek().ToString() != current))
+            if ((Session["waypoint_stack"] != null) && ((((this.Session["waypoint_stack"]) as Stack).Count == 0) || (((this.Session["waypoint_stack"]) as Stack).Peek().ToString() != current)))
             {
                 ((this.Session["waypoint_stack"]) as Stack).Push(current);
             }
