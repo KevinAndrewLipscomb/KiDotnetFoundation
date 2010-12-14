@@ -262,8 +262,10 @@ namespace ki_web_ui
         protected void BackTrack(uint num_backsteps)
         {
             uint i;
-            string p;
-            p = "~/Default.aspx";
+            var p = "~/Default.aspx";
+            var session_index = new k.subtype<int>(0,Session.Count);
+            var be_page_p_found = false;
+            var key = k.EMPTY;
             if ((this.Session["waypoint_stack"] != null))
             {
                 for (i = 1; i <= num_backsteps; i ++ )
@@ -271,6 +273,15 @@ namespace ki_web_ui
                     if (((this.Session["waypoint_stack"]) as Stack).Count > 0)
                     {
                         p = ((this.Session["waypoint_stack"]) as Stack).Pop().ToString();
+                        for (session_index.val = Session.Count; !be_page_p_found && session_index.val > 0; session_index.val-- )
+                          {
+                          key = Session.Keys[session_index.val - 1].ToString();
+                          if (key.EndsWith(".p"))
+                            {
+                            Session.Remove(key);
+                            be_page_p_found = !key.Contains("UserControl");
+                            }
+                          }
                     }
                 }
             }
