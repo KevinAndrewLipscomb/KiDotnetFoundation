@@ -101,6 +101,7 @@ namespace kix
             MEMO,
             NUM,
             ORG_NAME,
+            ORG_NAME_ASTERICIZED,
             PHONE_NUM,
             POSTAL_CITY,
             POSTAL_CITY_CSV,
@@ -992,6 +993,9 @@ namespace kix
                 case safe_hint_type.ORG_NAME:
                     allow = "0-9a-zA-Z#&\\-,. " + ACUTE_ACCENT;
                     break;
+                case safe_hint_type.ORG_NAME_ASTERICIZED:
+                    allow = "0-9a-zA-Z#&*\\-,. " + ACUTE_ACCENT;
+                    break;
                 case safe_hint_type.PHONE_NUM:
                     allow = "0-9-+() ";
                     break;
@@ -1076,9 +1080,26 @@ namespace kix
             //
             // Instead of supplying a Body, which System.Net.Mail encodes as quoted-printable, supply an AlternateView and force its encoding to 7bit.
             //
-            AlternateView alternate_view = AlternateView.CreateAlternateViewFromString(mail_message.Body,mail_message.BodyEncoding,(mail_message.IsBodyHtml ? "text/html" : null));
-            alternate_view.TransferEncoding = TransferEncoding.SevenBit;
-            mail_message.AlternateViews.Add(alternate_view);
+            if (mail_message.IsBodyHtml)
+              {
+              //
+              // To pass SpamAssassin anti-spam tests, add a secondary alternative plain text view.  Order is important.  Plainer alternate views must be added to the mail message before richer alternate views.
+              //
+              var secondary_alternate_view = AlternateView.CreateAlternateViewFromString
+                (
+                "Please set your email client to view this message in the provided HTML format, unmodified.  Otherwise you will be missing out on important information that the application can not adequately render in plain text.  Contact"
+                + " support@frompaper2web.com if you have questions about this message.",
+                mail_message.BodyEncoding,
+                null
+                );
+              mail_message.AlternateViews.Add(secondary_alternate_view);
+              secondary_alternate_view.TransferEncoding = TransferEncoding.SevenBit;
+              }
+            //
+            var primary_alternate_view = AlternateView.CreateAlternateViewFromString(mail_message.Body,mail_message.BodyEncoding,(mail_message.IsBodyHtml ? "text/html" : null));
+            mail_message.AlternateViews.Add(primary_alternate_view);
+            primary_alternate_view.TransferEncoding = TransferEncoding.SevenBit;
+            //
             mail_message.Body = null;
             try
               {
