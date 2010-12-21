@@ -1088,9 +1088,7 @@ namespace kix
               var secondary_alternate_view = AlternateView.CreateAlternateViewFromString
                 (
                 "Please set, upgrade, or switch your email client to view this message in the provided HTML format, unmodified.  Otherwise you will be missing out on important information that the application can not adequately render in plain text.  Contact"
-                + " support@frompaper2web.com if you have questions about this message." + NEW_LINE
-                + NEW_LINE
-                + Regex.Replace(mail_message.Body,"<(.|\n)*?>",SPACE),
+                + " support@frompaper2web.com if you have questions about this message." + NEW_LINE,
                 mail_message.BodyEncoding,
                 null
                 );
