@@ -298,6 +298,15 @@ namespace ki_web_ui
             SessionSet("waypoint_stack", new Stack());
         }
 
+        protected T Message<T>
+          (
+          string folder_name,
+          string aspx_name
+          )
+          {
+          return (T)(Session["msg_" + folder_name + "." + aspx_name]);
+          }
+
         protected void DropCrumbAndTransferTo(string the_path)
         {
             string current;
@@ -343,6 +352,17 @@ namespace ki_web_ui
         {
             Focus(c, false);
         }
+
+        public void MessageDropCrumbAndTransferTo
+          (
+          object msg,
+          string folder_name,
+          string aspx_name
+          )
+          {
+          SessionSet("msg_" + folder_name + "." + aspx_name,msg);
+          DropCrumbAndTransferTo(aspx_name + ".aspx");
+          }
 
         private nature_of_visit_type NatureOfInvocation(string expected_session_item_name, bool be_timeout_behavior_standard, bool be_landing_from_login, bool be_cold_call_allowed)
         {
@@ -579,6 +599,17 @@ namespace ki_web_ui
         {
             Focus(c, false);
         }
+
+        public void MessageDropCrumbAndTransferTo
+          (
+          object msg,
+          string folder_name,
+          string aspx_name
+          )
+          {
+          SessionSet("msg_" + folder_name + "." + aspx_name,msg);
+          DropCrumbAndTransferTo(aspx_name + ".aspx");
+          }
 
         protected override void OnInit(System.EventArgs e)
         {
