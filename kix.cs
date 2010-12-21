@@ -1083,12 +1083,14 @@ namespace kix
             if (mail_message.IsBodyHtml)
               {
               //
-              // To pass SpamAssassin anti-spam tests, add a secondary alternative plain text view.  Order is important.  Plainer alternate views must be added to the mail message before richer alternate views.
+              // To pass SpamAssassin anti-spam tests, add a secondary alternative plaintext view.  Order is important.  Plainer alternate views must be added to the mail message before richer alternate views.
               //
               var secondary_alternate_view = AlternateView.CreateAlternateViewFromString
                 (
-                "Please set your email client to view this message in the provided HTML format, unmodified.  Otherwise you will be missing out on important information that the application can not adequately render in plain text.  Contact"
-                + " support@frompaper2web.com if you have questions about this message.",
+                "Please set, upgrade, or switch your email client to view this message in the provided HTML format, unmodified.  Otherwise you will be missing out on important information that the application can not adequately render in plain text.  Contact"
+                + " support@frompaper2web.com if you have questions about this message." + NEW_LINE
+                + NEW_LINE
+                + Regex.Replace(mail_message.Body,"<(.|\n)*?>",SPACE),
                 mail_message.BodyEncoding,
                 null
                 );
