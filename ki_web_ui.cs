@@ -143,6 +143,31 @@ namespace ki_web_ui
             EstablishClientSideFunction(the_page, r.profile, r.body);
         }
 
+        public void EstablishGoogleWebFontLoader
+          (
+          Page the_page,
+          string web_font_config
+          )
+          {
+          the_page.ClientScript.RegisterClientScriptBlock
+            (
+            the_page.GetType(),
+            "GoogleWebFontLoader",
+            "WebFontConfig = { " + web_font_config + " };"
+            + " (function ()"
+            +   " {"
+            +   " var wf = document.createElement('script');"
+            +   " wf.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';"
+            +   " wf.type = 'text/javascript';"
+            +   " wf.async = 'true';"
+            +   " var s = document.getElementsByTagName('script')[0];"
+            +   " s.parentNode.insertBefore(wf, s);"
+            +   " }"
+            + " )();",
+            true
+            );
+          }
+
         public void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
             the_page.Response.Clear();
@@ -332,6 +357,11 @@ namespace ki_web_ui
         {
             templatecontrol.EstablishClientSideFunction(this.Page, r);
         }
+
+        protected void EstablishGoogleWebFontLoader(string web_font_config)
+          {
+          templatecontrol.EstablishGoogleWebFontLoader(this.Page,web_font_config);
+          }
 
         protected void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
@@ -579,6 +609,11 @@ namespace ki_web_ui
         {
             templatecontrol.EstablishClientSideFunction(this.Page, r);
         }
+
+        protected void EstablishGoogleWebFontLoader(string web_font_config)
+          {
+          templatecontrol.EstablishGoogleWebFontLoader(this.Page,web_font_config);
+          }
 
         protected void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
