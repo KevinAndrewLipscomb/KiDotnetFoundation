@@ -332,16 +332,30 @@ namespace ki_web_ui
           return (T)(Session["msg_" + folder_name + "." + aspx_name]);
           }
 
-        protected void DropCrumbAndTransferTo(string the_path)
-        {
-            string current;
-            current = Path.GetFileName(this.Request.CurrentExecutionFilePath);
-            if ((Session["waypoint_stack"] != null) && ((((this.Session["waypoint_stack"]) as Stack).Count == 0) || (((this.Session["waypoint_stack"]) as Stack).Peek().ToString() != current)))
+        protected void DropCrumbAndTransferTo
+          (
+          string the_path,
+          string anchor_name
+          )
+          {
+          var current = Path.GetFileName(Request.CurrentExecutionFilePath);
+          if ((Session["waypoint_stack"] != null) && ((((Session["waypoint_stack"]) as Stack).Count == 0) || (((Session["waypoint_stack"]) as Stack).Peek().ToString() != current)))
             {
-                ((this.Session["waypoint_stack"]) as Stack).Push(current);
+              ((Session["waypoint_stack"]) as Stack).Push(current);
             }
-            this.Server.Transfer(the_path);
-        }
+          if (anchor_name == k.EMPTY)
+            {
+            Server.Transfer(the_path);
+            }
+          else
+            {
+            Response.Redirect(the_path + "#" + anchor_name);
+            }
+          }
+        protected void DropCrumbAndTransferTo(string the_path)
+          {
+          DropCrumbAndTransferTo(the_path,k.EMPTY);
+          }
 
         protected void EstablishClientSideFunction(string profile, string body)
         {
@@ -387,11 +401,21 @@ namespace ki_web_ui
           (
           object msg,
           string folder_name,
-          string aspx_name
+          string aspx_name,
+          string anchor_name
           )
           {
           SessionSet("msg_" + folder_name + "." + aspx_name,msg);
-          DropCrumbAndTransferTo(aspx_name + ".aspx");
+          DropCrumbAndTransferTo(aspx_name + ".aspx",anchor_name);
+          }
+        public void MessageDropCrumbAndTransferTo
+          (
+          object msg,
+          string folder_name,
+          string aspx_name
+          )
+          {
+          MessageDropCrumbAndTransferTo(msg,folder_name,aspx_name,k.EMPTY);
           }
 
         private nature_of_visit_type NatureOfInvocation(string expected_session_item_name, bool be_timeout_behavior_standard, bool be_landing_from_login, bool be_cold_call_allowed)
@@ -589,11 +613,26 @@ namespace ki_web_ui
             BackTrack(1);
         }
 
+        protected void DropCrumbAndTransferTo
+          (
+          string the_path,
+          string anchor_name
+          )
+          {
+          ((Session["waypoint_stack"]) as Stack).Push(Path.GetFileName(Request.CurrentExecutionFilePath));
+          if (anchor_name == k.EMPTY)
+            {
+            Server.Transfer(the_path);
+            }
+          else
+            {
+            Response.Redirect(the_path + "#" + anchor_name);
+            }
+          }
         protected void DropCrumbAndTransferTo(string the_path)
-        {
-            ((this.Session["waypoint_stack"]) as Stack).Push(Path.GetFileName(this.Request.CurrentExecutionFilePath));
-            this.Server.Transfer(the_path);
-        }
+          {
+          DropCrumbAndTransferTo(the_path,k.EMPTY);
+          }
 
         protected void EstablishClientSideFunction(string profile, string body)
         {
@@ -639,11 +678,21 @@ namespace ki_web_ui
           (
           object msg,
           string folder_name,
-          string aspx_name
+          string aspx_name,
+          string anchor_name
           )
           {
           SessionSet("msg_" + folder_name + "." + aspx_name,msg);
-          DropCrumbAndTransferTo(aspx_name + ".aspx");
+          DropCrumbAndTransferTo(aspx_name + ".aspx",anchor_name);
+          }
+        public void MessageDropCrumbAndTransferTo
+          (
+          object msg,
+          string folder_name,
+          string aspx_name
+          )
+          {
+          MessageDropCrumbAndTransferTo(msg,folder_name,aspx_name,k.EMPTY);
           }
 
         protected override void OnInit(System.EventArgs e)
