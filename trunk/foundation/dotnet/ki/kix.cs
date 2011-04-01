@@ -1087,8 +1087,16 @@ namespace kix
               //
               var secondary_alternate_view = AlternateView.CreateAlternateViewFromString
                 (
-                "Please set, upgrade, or switch your email client to view this message in the provided HTML format, unmodified.  Otherwise you will be missing out on important information that the application can not adequately render in plain text.  Contact"
-                + " support@frompaper2web.com if you have questions about this message." + NEW_LINE,
+                //
+                // An alternative view whose transfer encoding is set to 7bit should contain no more than 72 characters before each line break -- and MUST NOT contain more than 998 characters before each line break.
+                //
+                //         1         2         3         4         5         6         7
+                //123456789012345678901234567890123456789012345678901234567890123456789012
+                 "Please set, upgrade, or switch your email client to view this message in" + NEW_LINE
+                +"the provided HTML format, unmodified.  Otherwise you will be missing out" + NEW_LINE
+                +"on important information that the application can not adequately render" + NEW_LINE
+                +"in plain text.  Contact support@frompaper2web.com if you have questions" + NEW_LINE
+                +"about this message." + NEW_LINE,
                 mail_message.BodyEncoding,
                 null
                 );
@@ -1098,7 +1106,7 @@ namespace kix
             //
             var primary_alternate_view = AlternateView.CreateAlternateViewFromString(mail_message.Body,mail_message.BodyEncoding,(mail_message.IsBodyHtml ? "text/html" : null));
             mail_message.AlternateViews.Add(primary_alternate_view);
-            primary_alternate_view.TransferEncoding = TransferEncoding.SevenBit;
+            primary_alternate_view.TransferEncoding = TransferEncoding.Base64;
             //
             mail_message.Body = null;
             try
