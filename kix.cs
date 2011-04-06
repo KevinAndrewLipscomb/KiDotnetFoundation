@@ -1078,7 +1078,7 @@ namespace kix
         public static void SmtpMailSend(MailMessage mail_message)
         {
             //
-            // Instead of supplying a Body, which System.Net.Mail encodes as quoted-printable, supply an AlternateView and force its encoding to 7bit.
+            // Instead of supplying a Body, which System.Net.Mail encodes as quoted-printable, supply an AlternateView and force its transfer encoding to 7bit or base64, depending.
             //
             if (mail_message.IsBodyHtml)
               {
@@ -1106,7 +1106,7 @@ namespace kix
             //
             var primary_alternate_view = AlternateView.CreateAlternateViewFromString(mail_message.Body,mail_message.BodyEncoding,(mail_message.IsBodyHtml ? "text/html" : null));
             mail_message.AlternateViews.Add(primary_alternate_view);
-            primary_alternate_view.TransferEncoding = TransferEncoding.Base64;
+            primary_alternate_view.TransferEncoding = (mail_message.IsBodyHtml ? TransferEncoding.Base64 : TransferEncoding.SevenBit);
             //
             mail_message.Body = null;
             try
