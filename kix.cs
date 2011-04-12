@@ -28,10 +28,12 @@ namespace kix
         public const string EMPTY = "";
         public const string HYPHEN = "-";
         public const string INVERTED_EXCLAMATION_MARK = "\u00A1"; // ¡
+        public const string LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = "\u00AB"; //«
         public const string NEW_LINE = "\n";
         public const string OPEN_PARENTHESIS = "(";
         public const string PERIOD = ".";
         public const string QUOTE = "\"";
+        public const string RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = "\u00BB"; //»
         public const string SEMICOLON = ";";
         public const string SPACE = "\u0020";
         public const string SPACE_HYPHEN_SPACE = " - ";
@@ -913,7 +915,7 @@ namespace kix
         public static string Safe(string source_string, safe_hint_type hint)
         {
             string result;
-            string MODIFIED_LIBERAL_SET = "0-9a-zA-Z@#$%&()\\-+=,/.:? " + ACUTE_ACCENT + CENT_SIGN + DIAERESIS + INVERTED_EXCLAMATION_MARK;
+            string MODIFIED_LIBERAL_SET = "0-9a-zA-Z@#$%&()\\-+=,/.:? " + ACUTE_ACCENT + CENT_SIGN + DIAERESIS + INVERTED_EXCLAMATION_MARK + LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK + RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK;
             string allow;
             string scratch_string;
             allow = EMPTY;
@@ -1028,6 +1030,8 @@ namespace kix
                 scratch_string = scratch_string.Replace(QUOTE, DIAERESIS);
                 scratch_string = scratch_string.Replace(APOSTROPHE, ACUTE_ACCENT);
                 scratch_string = scratch_string.Replace(SEMICOLON, INVERTED_EXCLAMATION_MARK);
+                scratch_string = scratch_string.Replace("<",LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK);
+                scratch_string = scratch_string.Replace(">",RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK);
                 scratch_string = Regex.Replace(scratch_string, "[^" + allow + ']', EMPTY);
             }
             result = scratch_string;
