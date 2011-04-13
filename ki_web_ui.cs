@@ -168,6 +168,22 @@ namespace ki_web_ui
             );
           }
 
+        public void EstablishUpdatePanelCompliantTimeoutHandler
+          (
+          Page the_page,
+          int redirect_timeout,
+          string path_to_timeout_page
+          )
+          {
+          the_page.ClientScript.RegisterClientScriptBlock
+            (
+            the_page.GetType(),
+            "UpdatePanelCompliantTimeoutHandler",
+            "var redirect_timer; clearTimeout(redirect_timer); redirect_timer = setTimeout('window.location.href=\"" + path_to_timeout_page + "\";'," + redirect_timeout.ToString() + ");",
+            true
+            );
+          }
+
         public void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
             the_page.Response.Clear();
@@ -375,6 +391,15 @@ namespace ki_web_ui
         protected void EstablishGoogleWebFontLoader(string web_font_config)
           {
           templatecontrol.EstablishGoogleWebFontLoader(this.Page,web_font_config);
+          }
+
+        public void EstablishUpdatePanelCompliantTimeoutHandler
+          (
+          int redirect_timeout,
+          string path_to_timeout_page
+          )
+          {
+          templatecontrol.EstablishUpdatePanelCompliantTimeoutHandler(this.Page,redirect_timeout,path_to_timeout_page);
           }
 
         protected void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
@@ -652,6 +677,15 @@ namespace ki_web_ui
         protected void EstablishGoogleWebFontLoader(string web_font_config)
           {
           templatecontrol.EstablishGoogleWebFontLoader(this.Page,web_font_config);
+          }
+
+        public void EstablishUpdatePanelCompliantTimeoutHandler
+          (
+          int redirect_timeout,
+          string path_to_timeout_page
+          )
+          {
+          templatecontrol.EstablishUpdatePanelCompliantTimeoutHandler(this.Page,redirect_timeout,path_to_timeout_page);
           }
 
         protected void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
