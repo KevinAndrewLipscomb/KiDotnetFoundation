@@ -1,10 +1,14 @@
 using kix;
 using System;
+using System.Collections;
 using System.Configuration;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.IO;
-using System.Collections;
 
 namespace ki_web_ui
 {
@@ -241,6 +245,20 @@ namespace ki_web_ui
             the_page.Session.Add(name, value);
         }
 
+    public string ShieldedQueryStringOfHashtable
+      (
+      Page the_page,
+      Hashtable hash_table
+      )
+      {
+      var ascii_encoding = new ASCIIEncoding();
+      var bytearrayed_serialized_hashtable = ascii_encoding.GetBytes(new JavaScriptSerializer().Serialize(hash_table));
+      var cipher = new RijndaelManaged();
+      cipher.Mode = CipherMode.ECB;
+      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
+      return "q=" + the_page.Server.UrlEncode(Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(bytearrayed_serialized_hashtable,0,bytearrayed_serialized_hashtable.Length)));
+      }
+
         public string StringOfControl(Control c)
         {
             string result;
@@ -422,6 +440,16 @@ namespace ki_web_ui
             Focus(c, false);
         }
 
+    protected Hashtable HashtableOfShieldedRequest()
+      {
+      var ascii_encoding = new ASCIIEncoding();
+      var unbase64ed_query_string = Convert.FromBase64String(Request["q"]);
+      var cipher = new RijndaelManaged();
+      cipher.Mode = CipherMode.ECB;
+      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
+      return new JavaScriptSerializer().Deserialize<Hashtable>(ascii_encoding.GetString(cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length)));
+      }
+
         public void MessageDropCrumbAndTransferTo
           (
           object msg,
@@ -542,6 +570,11 @@ namespace ki_web_ui
         {
             templatecontrol.SessionSet(this.Page, name, value);
         }
+
+    protected string ShieldedQueryStringOfHashtable(Hashtable hash_table)
+      {
+      return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table);
+      }
 
         protected string StringOfControl(Control c)
         {
@@ -743,6 +776,11 @@ namespace ki_web_ui
         {
             templatecontrol.SessionSet(this.Page, name, value);
         }
+
+    protected string ShieldedQueryStringOfHashtable(Hashtable hash_table)
+      {
+      return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table);
+      }
 
         protected string StringOfControl(Control c)
         {
