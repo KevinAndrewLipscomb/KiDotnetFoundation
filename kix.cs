@@ -102,6 +102,7 @@ namespace kix
             MAKE_MODEL,
             MEMO,
             NUM,
+            NUM_CSV,
             ORG_NAME,
             ORG_NAME_ASTERICIZED,
             PHONE_NUM,
@@ -991,6 +992,9 @@ namespace kix
                     break;
                 case safe_hint_type.NUM:
                     allow = "0-9";
+                    break;
+                case safe_hint_type.NUM_CSV:
+                    allow = "0-9,";
                     break;
                 case safe_hint_type.ORG_NAME:
                     allow = "0-9a-zA-Z#&\\-,. " + ACUTE_ACCENT;
