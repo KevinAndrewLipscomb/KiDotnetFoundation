@@ -38,17 +38,30 @@ namespace ki_web_ui
             this.TemplateControl = new templatecontrol_class();
         }
 
-        public string AddIdentifiedControlToPlaceHolder(Control c, string id, PlaceHolder p)
+        public string AddIdentifiedControlToPlaceHolder
+          (
+          Page the_page,
+          Control c,
+          string id,
+          PlaceHolder p,
+          string instance_context_id_for_freshening
+          )
+          {
+          // Without specifying an ID for a dynamically-added control, ASP.NET supplies its own ID for the control.  The problem is that
+          // ASP.NET may specify one ID for the control at initial page presentation time and another ID at postback page presentation.
+          // Because postback events are tied to the ID of the control generating the postback, ASP.NET's ID assignment behavior may result
+          // in a postback event that is ignored the first time (but not subsequent times).
+          if (instance_context_id_for_freshening.Length > 0)
+            {
+            the_page.Session.Remove((instance_context_id_for_freshening + (instance_context_id_for_freshening.Contains(".UserControl_") ? "_" : ".UserControl_") + id.Replace("UserControl",k.EMPTY)).Replace("__","_") + ".p");
+            }
+          c.ID = id;
+          p.Controls.Add(c);
+          return id;
+          }
+        public string AddIdentifiedControlToPlaceHolder(Page the_page,Control c, string id, PlaceHolder p)
         {
-            string result;
-            // Without specifying an ID for a dynamically-added control, ASP.NET supplies its own ID for the control.  The problem is that
-            // ASP.NET may specify one ID for the control at initial page presentation time and another ID at postback page presentation.
-            // Because postback events are tied to the ID of the control generating the postback, ASP.NET's ID assignment behavior may result
-            // in a postback event that is ignored the first time (but not subsequent times).
-            c.ID = id;
-            p.Controls.Add(c);
-            result = id;
-            return result;
+        return AddIdentifiedControlToPlaceHolder(the_page,c,id,p,k.EMPTY);
         }
 
         public void Alert(Page the_page, k.alert_cause_type cause, k.alert_state_type state, string key, string value, bool be_using_scriptmanager)
@@ -301,12 +314,26 @@ namespace ki_web_ui
         {
             templatecontrol = new templatecontrol_class();
         }
-        protected string AddIdentifiedControlToPlaceHolder(Control c, string id, PlaceHolder p)
-        {
-            string result;
-            result = templatecontrol.AddIdentifiedControlToPlaceHolder(c, id, p);
-            return result;
-        }
+
+        protected string AddIdentifiedControlToPlaceHolder
+          (
+          Control c,
+          string id,
+          PlaceHolder p,
+          string instance_context_id_for_freshening
+          )
+          {
+          return templatecontrol.AddIdentifiedControlToPlaceHolder(Page,c,id,p,instance_context_id_for_freshening);
+          }
+        protected string AddIdentifiedControlToPlaceHolder
+          (
+          Control c,
+          string id,
+          PlaceHolder p
+          )
+          {
+          return AddIdentifiedControlToPlaceHolder(c,id,p,k.EMPTY);
+          }
 
         protected void Alert(k.alert_cause_type cause, k.alert_state_type state, string key, string value, bool be_using_scriptmanager)
         {
@@ -448,6 +475,11 @@ namespace ki_web_ui
       cipher.Mode = CipherMode.ECB;
       cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
       return new JavaScriptSerializer().Deserialize<Hashtable>(ascii_encoding.GetString(cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length)));
+      }
+
+    public string InstanceContextId()
+      {
+      return Page.ToString();
       }
 
         public void MessageDropCrumbAndTransferTo
@@ -622,12 +654,26 @@ namespace ki_web_ui
         {
             templatecontrol = new templatecontrol_class();
         }
-        protected string AddIdentifiedControlToPlaceHolder(Control c, string id, PlaceHolder p)
-        {
-            string result;
-            result = templatecontrol.AddIdentifiedControlToPlaceHolder(c, id, p);
-            return result;
-        }
+
+        protected string AddIdentifiedControlToPlaceHolder
+          (
+          Control c,
+          string id,
+          PlaceHolder p,
+          string instance_context_id_for_freshening
+          )
+          {
+          return templatecontrol.AddIdentifiedControlToPlaceHolder(Page,c,id,p,instance_context_id_for_freshening);
+          }
+        protected string AddIdentifiedControlToPlaceHolder
+          (
+          Control c,
+          string id,
+          PlaceHolder p
+          )
+          {
+          return AddIdentifiedControlToPlaceHolder(c,id,p,k.EMPTY);
+          }
 
         protected void Alert(k.alert_cause_type cause, k.alert_state_type state, string key, string value, bool be_using_scriptmanager)
         {
@@ -740,6 +786,11 @@ namespace ki_web_ui
         {
             Focus(c, false);
         }
+
+    public string InstanceContextId()
+      {
+      return (Page.ToString() + ".UserControl_" + ClientID.Replace("UserControl",k.EMPTY)).Replace("__","_");
+      }
 
         public void MessageDropCrumbAndTransferTo
           (
