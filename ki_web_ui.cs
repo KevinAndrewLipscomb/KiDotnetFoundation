@@ -196,7 +196,7 @@ namespace ki_web_ui
             (
             the_page.GetType(),
             "UpdatePanelCompliantTimeoutHandler",
-            "var redirect_timer; clearTimeout(redirect_timer); redirect_timer = setTimeout('window.location.href=\"" + path_to_timeout_page + "\";'," + redirect_timeout.ToString() + ");",
+            "var redirect_timer; clearTimeout(redirect_timer); redirect_timer = setTimeout('window.location.href=\"" + path_to_timeout_page + "\";'," + redirect_timeout.ToString() + ");" + k.NEW_LINE,
             true
             );
           }
@@ -477,7 +477,7 @@ namespace ki_web_ui
       return new JavaScriptSerializer().Deserialize<Hashtable>(ascii_encoding.GetString(cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length)));
       }
 
-    public string InstanceContextId()
+    public string InstanceId()
       {
       return Page.ToString();
       }
@@ -787,7 +787,7 @@ namespace ki_web_ui
             Focus(c, false);
         }
 
-    public string InstanceContextId()
+    public string InstanceId()
       {
       return (Page.ToString() + ".UserControl_" + ClientID.Replace("UserControl",k.EMPTY)).Replace("__","_");
       }
