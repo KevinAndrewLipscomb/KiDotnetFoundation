@@ -160,6 +160,17 @@ namespace ki_web_ui
             EstablishClientSideFunction(the_page, r.profile, r.body);
         }
 
+    public void EstablishFormReenablementScript(Page the_page)
+      {
+      the_page.ClientScript.RegisterClientScriptBlock
+        (
+        GetType(),
+        "FormReenablementScript",
+        "window.onLoad = document.getElementById('Form_control').disabled = false;" + k.NEW_LINE,
+        true
+        );
+      }
+
         public void EstablishGoogleWebFontLoader
           (
           Page the_page,
@@ -432,6 +443,11 @@ namespace ki_web_ui
         {
             templatecontrol.EstablishClientSideFunction(this.Page, r);
         }
+
+    protected void EstablishFormReenablementScript()
+      {
+      templatecontrol.EstablishFormReenablementScript(Page);
+      }
 
         protected void EstablishGoogleWebFontLoader(string web_font_config)
           {
@@ -752,6 +768,11 @@ namespace ki_web_ui
         {
             templatecontrol.EstablishClientSideFunction(this.Page, r);
         }
+
+    protected void EstablishFormReenablementScript()
+      {
+      templatecontrol.EstablishFormReenablementScript(Page);
+      }
 
         protected void EstablishGoogleWebFontLoader(string web_font_config)
           {
