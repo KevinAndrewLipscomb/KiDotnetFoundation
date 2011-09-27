@@ -362,7 +362,8 @@ namespace kix
                 significant_length = web_address.Length;
             }
             try {
-                Dns.GetHostEntry(web_address.Substring(0, significant_length));
+#warning Disregard the following compiler warning when targeting .NET Framework 3.5 or earlier:
+                Dns.Resolve(web_address.Substring(0, significant_length));
             }
             catch {
                 be_valid_domain_part_of_web_address = false;
