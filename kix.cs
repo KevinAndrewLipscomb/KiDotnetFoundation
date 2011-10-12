@@ -1084,7 +1084,9 @@ namespace kix
           }
 
         public static void SmtpMailSend(MailMessage mail_message)
-        {
+          {
+          if (mail_message.To.ToString().Length + mail_message.CC.ToString().Length + mail_message.Bcc.ToString().Length > 0)
+            {
             //
             // Instead of supplying a Body, which System.Net.Mail encodes as quoted-printable, supply an AlternateView and force its transfer encoding to 7bit or base64, depending.
             //
@@ -1133,7 +1135,8 @@ namespace kix
                 }
               }
             mail_message.Dispose();
-        }
+            }
+          }
 
         public static void SmtpMailSend(string from, string to, string subject, string message_string, bool be_html, string cc, string bcc, string reply_to)
         {
