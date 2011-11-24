@@ -40,6 +40,8 @@ namespace kix
         public const string SPACE_HYPHENS_SPACE = " -- ";
         public const string TAB = "\t";
 
+        public static Exception PRIVILEGE_VIOLATION = new Exception("kix.k.PRIVILEGE_VIOLATION");
+
         public struct client_side_function_rec_type
         {
             public string profile;
