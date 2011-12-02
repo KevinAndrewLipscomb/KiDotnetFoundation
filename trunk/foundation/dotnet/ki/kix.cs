@@ -1099,16 +1099,19 @@ namespace kix
               //
               var secondary_alternate_view = AlternateView.CreateAlternateViewFromString
                 (
-                //
-                // An alternative view whose transfer encoding is set to 7bit should contain no more than 72 characters before each line break -- and MUST NOT contain more than 998 characters before each line break.
-                //
-                //         1         2         3         4         5         6         7
-                //123456789012345678901234567890123456789012345678901234567890123456789012
-                 "Please set, upgrade, or switch your email client to view this message in" + NEW_LINE
-                +"the provided HTML format, unmodified.  Otherwise you will be missing out" + NEW_LINE
-                +"on important information that the application can not adequately render" + NEW_LINE
-                +"in plain text.  Contact support@frompaper2web.com if you have questions" + NEW_LINE
-                +"about this message." + NEW_LINE,
+                Unix2Dos // To be RFC-compliant, bare linefeeds may not occur anywhere in an email message.
+                  (
+                  //
+                  // An alternative view whose transfer encoding is set to 7bit should contain no more than 72 characters before each line break -- and MUST NOT contain more than 998 characters before each line break.
+                  //
+                  //         1         2         3         4         5         6         7
+                  //123456789012345678901234567890123456789012345678901234567890123456789012
+                   "Please set, upgrade, or switch your email client to view this message in" + NEW_LINE
+                  +"the provided HTML format, unmodified.  Otherwise you will be missing out" + NEW_LINE
+                  +"on important information that the application can not adequately render" + NEW_LINE
+                  +"in plain text.  Contact support@frompaper2web.com if you have questions" + NEW_LINE
+                  +"about this message." + NEW_LINE
+                  ),
                 mail_message.BodyEncoding,
                 null
                 );
@@ -1116,7 +1119,7 @@ namespace kix
               secondary_alternate_view.TransferEncoding = TransferEncoding.SevenBit;
               }
             //
-            var primary_alternate_view = AlternateView.CreateAlternateViewFromString(mail_message.Body,mail_message.BodyEncoding,(mail_message.IsBodyHtml ? "text/html" : null));
+            var primary_alternate_view = AlternateView.CreateAlternateViewFromString(Unix2Dos(mail_message.Body),mail_message.BodyEncoding,(mail_message.IsBodyHtml ? "text/html" : null));
             mail_message.AlternateViews.Add(primary_alternate_view);
             primary_alternate_view.TransferEncoding = (mail_message.IsBodyHtml ? TransferEncoding.Base64 : TransferEncoding.SevenBit);
             //
@@ -1142,6 +1145,11 @@ namespace kix
 
         public static void SmtpMailSend(string from, string to, string subject, string message_string, bool be_html, string cc, string bcc, string reply_to)
         {
+
+            //
+            // To be RFC-compliant, bare linefeeds may not occur anywhere in an email message.
+            //
+
             const string DOUBLE_COMMA = k.COMMA + k.COMMA;
             MailMessage mail_message = new MailMessage();
             //
@@ -1163,25 +1171,25 @@ namespace kix
               bcc = bcc.Replace(DOUBLE_COMMA,k.COMMA);
               }
             //
-            mail_message.From = new MailAddress(from);
+            mail_message.From = new MailAddress(Unix2Dos(from));
             if (to != k.EMPTY)
               {
-              mail_message.To.Add(to);
+              mail_message.To.Add(Unix2Dos(to));
               }
             mail_message.Subject = subject;
             mail_message.Body = message_string;
             mail_message.IsBodyHtml = be_html;
             if (cc != k.EMPTY)
               {
-              mail_message.CC.Add(cc);
+              mail_message.CC.Add(Unix2Dos(cc));
               }
             if (bcc != k.EMPTY)
               {
-              mail_message.Bcc.Add(bcc);
+              mail_message.Bcc.Add(Unix2Dos(bcc));
               }
             if (reply_to != k.EMPTY)
               {
-              mail_message.ReplyTo = new MailAddress(reply_to);
+              mail_message.ReplyTo = new MailAddress(Unix2Dos(reply_to));
               }
             SmtpMailSend(mail_message);
         }
@@ -1205,6 +1213,11 @@ namespace kix
         {
             SmtpMailSend(from, to, subject, message_string, be_html, cc, bcc, EMPTY);
         }
+
+        public static string Unix2Dos(string s)
+          {
+          return Regex.Replace(s,@"(?<!\r)\n","\r\n");
+          }
 
         public static string WrapText
           (
