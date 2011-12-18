@@ -214,8 +214,9 @@ namespace ki_web_ui
 
         public void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
+            the_page.Response.ClearHeaders(); // Clear out the effects of generating no-cache & no-store headers in UserControl_precontent.
             the_page.Response.Clear();
-            the_page.Response.AppendHeader("Content-Disposition", "attachment; filename=" + filename_sans_extension + ".xls");
+            the_page.Response.AppendHeader("Content-Disposition", "attachment; filename=\"" + filename_sans_extension + ".xls\"");  //Don't wrap filename in apostrophes.
             the_page.Response.BufferOutput = true;
             the_page.Response.ContentType = "application/vnd.ms-excel";
             the_page.EnableViewState = false;
@@ -225,8 +226,9 @@ namespace ki_web_ui
 
         public void FileDownload(Page the_page, string filename)
         {
+            the_page.Response.ClearHeaders(); // Clear out the effects of generating no-cache & no-store headers in UserControl_precontent.
             the_page.Response.Clear();
-            the_page.Response.AppendHeader("Content-Disposition", "attachment; filename=" + System.IO.Path.GetFileName(filename));
+            the_page.Response.AppendHeader("Content-Disposition", "attachment; filename=\"" + System.IO.Path.GetFileName(filename) + "\"");  //Don't wrap filename in apostrophes.
             the_page.Response.BufferOutput = true;
             the_page.Response.ContentType = "application/octet-stream";
             the_page.EnableViewState = false;
