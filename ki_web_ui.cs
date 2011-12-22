@@ -236,32 +236,51 @@ namespace ki_web_ui
             the_page.Response.End();
         }
 
-        public void Focus(Page the_page, Control c, bool be_using_scriptmanager)
-        {
-            if (be_using_scriptmanager)
+        public void Focus
+          (
+          Page the_page,
+          Control c,
+          bool be_using_scriptmanager,
+          bool be_redo
+          )
+          {
+          var key = "SetFocus";
+          var script = k.EMPTY
+          + " if (!document.getElementById(\"" + c.ClientID + "\").disabled)"
+          +   " {"
+          +   " document.getElementById(\"" + c.ClientID + "\").focus();";
+          if (be_redo)
+            //
+            // Place cursor at end of input.  Inefficiency necessary for cross-browser compatibility.
+            //
             {
-
-
-                ScriptManager.RegisterStartupScript(the_page, the_page.GetType(), "SetFocus", "if (!document.getElementById(\"" + c.ClientID + "\").disabled) {document.getElementById(\"" + c.ClientID + "\").focus();}", true);
+            script += k.EMPTY
+            + " var v = document.getElementById(\"" + c.ClientID + "\").value;"
+            + " document.getElementById(\"" + c.ClientID + "\").value = '';"
+            + " document.getElementById(\"" + c.ClientID + "\").value = v;";
             }
-            else
+          script += k.EMPTY
+          +   " }";
+          if (be_using_scriptmanager)
             {
-                this.Page.ClientScript.RegisterStartupScript(the_page.GetType(), "SetFocus", "if (!document.getElementById(\"" + c.ClientID + "\").disabled) {document.getElementById(\"" + c.ClientID + "\").focus();}", true);
+            ScriptManager.RegisterStartupScript(the_page,the_page.GetType(),key,script,true);
             }
-        }
-
-        public void Focus(Page the_page, Control c)
-        {
-            Focus(the_page, c, false);
-        }
+          else
+            {
+            Page.ClientScript.RegisterStartupScript(the_page.GetType(),key,script,true);
+            }
+          }
+        public void Focus(Page the_page,Control c,bool be_using_scriptmanager)
+          {
+          Focus(the_page,c,be_using_scriptmanager,be_redo:false);
+          }
+        public void Focus(Page the_page,Control c)
+          {
+          Focus(the_page,c,be_using_scriptmanager:false);
+          }
 
         public void RequireConfirmation(WebControl c, string prompt)
         {
-
-
-
-
-
             c.Attributes.Add("onclick", "return confirm(\"- - - ---------------------------------------------------- - - -\\n" + "       issuer:  \\t" + ConfigurationManager.AppSettings["application_name"] + "\\n" + "       state:   \\twarning\\n" + "       time:    \\t" + DateTime.Now.ToString("s") + "\\n" + "- - - ---------------------------------------------------- - - -\\n\\n\\n" + prompt.Replace(Convert.ToString(k.NEW_LINE), "\\n") + "\\n\\n\"" + ");");
         }
 
@@ -475,15 +494,23 @@ namespace ki_web_ui
             templatecontrol.FileDownload(this.Page, filename);
         }
 
-        protected void Focus(Control c, bool be_using_scriptmanager)
-        {
-            templatecontrol.Focus(this.Page, c, be_using_scriptmanager);
-        }
-
+        protected void Focus
+          (
+          Control c,
+          bool be_using_scriptmanager,
+          bool be_redo
+          )
+          {
+          templatecontrol.Focus(Page,c,be_using_scriptmanager,be_redo);
+          }
+        protected void Focus(Control c,bool be_using_scriptmanager)
+          {
+          Focus(c,be_using_scriptmanager,be_redo:false);
+          }
         protected void Focus(Control c)
-        {
-            Focus(c, false);
-        }
+          {
+          Focus(c,be_using_scriptmanager:false);
+          }
 
     protected Hashtable HashtableOfShieldedRequest()
       {
@@ -800,15 +827,23 @@ namespace ki_web_ui
             templatecontrol.FileDownload(this.Page, filename);
         }
 
-        protected void Focus(Control c, bool be_using_scriptmanager)
-        {
-            templatecontrol.Focus(this.Page, c, be_using_scriptmanager);
-        }
-
+        protected void Focus
+          (
+          Control c,
+          bool be_using_scriptmanager,
+          bool be_redo
+          )
+          {
+          templatecontrol.Focus(Page,c,be_using_scriptmanager,be_redo);
+          }
+        protected void Focus(Control c,bool be_using_scriptmanager)
+          {
+          Focus(c,be_using_scriptmanager,be_redo:false);
+          }
         protected void Focus(Control c)
-        {
-            Focus(c, false);
-        }
+          {
+          Focus(c,be_using_scriptmanager:false);
+          }
 
     public string InstanceId()
       {
