@@ -30,6 +30,7 @@ namespace kix
         public const string INVERTED_EXCLAMATION_MARK = "\u00A1"; // ¡
         public const string LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = "\u00AB"; //«
         public const string NEW_LINE = "\n";
+        public const string NO_BREAK_SPACE = "\u00A0";
         public const string OPEN_PARENTHESIS = "(";
         public const string PERIOD = ".";
         public const string QUOTE = "\"";
