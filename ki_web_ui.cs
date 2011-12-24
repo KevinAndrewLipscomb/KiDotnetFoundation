@@ -2,6 +2,7 @@ using kix;
 using System;
 using System.Collections;
 using System.Configuration;
+using System.Drawing;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -29,9 +30,21 @@ namespace ki_web_ui
         //Constructor  Create()
         public templatecontrol_class() : base()
         {
-            // TODO: Add any constructor code here
-
         }
+
+    internal void LabelizeAndSetTextForeColor
+      (
+      TableCell table_cell,
+      Color fore_color
+      )
+      {
+      var the_label = new Label();
+      the_label.ForeColor = fore_color;
+      the_label.Text = table_cell.Text;
+      table_cell.Text = k.EMPTY;
+      table_cell.Controls.Add(the_label);
+      }
+
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
@@ -415,6 +428,15 @@ namespace ki_web_ui
         {
             SessionSet("waypoint_stack", new Stack());
         }
+
+    protected void LabelizeAndSetTextForeColor
+      (
+      TableCell table_cell,
+      Color fore_color
+      )
+      {
+      templatecontrol.LabelizeAndSetTextForeColor(table_cell,fore_color);
+      }
 
         protected T Message<T>
           (
@@ -848,6 +870,15 @@ namespace ki_web_ui
     public string InstanceId()
       {
       return (Page.ToString() + ".UserControl_" + ClientID.Replace("UserControl",k.EMPTY)).Replace("__","_");
+      }
+
+    protected void LabelizeAndSetTextForeColor
+      (
+      TableCell table_cell,
+      Color fore_color
+      )
+      {
+      templatecontrol.LabelizeAndSetTextForeColor(table_cell,fore_color);
       }
 
         public void MessageDropCrumbAndTransferTo
