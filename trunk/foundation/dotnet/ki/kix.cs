@@ -87,11 +87,13 @@ namespace kix
             ALPHA,
             ALPHA_WORDS,
             ALPHANUM,
+            BASE64,
             CURRENCY_USA,
             DATE_TIME,
             ECMASCRIPT_WORD,
             EMAIL_ADDRESS,
             FINANCIAL_TERMS,
+            HEX,
             HOSTNAME,
             HTTP_TARGET,
             HUMAN_NAME,
@@ -942,6 +944,9 @@ namespace kix
                 case safe_hint_type.ALPHANUM:
                     allow = "0-9a-zA-Z";
                     break;
+                case safe_hint_type.BASE64:
+                    allow = "0-9a-zA-Z=+/";
+                    break;
                 case safe_hint_type.CURRENCY_USA:
                     allow = "0-9$,.";
                     break;
@@ -956,6 +961,9 @@ namespace kix
                     break;
                 case safe_hint_type.FINANCIAL_TERMS:
                     allow = "0-9a-zA-Z@#$%()\\-+=,/. " + CENT_SIGN;
+                    break;
+                case safe_hint_type.HEX:
+                    allow = "0-9a-fA-F";
                     break;
                 case safe_hint_type.HOSTNAME:
                     allow = "0-9a-zA-Z_\\-.";
