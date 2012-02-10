@@ -165,6 +165,9 @@ namespace ki_web_ui
                 case k.client_side_function_enumeral_type.LBS_TO_KGS:
                     EstablishClientSideFunction(the_page, "LbsToKgs(num_lbs)", "return Math.round(+num_lbs/2.204622);");
                     break;
+              case k.client_side_function_enumeral_type.REMOVE_EL:
+                    EstablishClientSideFunction(the_page, "RemoveEl(id)", "condemned_el = El(id); condemned_el.parentNode.removeChild(condemned_el);");
+                    break;
             }
         }
 

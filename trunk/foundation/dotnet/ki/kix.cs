@@ -79,6 +79,7 @@ namespace kix
             EL,
             KGS_TO_LBS,
             LBS_TO_KGS,
+            REMOVE_EL
         } // end client_side_function_enumeral_type
 
         public enum safe_hint_type
@@ -180,6 +181,11 @@ namespace kix
             {
             current = new subtype<int>(int.MinValue,-1);
             }
+          public int_negative(int val)
+            {
+            current = new subtype<int>(int.MinValue,-1);
+            current.val = val;
+            }
           public int val
             {
             get
@@ -199,6 +205,11 @@ namespace kix
           public int_nonnegative()
             {
             current = new subtype<int>(0,int.MaxValue);
+            }
+          public int_nonnegative(int val)
+            {
+            current = new subtype<int>(0,int.MaxValue);
+            current.val = val;
             }
           public int val
             {
@@ -220,6 +231,11 @@ namespace kix
             {
             current = new subtype<int>(int.MinValue,0);
             }
+          public int_nonpositive(int val)
+            {
+            current = new subtype<int>(int.MinValue,0);
+            current.val = val;
+            }
           public int val
             {
             get
@@ -239,6 +255,11 @@ namespace kix
           public int_positive()
             {
             current = new subtype<int>(1,int.MaxValue);
+            }
+          public int_positive(int val)
+            {
+            current = new subtype<int>(1,int.MaxValue);
+            current.val = val;
             }
           public int val
             {
@@ -260,6 +281,11 @@ namespace kix
             {
             current = new subtype<int>(-1,1);
             }
+          public int_sign_range(int val)
+            {
+            current = new subtype<int>(-1,1);
+            current.val = val;
+            }
           public int val
             {
             get
@@ -280,6 +306,11 @@ namespace kix
             {
             current = new subtype<decimal>(0,decimal.MaxValue);
             }
+          public decimal_nonnegative(decimal val)
+            {
+            current = new subtype<decimal>(0,decimal.MaxValue);
+            current.val = val;
+            }
           public decimal val
             {
             get
@@ -299,6 +330,11 @@ namespace kix
           public decimal_positive()
             {
             current = new subtype<decimal>(1,decimal.MaxValue);
+            }
+          public decimal_positive(decimal val)
+            {
+            current = new subtype<decimal>(1,decimal.MaxValue);
+            current.val = val;
             }
           public decimal val
             {
