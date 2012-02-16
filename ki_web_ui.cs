@@ -793,7 +793,11 @@ namespace ki_web_ui
           string anchor_name
           )
           {
-          ((Session["waypoint_stack"]) as Stack).Push(Path.GetFileName(Request.CurrentExecutionFilePath));
+          var current = Path.GetFileName(Request.CurrentExecutionFilePath);
+          if ((Session["waypoint_stack"] != null) && ((((Session["waypoint_stack"]) as Stack).Count == 0) || (((Session["waypoint_stack"]) as Stack).Peek().ToString() != current)))
+            {
+              ((Session["waypoint_stack"]) as Stack).Push(current);
+            }
           if (anchor_name == k.EMPTY)
             {
             Server.Transfer(the_path);
