@@ -506,6 +506,23 @@ namespace kix
           return notification_message;
           }
 
+        public static string EmptyIfInvalidEmailAddress(string e)
+          {
+          var empty_if_invalid = k.EMPTY;
+          try
+            {
+            new MailMessage().To.Add(e); // throws exception if invalid format
+            if (k.BeValidDomainPartOfEmailAddress(e))
+              {
+              empty_if_invalid = e;
+              }
+            }
+          catch
+            {
+            }
+          return empty_if_invalid;
+          }
+
         public static string EscalatedException(System.Exception the_exception)
         {
             return EscalatedException(the_exception, EMPTY);
