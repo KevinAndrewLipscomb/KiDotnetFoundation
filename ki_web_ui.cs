@@ -312,12 +312,21 @@ namespace ki_web_ui
       Hashtable hash_table
       )
       {
+      return "q=" + the_page.Server.UrlEncode(ShieldedValueOfHashtable(the_page,hash_table));
+      }
+
+    public string ShieldedValueOfHashtable
+      (
+      Page the_page,
+      Hashtable hash_table
+      )
+      {
       var ascii_encoding = new ASCIIEncoding();
       var bytearrayed_serialized_hashtable = ascii_encoding.GetBytes(new JavaScriptSerializer().Serialize(hash_table));
       var cipher = new RijndaelManaged();
       cipher.Mode = CipherMode.ECB;
       cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
-      return "q=" + the_page.Server.UrlEncode(Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(bytearrayed_serialized_hashtable,0,bytearrayed_serialized_hashtable.Length)));
+      return Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(bytearrayed_serialized_hashtable,0,bytearrayed_serialized_hashtable.Length));
       }
 
         public string StringOfControl(Control c)
@@ -537,14 +546,18 @@ namespace ki_web_ui
           Focus(c,be_using_scriptmanager:false);
           }
 
-    protected Hashtable HashtableOfShieldedRequest()
+    protected Hashtable HashtableOfShieldedRequest(string name)
       {
       var ascii_encoding = new ASCIIEncoding();
-      var unbase64ed_query_string = Convert.FromBase64String(Request["q"]);
+      var unbase64ed_query_string = Convert.FromBase64String(Request[name]);
       var cipher = new RijndaelManaged();
       cipher.Mode = CipherMode.ECB;
       cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
       return new JavaScriptSerializer().Deserialize<Hashtable>(ascii_encoding.GetString(cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length)));
+      }
+    protected Hashtable HashtableOfShieldedRequest()
+      {
+      return HashtableOfShieldedRequest(name:"q");
       }
 
     public string InstanceId()
@@ -676,6 +689,11 @@ namespace ki_web_ui
     protected string ShieldedQueryStringOfHashtable(Hashtable hash_table)
       {
       return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table);
+      }
+
+    protected string ShieldedValueOfHashtable(Hashtable hash_table)
+      {
+      return templatecontrol.ShieldedValueOfHashtable(Page,hash_table);
       }
 
         protected string StringOfControl(Control c)
@@ -927,6 +945,11 @@ namespace ki_web_ui
     protected string ShieldedQueryStringOfHashtable(Hashtable hash_table)
       {
       return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table);
+      }
+
+    protected string ShieldedValueOfHashtable(Hashtable hash_table)
+      {
+      return templatecontrol.ShieldedValueOfHashtable(Page,hash_table);
       }
 
         protected string StringOfControl(Control c)
