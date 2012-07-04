@@ -501,7 +501,7 @@ namespace kix
                 }
               }
             }
-          if (the_exception.ToString().Contains(":line ")) // else my code isn't responsible
+          if (the_exception.ToString().Contains("in C:\\inetpub\\wwwroot\\") && the_exception.ToString().Contains(":line ")) // else my code isn't responsible
             {
             SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "EXCEPTION REPORT", notification_message);
             SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sysadmin_sms_address"], "CRASH", user_designator);
