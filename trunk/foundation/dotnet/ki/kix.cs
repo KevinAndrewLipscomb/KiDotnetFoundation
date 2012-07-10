@@ -484,7 +484,8 @@ namespace kix
             {
             user_designator = user_identity_name;
             }
-          var notification_message = "[EXCEPTION]" + NEW_LINE + the_exception.ToString() + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE + NEW_LINE;
+          var the_exception_string = the_exception.ToString();
+          var notification_message = "[EXCEPTION]" + NEW_LINE + the_exception_string + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE + NEW_LINE;
           if (user_identity_name != EMPTY)
             {
             notification_message += "[USER]" + NEW_LINE + user_designator + NEW_LINE + NEW_LINE;
@@ -502,10 +503,15 @@ namespace kix
               }
             }
           SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "EXCEPTION REPORT", notification_message);
-          if (the_exception.ToString().Contains("in C:\\inetpub\\wwwroot\\") && the_exception.ToString().Contains(":line ")) // else I doubt my code is responsible, so there's no need to wake me up at night
+          if(
+              (the_exception_string.Contains("\\inetpub\\wwwroot\\") || the_exception_string.Contains("\\kveo-it-project\\"))
+            &&
+              the_exception_string.Contains(":line ")
+            )
             {
             SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sysadmin_sms_address"], "CRASH", user_designator);
             }
+            // else I doubt my code is responsible, so there's no need to wake me up at night.
           return notification_message;
           }
 
