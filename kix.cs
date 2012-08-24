@@ -896,6 +896,35 @@ namespace kix
             }
           }
 
+        public static string InsertOnDuplicateKeyUpdateTraditionalMimic
+          (
+          string target_table_name,
+          string key_field_name,
+          string key_field_value,
+          string childless_field_assignments_clause,
+          string additional_match_condition
+          )
+          {
+          //
+          // This routine generates command text that mimics the use of the INSERT . . . ON DUPLICATE KEY UPDATE construct as if the MySQL server's innodb_autoinc_lock_mode were set to Traditional (0).  In other words, it
+          // does its best to prevent gaps from forming in the assigned auto-increment values.
+          //
+          return k.EMPTY
+          + "START TRANSACTION"
+          + ";"
+          + " IF (select 1 from " + target_table_name + " where " + key_field_name + " = '" + key_field_value + "'" + (additional_match_condition.Length > 0 ? additional_match_condition : k.EMPTY) + ") = null THEN"
+          +   " insert " + target_table_name + " set " + key_field_name + " = NULLIF('" + key_field_value + "',''), " + childless_field_assignments_clause + ";"
+          + " ELSE"
+          +   " update " + target_table_name + " set " + childless_field_assignments_clause + " where " + key_field_name + " = '" + key_field_value + "';"
+          + " END IF"
+          + ";"
+          + " COMMIT";
+          }
+        public static string InsertOnDuplicateKeyUpdateTraditionalMimic(string target_table_name,string key_field_name,string key_field_value,string childless_field_assignments_clause)
+          {
+          return InsertOnDuplicateKeyUpdateTraditionalMimic(target_table_name,key_field_name,key_field_value,childless_field_assignments_clause,additional_match_condition:k.EMPTY);
+          }
+
         public static decimal Median(ArrayList sorted_array_list)
         {
             decimal result;
