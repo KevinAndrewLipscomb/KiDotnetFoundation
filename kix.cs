@@ -473,48 +473,6 @@ namespace kix
             return result;
         }
 
-        public static string EscalatedException(System.Exception the_exception, string user_identity_name, HttpSessionState session)
-          {
-          var user_designator = k.EMPTY;
-          if (user_identity_name == EMPTY)
-            {
-            user_designator = "unknown";
-            }
-          else
-            {
-            user_designator = user_identity_name;
-            }
-          var the_exception_string = the_exception.ToString();
-          var notification_message = "[EXCEPTION]" + NEW_LINE + the_exception_string + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE + NEW_LINE;
-          if (user_identity_name != EMPTY)
-            {
-            notification_message += "[USER]" + NEW_LINE + user_designator + NEW_LINE + NEW_LINE;
-            }
-          if ((session != null))
-            {
-            notification_message += "[SESSION]" + NEW_LINE;
-            if (session.Count > 0)
-              {
-              var i = new subtype<int>(0,session.Count);
-              for (i.val = 0; i.val <= (session.Count - 1); i.val++ )
-                {
-                notification_message += session.Keys[i.val].ToString() + " = " + session[i.val].ToString() + NEW_LINE;
-                }
-              }
-            }
-          SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "EXCEPTION REPORT", notification_message);
-          if(
-              (the_exception_string.Contains("\\inetpub\\wwwroot\\") || the_exception_string.Contains("\\kveo-it-project\\"))
-            &&
-              the_exception_string.Contains(":line ")
-            )
-            {
-            SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sysadmin_sms_address"], "CRASH", user_designator);
-            }
-            // else I doubt my code is responsible, so there's no need to wake me up at night.
-          return notification_message;
-          }
-
         public static string EmptyIfInvalidEmailAddress(string e)
           {
           var empty_if_invalid = k.EMPTY;
@@ -532,15 +490,70 @@ namespace kix
           return empty_if_invalid;
           }
 
-        public static string EscalatedException(System.Exception the_exception)
-        {
-            return EscalatedException(the_exception, EMPTY);
-        }
-
+        public static string EscalatedException
+          (
+          Exception the_exception,
+          string user_identity_name,
+          HttpSessionState session,
+          string engine_innodb_status
+          )
+          {
+          var user_designator = k.EMPTY;
+          if (user_identity_name.Length == 0)
+            {
+            user_designator = "unknown";
+            }
+          else
+            {
+            user_designator = user_identity_name;
+            }
+          var the_exception_string = the_exception.ToString();
+          var notification_message = "[EXCEPTION]" + NEW_LINE + the_exception_string + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE + NEW_LINE;
+          if (user_identity_name.Length > 0)
+            {
+            notification_message += "[USER]" + NEW_LINE + user_designator + NEW_LINE + NEW_LINE;
+            }
+          if ((session != null))
+            {
+            notification_message += "[SESSION]" + NEW_LINE;
+            if (session.Count > 0)
+              {
+              var i = new subtype<int>(0,session.Count);
+              for (i.val = 0; i.val <= (session.Count - 1); i.val++ )
+                {
+                notification_message += session.Keys[i.val].ToString() + " = " + session[i.val].ToString() + NEW_LINE;
+                }
+              notification_message += NEW_LINE;
+              }
+            }
+          if (engine_innodb_status.Length > 0)
+            {
+            notification_message += "[ENGINE INNODB STATUS (caution: not necessarily consistent with exception)]" + engine_innodb_status + NEW_LINE + NEW_LINE;
+            }
+          SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "EXCEPTION REPORT", notification_message);
+          if(
+              (the_exception.StackTrace.Contains("\\inetpub\\wwwroot\\") || the_exception.StackTrace.Contains("\\kveo-it-project\\"))
+            &&
+              the_exception.StackTrace.Contains(":line ")
+            )
+            {
+            SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sysadmin_sms_address"], "CRASH", user_designator);
+            }
+            // else I doubt my code is responsible, so there's no need to wake me up at night.
+          return notification_message;
+          }
+        public static string EscalatedException(System.Exception the_exception, string user_identity_name, HttpSessionState session)
+          {
+          return EscalatedException(the_exception,user_identity_name,session,engine_innodb_status:k.EMPTY);
+          }
         public static string EscalatedException(System.Exception the_exception, string user_identity_name)
-        {
-            return EscalatedException(the_exception, user_identity_name, null);
-        }
+          {
+          return EscalatedException(the_exception,user_identity_name,session:null);
+          }
+        public static string EscalatedException(System.Exception the_exception)
+          {
+          return EscalatedException(the_exception,user_identity_name:EMPTY);
+          }
 
         public static string ExpandAsperand(string s)
         {
@@ -912,7 +925,9 @@ namespace kix
           return k.EMPTY
           + "START TRANSACTION"
           + ";"
-          + " IF (select 1 from " + target_table_name + " where " + key_field_name + " = '" + key_field_value + "'" + (additional_match_condition.Length > 0 ? additional_match_condition : k.EMPTY) + ") = null THEN"
+          + " IF null ="
+          +   " (select 1 from " + target_table_name + " where " + key_field_name + " = '" + key_field_value + "'" + (additional_match_condition.Length > 0 ? additional_match_condition : k.EMPTY) + " LOCK IN SHARE MODE)"
+          + " THEN"
           +   " insert " + target_table_name + " set " + key_field_name + " = NULLIF('" + key_field_value + "',''), " + childless_field_assignments_clause + ";"
           + " ELSE"
           +   " update " + target_table_name + " set " + childless_field_assignments_clause + " where " + key_field_name + " = '" + key_field_value + "';"
