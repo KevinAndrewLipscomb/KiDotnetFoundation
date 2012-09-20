@@ -93,6 +93,7 @@ namespace kix
             DATE_TIME,
             ECMASCRIPT_WORD,
             EMAIL_ADDRESS,
+            EMAIL_ADDRESS_CSV,
             FINANCIAL_TERMS,
             HEX,
             HOSTNAME,
@@ -1034,6 +1035,9 @@ namespace kix
                 case safe_hint_type.EMAIL_ADDRESS:
                     allow = "0-9a-zA-Z_.@\\-+";
                     break;
+                case safe_hint_type.EMAIL_ADDRESS_CSV:
+                    allow = "0-9a-zA-Z_,.@\\-+";
+                    break;
                 case safe_hint_type.FINANCIAL_TERMS:
                     allow = "0-9a-zA-Z@#$%()\\-+=,/. " + CENT_SIGN;
                     break;
@@ -1227,7 +1231,7 @@ namespace kix
             }
           }
 
-        public static void SmtpMailSend(string from, string to, string subject, string message_string, bool be_html, string cc, string bcc, string reply_to)
+        public static void SmtpMailSend(string from, string to, string subject, string message_string, bool be_html, string cc, string bcc, string reply_to, bool suppress_bounce_to_appadmin)
         {
 
             //
@@ -1275,6 +1279,10 @@ namespace kix
               {
               mail_message.ReplyTo = new MailAddress(Unix2Dos(reply_to));
               }
+            else if (suppress_bounce_to_appadmin)
+              {
+              mail_message.Headers.Add("X-FromPaper2Web-Bounce-To-Appadmin","Suppress");
+              }
             SmtpMailSend(mail_message);
         }
 
@@ -1297,6 +1305,22 @@ namespace kix
         {
             SmtpMailSend(from, to, subject, message_string, be_html, cc, bcc, EMPTY);
         }
+
+        public static void SmtpMailSend(string from, string to, string subject, string message_string, bool be_html, string cc, string bcc, string reply_to)
+          {
+          SmtpMailSend
+            (
+            from:from,
+            to:to,
+            subject:subject,
+            message_string:message_string,
+            be_html:be_html,
+            cc:cc,
+            bcc:bcc,
+            reply_to:EMPTY,
+            suppress_bounce_to_appadmin:false
+            );
+          }
 
         public static string Unix2Dos(string s)
           {
@@ -1390,4 +1414,3 @@ namespace kix
     } // end k
 
 }
-
