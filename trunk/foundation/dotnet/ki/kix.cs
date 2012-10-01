@@ -1317,7 +1317,7 @@ namespace kix
             be_html:be_html,
             cc:cc,
             bcc:bcc,
-            reply_to:EMPTY,
+            reply_to:reply_to,
             suppress_bounce_to_appadmin:false
             );
           }
