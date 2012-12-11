@@ -450,13 +450,16 @@ namespace ki_web_ui
       templatecontrol.LabelizeAndSetTextForeColor(table_cell,fore_color);
       }
 
-        protected T Message<T>
+        protected T ConsumedMessage<T>
           (
           string folder_name,
           string aspx_name
           )
           {
-          return (T)(Session["msg_" + folder_name + "." + aspx_name]);
+          var name = "msg_" + folder_name + "." + aspx_name;
+          var consumed_message = (T)(Session[name]);
+          Session.Remove(name);
+          return consumed_message;
           }
 
         protected void DropCrumbAndTransferTo
