@@ -6,7 +6,6 @@ using System.Drawing;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -295,6 +294,17 @@ namespace ki_web_ui
           Focus(the_page,c,be_using_scriptmanager:false);
           }
 
+        public void MessageBack
+          (
+          Page the_page,
+          object msg,
+          string folder_name,
+          string aspx_name
+          )
+          {
+          SessionSet(the_page,"msg_" + folder_name + "." + aspx_name,msg);
+          }
+
         public void RequireConfirmation(WebControl c, string prompt)
         {
             c.Attributes.Add("onclick", "return confirm(\"- - - ---------------------------------------------------- - - -\\n" + "       issuer:  \\t" + ConfigurationManager.AppSettings["application_name"] + "\\n" + "       state:   \\twarning\\n" + "       time:    \\t" + DateTime.Now.ToString("s") + "\\n" + "- - - ---------------------------------------------------- - - -\\n\\n\\n" + prompt.Replace(Convert.ToString(k.NEW_LINE), "\\n") + "\\n\\n\"" + ");");
@@ -564,6 +574,16 @@ namespace ki_web_ui
       {
       return Page.ToString();
       }
+
+        public void MessageBack
+          (
+          object msg,
+          string folder_name,
+          string aspx_name
+          )
+          {
+          templatecontrol.MessageBack(Page,msg,folder_name,aspx_name);
+          }
 
         public void MessageDropCrumbAndTransferTo
           (
@@ -905,6 +925,16 @@ namespace ki_web_ui
       {
       templatecontrol.LabelizeAndSetTextForeColor(table_cell,fore_color);
       }
+
+        public void MessageBack
+          (
+          object msg,
+          string folder_name,
+          string aspx_name
+          )
+          {
+          templatecontrol.MessageBack(Page,msg,folder_name,aspx_name);
+          }
 
         public void MessageDropCrumbAndTransferTo
           (
