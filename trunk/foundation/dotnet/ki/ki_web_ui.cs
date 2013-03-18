@@ -694,6 +694,7 @@ namespace ki_web_ui
         protected override void OnInit(System.EventArgs e)
         {
             base.OnInit(e);
+            ViewStateUserKey = Session.SessionID; // Prevents Cross-Site Request Forgery attacks (and bugs?)
         }
 
         protected void RequireConfirmation(WebControl c, string prompt)
