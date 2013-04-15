@@ -596,6 +596,20 @@ namespace kix
             return FormatAsNanpPhoneNum(digits, false);
         }
 
+        public static k.int_sign_range IntsignrangeOfOptionalBoolean(string s)
+          {
+          var intsignrange_of_optional_boolean = new k.int_sign_range(-1);
+          if (new ArrayList() {"0","FALSE","NO"}.Contains(s.ToUpper()))
+            {
+            intsignrange_of_optional_boolean.val = 0;
+            }
+          else if (new ArrayList() {"1","TRUE","YES"}.Contains(s.ToUpper()))
+            {
+            intsignrange_of_optional_boolean.val = 1;
+            }
+          return intsignrange_of_optional_boolean;
+          }
+
         public static bool Has(string[] the_string_array, string the_string)
         {
             bool result;
@@ -916,6 +930,42 @@ namespace kix
             result = Percentile(50, sorted_array_list);
             return result;
         }
+
+        public static string NoneFalseTrueOf
+          (
+          k.int_sign_range condition,
+          string none
+          )
+          {
+          var none_false_true_of = none;
+          if (condition.val == 0)
+            {
+            none_false_true_of = "FALSE";
+            }
+          else if (condition.val == 1)
+            {
+            none_false_true_of = "TRUE";
+            }
+          return none_false_true_of;
+          }
+
+        public static string NoneNoYesOf
+          (
+          k.int_sign_range condition,
+          string none
+          )
+          {
+          var none_no_yes_of = none;
+          if (condition.val == 0)
+            {
+            none_no_yes_of = "No";
+            }
+          else if (condition.val == 1)
+            {
+            none_no_yes_of = "Yes";
+            }
+          return none_no_yes_of;
+          }
 
         public static decimal Percentile(uint p, ArrayList sorted_array_list)
         {
