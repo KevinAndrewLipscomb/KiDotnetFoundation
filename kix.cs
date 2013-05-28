@@ -413,6 +413,20 @@ namespace kix
             return result;
         }
 
+        public static bool BeValidFormatEmailAddress(string email_address)
+          {
+          var be_valid_format_email_address = false;
+          try
+            {
+            var valid_email_address = new MailAddress(email_address);
+            be_valid_format_email_address = true; // Won't make it here if there was an exception.
+            }
+          catch (FormatException)
+            {
+            }
+          return be_valid_format_email_address;
+          }
+
         public static bool BeValidNanpNumber(string s)
         {
             bool result;
