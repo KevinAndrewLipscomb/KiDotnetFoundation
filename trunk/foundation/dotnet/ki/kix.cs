@@ -1151,7 +1151,7 @@ namespace kix
                     allow = "0-9,";
                     break;
                 case safe_hint_type.ORG_NAME:
-                    allow = "0-9a-zA-Z#&\\-,. " + ACUTE_ACCENT;
+                    allow = "0-9a-zA-Z#&\\-,./ " + ACUTE_ACCENT;
                     break;
                 case safe_hint_type.ORG_NAME_ASTERICIZED:
                     allow = "0-9a-zA-Z#&*\\-,. " + ACUTE_ACCENT;
