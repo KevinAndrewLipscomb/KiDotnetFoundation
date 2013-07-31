@@ -530,7 +530,7 @@ namespace kix
             }
           if ((session != null))
             {
-            notification_message += "[SESSION]" + NEW_LINE;
+            notification_message += "[SESSION (has " + session.Count.ToString() + " items)]" + NEW_LINE;
             if (session.Count > 0)
               {
               var i = new subtype<int>(0,session.Count);
