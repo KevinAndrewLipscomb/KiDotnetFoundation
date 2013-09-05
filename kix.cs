@@ -624,25 +624,22 @@ namespace kix
           return intsignrange_of_optional_boolean;
           }
 
-        public static bool Has(string[] the_string_array, string the_string)
+    public static bool Has(string[] the_string_array, string the_string)
+      {
+      var i = new int_nonnegative();
+      var len = new int_nonnegative();
+      var result = false;
+      if (the_string_array != null)
         {
-            bool result;
-            uint i;
-            uint len;
-            result = false;
-            if (the_string_array != null)
-            {
-
-                len = (uint)((System.Array)(the_string_array)).Length;
-                i = 0;
-                while ((i < len) && (the_string_array[i] != the_string))
-                {
-                    i = i + 1;
-                }
-                result = (i < len);
-            }
-            return result;
+        len.val = ((System.Array)(the_string_array)).Length;
+        while ((i.val < len.val) && !(new ArrayList {the_string_array[i.val],the_string_array[i.val] + "/GENERALLY"}.Contains(the_string))) // Test against unscoped and scoped forms.
+          {
+          i.val++;
+          }
+        result = (i.val < len.val);
         }
+      return result;
+      }
 
         public static string HresultAnalysis(System.Exception the_exception)
           {
