@@ -632,7 +632,7 @@ namespace kix
       if (the_string_array != null)
         {
         len.val = ((System.Array)(the_string_array)).Length;
-        while ((i.val < len.val) && !(new ArrayList {the_string_array[i.val],the_string_array[i.val] + "/GENERALLY"}.Contains(the_string))) // Test against unscoped and scoped forms.
+        while ((i.val < len.val) && !(new ArrayList {the_string,the_string + "/GENERALLY"}.Contains(the_string_array[i.val]))) // Test against unscoped and scoped forms.
           {
           i.val++;
           }
