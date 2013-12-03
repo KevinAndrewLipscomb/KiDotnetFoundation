@@ -227,6 +227,18 @@ namespace ki_web_ui
             );
           }
 
+        public void ExportToCsv(System.Web.UI.Page the_page, string filename_sans_extension, string csv_string)
+        {
+            the_page.Response.ClearHeaders(); // Clear out the effects of generating no-cache & no-store headers in UserControl_precontent.
+            the_page.Response.Clear();
+            the_page.Response.AppendHeader("Content-Disposition", "attachment; filename=\"" + filename_sans_extension + ".csv\"");  //Don't wrap filename in apostrophes.
+            the_page.Response.BufferOutput = true;
+            the_page.Response.ContentType = "text/csv";
+            the_page.EnableViewState = false;
+            the_page.Response.Write(csv_string);
+            the_page.Response.End();
+        }
+
         public void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
             the_page.Response.ClearHeaders(); // Clear out the effects of generating no-cache & no-store headers in UserControl_precontent.
@@ -527,6 +539,11 @@ namespace ki_web_ui
           {
           templatecontrol.EstablishUpdatePanelCompliantTimeoutHandler(this.Page,redirect_timeout,path_to_timeout_page);
           }
+
+        protected void ExportToCsv(System.Web.UI.Page the_page, string filename_sans_extension, string csv_string)
+        {
+            templatecontrol.ExportToCsv(this.Page, filename_sans_extension, csv_string);
+        }
 
         protected void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
@@ -887,6 +904,11 @@ namespace ki_web_ui
           {
           templatecontrol.EstablishUpdatePanelCompliantTimeoutHandler(this.Page,redirect_timeout,path_to_timeout_page);
           }
+
+        protected void ExportToCsv(System.Web.UI.Page the_page, string filename_sans_extension, string csv_string)
+        {
+            templatecontrol.ExportToCsv(this.Page, filename_sans_extension, csv_string);
+        }
 
         protected void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
