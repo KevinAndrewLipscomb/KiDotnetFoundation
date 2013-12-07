@@ -39,6 +39,8 @@ namespace kix
         public const string SPACE = "\u0020";
         public const string SPACE_HYPHEN_SPACE = " - ";
         public const string SPACE_HYPHENS_SPACE = " -- ";
+        public const string SQL_CSV_FIELDIFY_PREFIX = "CONCAT('" + k.QUOTE + "',REPLACE(";
+        public const string SQL_CSV_FIELDIFY_SUFFIX = ",'" + k.QUOTE + "','" + k.DOUBLE_QUOTE + "'),'" + k.QUOTE + "')";
         public const string TAB = "\t";
 
         public static Exception PRIVILEGE_VIOLATION = new Exception("kix.k.PRIVILEGE_VIOLATION");
