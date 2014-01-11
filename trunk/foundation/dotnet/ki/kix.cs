@@ -1060,7 +1060,7 @@ namespace kix
         public static string Safe(string source_string, safe_hint_type hint)
         {
             string result;
-            string MODIFIED_LIBERAL_SET = "0-9a-zA-Z@#$%&()\\-+=,/.:? " + ACUTE_ACCENT + CENT_SIGN + DIAERESIS + INVERTED_EXCLAMATION_MARK + LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK + RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK;
+            string MODIFIED_LIBERAL_SET = "0-9a-zA-Z@#$%&()\\-+=[\\],/.:? " + ACUTE_ACCENT + CENT_SIGN + DIAERESIS + INVERTED_EXCLAMATION_MARK + LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK + RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK;
             string allow;
             string scratch_string;
             allow = EMPTY;
