@@ -538,7 +538,7 @@ namespace kix
               var i = new subtype<int>(0,session.Count);
               for (i.val = 0; i.val <= (session.Count - 1); i.val++ )
                 {
-                notification_message += session.Keys[i.val].ToString() + " = " + session[i.val].ToString() + NEW_LINE;
+                notification_message += session.Keys[i.val].ToString() + (session[i.val] == null ? " is null" : " = " + session[i.val].ToString()) + NEW_LINE;
                 }
               notification_message += NEW_LINE;
               }
