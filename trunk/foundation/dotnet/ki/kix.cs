@@ -1189,6 +1189,7 @@ namespace kix
                 scratch_string = scratch_string.Replace(SEMICOLON, INVERTED_EXCLAMATION_MARK);
                 scratch_string = scratch_string.Replace("<",LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK);
                 scratch_string = scratch_string.Replace(">",RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK);
+                scratch_string = scratch_string.Replace("!",PERIOD);
                 scratch_string = Regex.Replace(scratch_string, "[^" + allow + ']', EMPTY);
             }
             result = scratch_string;
