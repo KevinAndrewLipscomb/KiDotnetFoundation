@@ -49,6 +49,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\System.Web.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Web" />
   </ItemGroup>
@@ -62,6 +63,7 @@
     <Compile Include="kix.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ki_windows_forms.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
