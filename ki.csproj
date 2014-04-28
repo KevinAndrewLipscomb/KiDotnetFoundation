@@ -63,7 +63,6 @@
     <Compile Include="kix.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ki_windows_forms.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
