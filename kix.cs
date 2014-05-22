@@ -105,6 +105,7 @@ namespace kix
             HYPHENATED_ALPHA,
             HYPHENATED_ALPHA_WORDS,
             HYPHENATED_ALPHANUM,
+            HYPHENATED_ALPHANUM_WORDS,
             HYPHENATED_NUM,
             HYPHENATED_UNDERSCORED_ALPHANUM,
             KI_SORT_EXPRESSION,
@@ -1127,6 +1128,9 @@ namespace kix
                     break;
                 case safe_hint_type.HYPHENATED_ALPHANUM:
                     allow = "a-zA-Z0-9\\-";
+                    break;
+                case safe_hint_type.HYPHENATED_ALPHANUM_WORDS:
+                    allow = "a-zA-Z0-9\\- ";
                     break;
                 case safe_hint_type.HYPHENATED_NUM:
                     allow = "0-9\\-";
