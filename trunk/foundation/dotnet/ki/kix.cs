@@ -1139,7 +1139,7 @@ namespace kix
                     allow = "a-zA-Z0-9\\-_";
                     break;
                 case safe_hint_type.KI_SORT_EXPRESSION:
-                    allow = "a-zA-Z_%\\*()\\-+,./ ";
+                    allow = "0-9a-zA-Z_%\\*()\\-+,./ ";
                     break;
                 case safe_hint_type.MAKE_MODEL:
                     allow = "0-9a-zA-Z#*()\\-+/. ";
