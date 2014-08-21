@@ -424,6 +424,28 @@ namespace ki_web_ui
             Alert(cause, state, key, value, false);
         }
 
+    protected void AlertAndBackTrack
+      (
+      k.alert_cause_type cause,
+      k.alert_state_type state,
+      string key,
+      string value,
+      uint num_backsteps
+      )
+      {
+      var script = k.EMPTY
+      + "alert(\""
+      + templatecontrol.AlertMessage(ConfigurationManager.AppSettings["application_name"], cause, state, key, value)
+        .Replace(Convert.ToString(k.NEW_LINE), "\\n")
+        .Replace(k.TAB, "\\t") + "\");";
+      Response.Write("<script>" + script + "</script>");
+      BackTrack(num_backsteps);
+      }
+    protected void AlertAndBackTrack(k.alert_cause_type cause,k.alert_state_type state,string key,string value)
+      {
+      AlertAndBackTrack(cause,state,key,value,num_backsteps:1);
+      }
+
         protected void BackTrack(uint num_backsteps)
         {
             uint i;
@@ -813,6 +835,28 @@ namespace ki_web_ui
         {
             Alert(cause, state, key, value, false);
         }
+
+    protected void AlertAndBackTrack
+      (
+      k.alert_cause_type cause,
+      k.alert_state_type state,
+      string key,
+      string value,
+      uint num_backsteps
+      )
+      {
+      var script = k.EMPTY
+      + "alert(\""
+      + templatecontrol.AlertMessage(ConfigurationManager.AppSettings["application_name"], cause, state, key, value)
+        .Replace(Convert.ToString(k.NEW_LINE), "\\n")
+        .Replace(k.TAB, "\\t") + "\");";
+      Response.Write("<script>" + script + "</script>");
+      BackTrack(num_backsteps);
+      }
+    protected void AlertAndBackTrack(k.alert_cause_type cause,k.alert_state_type state,string key,string value)
+      {
+      AlertAndBackTrack(cause,state,key,value,num_backsteps:1);
+      }
 
         protected string AlertMessage(k.alert_cause_type cause, k.alert_state_type state, string key, string value)
         {
