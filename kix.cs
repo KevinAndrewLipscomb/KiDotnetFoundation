@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web.Script.Serialization;
 using System.Web.SessionState;
 using System.Web.UI;
 
@@ -1234,6 +1235,16 @@ namespace kix
             System.IO.File.Delete(scratch_pathname);
 
         }
+
+    public static string ShieldedValueOfHashtable(Hashtable hash_table)
+      {
+      var ascii_encoding = new ASCIIEncoding();
+      var bytearrayed_serialized_hashtable = ascii_encoding.GetBytes(new JavaScriptSerializer().Serialize(hash_table));
+      var cipher = new RijndaelManaged();
+      cipher.Mode = CipherMode.ECB;
+      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
+      return Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(bytearrayed_serialized_hashtable,0,bytearrayed_serialized_hashtable.Length));
+      }
 
         public static void SilentAlarm(System.Exception the_exception)
           {
