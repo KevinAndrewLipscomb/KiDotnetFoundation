@@ -192,6 +192,9 @@ namespace ki_web_ui
           string web_font_config
           )
           {
+          //
+          // NOTE: The value of the "key" query parameter must be registered on the Google Developers Console as an API key with a Referrer value of "frompaper2web.com/*".
+          //
           the_page.ClientScript.RegisterClientScriptBlock
             (
             the_page.GetType(),
