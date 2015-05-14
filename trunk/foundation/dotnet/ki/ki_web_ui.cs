@@ -200,7 +200,7 @@ namespace ki_web_ui
             + " (function ()"
             +   " {"
             +   " var wf = document.createElement('script');"
-            +   " wf.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';"
+            +   " wf.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js?key=AIzaSyADewoPKVk4Yu42GkxP1zpihWZts78ig_8';"
             +   " wf.type = 'text/javascript';"
             +   " wf.async = 'true';"
             +   " var s = document.getElementsByTagName('script')[0];"
