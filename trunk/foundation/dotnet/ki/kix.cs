@@ -1321,24 +1321,24 @@ namespace kix
             const string DOUBLE_COMMA = k.COMMA + k.COMMA;
             MailMessage mail_message = new MailMessage();
             //
-            to = to.Trim(new char[] {Convert.ToChar(k.COMMA)}).Replace(k.SPACE,k.EMPTY);
+            to = to.Replace(k.SPACE,k.EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
             while (to.Contains(DOUBLE_COMMA))
               {
               to = to.Replace(DOUBLE_COMMA,k.COMMA);
               }
             //
-            cc = cc.Trim(new char[] {Convert.ToChar(k.COMMA)}).Replace(k.SPACE,k.EMPTY);
+            cc = cc.Replace(k.SPACE,k.EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
             while (cc.Contains(DOUBLE_COMMA))
               {
               cc = cc.Replace(DOUBLE_COMMA,k.COMMA);
               }
             //
-            bcc = bcc.Trim(new char[] {Convert.ToChar(k.COMMA)}).Replace(k.SPACE,k.EMPTY);
+            bcc = bcc.Replace(k.SPACE,k.EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
             while (bcc.Contains(DOUBLE_COMMA))
               {
               bcc = bcc.Replace(DOUBLE_COMMA,k.COMMA);
               }
-            reply_to = reply_to.Trim(new char[] {Convert.ToChar(k.COMMA)}).Replace(k.SPACE,k.EMPTY);
+            reply_to = reply_to.Replace(k.SPACE,k.EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
             while (reply_to.Contains(DOUBLE_COMMA))
               {
               reply_to = reply_to.Replace(DOUBLE_COMMA,k.COMMA);
@@ -1362,7 +1362,7 @@ namespace kix
               }
             if (reply_to != k.EMPTY)
               {
-              mail_message.ReplyToList.Add(new MailAddress(Unix2Dos(reply_to)));
+              mail_message.ReplyToList.Add(Unix2Dos(reply_to));
               }
             else if (suppress_bounce_to_appadmin)
               {
