@@ -1338,6 +1338,11 @@ namespace kix
               {
               bcc = bcc.Replace(DOUBLE_COMMA,k.COMMA);
               }
+            reply_to = reply_to.Trim(new char[] {Convert.ToChar(k.COMMA)}).Replace(k.SPACE,k.EMPTY);
+            while (reply_to.Contains(DOUBLE_COMMA))
+              {
+              reply_to = reply_to.Replace(DOUBLE_COMMA,k.COMMA);
+              }
             //
             mail_message.From = new MailAddress(Unix2Dos(from));
             if (to != k.EMPTY)
