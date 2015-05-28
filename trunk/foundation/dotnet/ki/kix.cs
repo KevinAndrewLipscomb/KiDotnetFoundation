@@ -1357,7 +1357,7 @@ namespace kix
               }
             if (reply_to != k.EMPTY)
               {
-              mail_message.ReplyTo = new MailAddress(Unix2Dos(reply_to));
+              mail_message.ReplyToList.Add(new MailAddress(Unix2Dos(reply_to)));
               }
             else if (suppress_bounce_to_appadmin)
               {
