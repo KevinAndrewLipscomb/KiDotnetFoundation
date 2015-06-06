@@ -56,9 +56,7 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ki.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Gpw.cs" />
     <Compile Include="ki_web_ui.cs">
       <SubType>Code</SubType>
     </Compile>
