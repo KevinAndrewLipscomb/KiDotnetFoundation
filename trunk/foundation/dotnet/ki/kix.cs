@@ -1415,7 +1415,7 @@ namespace kix
         source_string:Guid.NewGuid().ToString().Substring
           (
           startIndex:0,
-          length:length
+          length:Math.Max(0,Math.Min(length,32))
           ),
         hint:safe_hint_type.ALPHANUM
         )
