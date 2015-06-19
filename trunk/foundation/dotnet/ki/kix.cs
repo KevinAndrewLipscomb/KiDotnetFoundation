@@ -304,7 +304,7 @@ namespace kix
             }
           }
 
-        public class decimal_nonnegative
+    public class decimal_nonnegative
           {
           private subtype<decimal> current;
           public decimal_nonnegative()
@@ -1406,6 +1406,26 @@ namespace kix
             suppress_bounce_to_appadmin:false
             );
           }
+
+    public static string UnambiguousPseudorandomLimitedAlphanumericString(int length)
+      {
+      var unambiguous_pseudorandom_limited_alphanumeric_string = k.EMPTY;
+      var unambiguous_pseudorandom_limited_alphanumeric_char_array = Safe
+        (
+        source_string:Guid.NewGuid().ToString().Substring
+          (
+          startIndex:0,
+          length:length
+          ),
+        hint:safe_hint_type.ALPHANUM
+        )
+        .ToCharArray();
+      for (var i = new subtype<int>(0,unambiguous_pseudorandom_limited_alphanumeric_char_array.Length); i.val < i.LAST; i.val++)
+        {
+        unambiguous_pseudorandom_limited_alphanumeric_string += (unambiguous_pseudorandom_limited_alphanumeric_char_array[i.val] == '9' ? 'a' : (char)(unambiguous_pseudorandom_limited_alphanumeric_char_array[i.val] + 1));
+        }
+      return unambiguous_pseudorandom_limited_alphanumeric_string;
+      }
 
         public static string Unix2Dos(string s)
           {
