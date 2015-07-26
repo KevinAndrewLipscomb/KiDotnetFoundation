@@ -1410,15 +1410,17 @@ namespace kix
     public static string UnambiguousPseudorandomLimitedAlphanumericString(int length)
       {
       var unambiguous_pseudorandom_limited_alphanumeric_string = k.EMPTY;
-      var unambiguous_pseudorandom_limited_alphanumeric_char_array = Safe
-        (
-        source_string:Guid.NewGuid().ToString().Substring
+      var unambiguous_pseudorandom_limited_alphanumeric_char_array =
+        Safe
+          (
+          source_string:Guid.NewGuid().ToString(),
+          hint:safe_hint_type.ALPHANUM
+          )
+        .Substring
           (
           startIndex:0,
           length:Math.Max(0,Math.Min(length,32))
-          ),
-        hint:safe_hint_type.ALPHANUM
-        )
+          )
         .ToCharArray();
       for (var i = new subtype<int>(0,unambiguous_pseudorandom_limited_alphanumeric_char_array.Length); i.val < i.LAST; i.val++)
         {
