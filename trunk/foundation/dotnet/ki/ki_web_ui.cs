@@ -463,7 +463,10 @@ namespace ki_web_ui
             }
             if (!File.Exists(path:Server.MapPath(".") + "/" + p))
               {
-              (Session["waypoint_stack"] as Stack).Clear();
+              if (Session["waypoint_stack"] != null)
+                {
+                (Session["waypoint_stack"] as Stack).Clear();
+                }
               Server.Transfer("~/Default.aspx");
               }
             this.Server.Transfer(p);
