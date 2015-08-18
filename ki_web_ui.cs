@@ -246,7 +246,7 @@ namespace ki_web_ui
         {
             the_page.Response.ClearHeaders(); // Clear out the effects of generating no-cache & no-store headers in UserControl_precontent.
             the_page.Response.Clear();
-            the_page.Response.AppendHeader("Content-Disposition", "attachment; filename=\"" + filename_sans_extension + ".xls\"");  //Don't wrap filename in apostrophes.
+            the_page.Response.AppendHeader("Content-Disposition", "attachment; filename=\"" + filename_sans_extension + ".xlsx\"");  //Don't wrap filename in apostrophes.
             the_page.Response.BufferOutput = true;
             the_page.Response.ContentType = "application/vnd.ms-excel";
             the_page.EnableViewState = false;
