@@ -244,6 +244,11 @@ namespace ki_web_ui
 
         public void ExportToExcel(System.Web.UI.Page the_page, string filename_sans_extension, string excel_string)
         {
+        //
+        // Note that if the excel_string you supply to this routine is actually in HTML or XMLSS format and the end-user uses MS Excel 2007 or later, Excel will prompt the end-user whether to continue opening the file,
+        // because this routine sends the file with an XLS extension (which implies BFF content).  Adjusting the ContentType (MIME type) will not help.  Consider alerting the end-user that it's ok to respond "Yes" to
+        // continue opening the file in Excel.
+        //
             the_page.Response.ClearHeaders(); // Clear out the effects of generating no-cache & no-store headers in UserControl_precontent.
             the_page.Response.Clear();
             the_page.Response.AppendHeader("Content-Disposition", "attachment; filename=\"" + filename_sans_extension + ".xls\"");  //Don't wrap filename in apostrophes.
