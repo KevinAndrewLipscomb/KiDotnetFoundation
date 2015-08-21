@@ -462,6 +462,11 @@ namespace kix
             return result;
         }
 
+    public static bool BeValidUsEin(string s)
+      {
+      return (Safe(s,safe_hint_type.NUM).Length == 9);
+      }
+
         public static bool BooleanOfYesNo(string yn)
         {
             bool result;
@@ -613,6 +618,11 @@ namespace kix
         {
             return FormatAsNanpPhoneNum(digits, false);
         }
+
+    public static string FormatAsUsEin(string digits)
+      {
+      return (BeValidUsEin(digits) ? digits.Substring(0,2) + HYPHEN + digits.Substring(2) : k.EMPTY);
+      }
 
         public static k.int_sign_range IntsignrangeOfOptionalBoolean(string s)
           {
