@@ -15,8 +15,9 @@ using System.Web.SessionState;
 using System.Web.UI;
 
 namespace kix
-{
-    public static class k
+  {
+
+  public static class k
     {
         public const string ACUTE_ACCENT = "\u00B4"; // ´
         public const string APOSTROPHE = "\'";
@@ -992,6 +993,28 @@ namespace kix
           return none_no_yes_of;
           }
 
+     public static string OrdinalRenditionOf(int_positive n)
+       {
+       var n_val_string = n.val.ToString();
+       var suffix = "th";
+       if (!(n_val_string.EndsWith("11") || n_val_string.EndsWith("12") || n_val_string.EndsWith("13")))
+         {
+         if (n_val_string.EndsWith("1"))
+           {
+           suffix = "st";
+           }
+         else if (n_val_string.EndsWith("2"))
+           {
+           suffix = "nd";
+           }
+         else if (n_val_string.EndsWith("3"))
+           {
+           suffix = "rd";
+           }
+         }
+       return n_val_string + suffix;
+       }
+
         public static decimal Percentile(uint p, ArrayList sorted_array_list)
         {
             decimal result;
@@ -1530,4 +1553,4 @@ namespace kix
 
     } // end k
 
-}
+  }
