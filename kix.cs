@@ -1576,7 +1576,7 @@ namespace kix
           wrap_text += line_list[i.val - 1].Trim() + insert_string;
           i.val++;
           }
-        return wrap_text + line_list[i.val - 1];
+        return wrap_text + (line_list_count > 0 ? line_list[i.val - 1] : EMPTY);
         }
       }
 
