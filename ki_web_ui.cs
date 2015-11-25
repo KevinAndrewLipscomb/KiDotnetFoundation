@@ -1,9 +1,11 @@
 using kix;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Script.Serialization;
@@ -413,10 +415,11 @@ namespace ki_web_ui
     public string ShieldedQueryStringOfHashtable
       (
       Page the_page,
-      Hashtable hash_table
+      Hashtable hash_table,
+      bool do_compress = false
       )
       {
-      return "q=" + the_page.Server.UrlEncode(k.ShieldedValueOfHashtable(hash_table));
+      return "q=" + the_page.Server.UrlEncode(k.ShieldedValueOfHashtable(hash_table,do_compress));
       }
 
     public string StringOfControl(Control c)
@@ -684,14 +687,34 @@ namespace ki_web_ui
       templatecontrol.Focus(Page,c,be_using_scriptmanager,be_redo);
       }
 
-    protected Hashtable HashtableOfShieldedRequest(string name = "q")
+    protected Hashtable HashtableOfShieldedRequest
+      (
+      string name = "q",
+      bool do_uncompress = false
+      )
       {
       var ascii_encoding = new ASCIIEncoding();
       var unbase64ed_query_string = Convert.FromBase64String(Request[name]);
       var cipher = new RijndaelManaged();
       cipher.Mode = CipherMode.ECB;
       cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
-      return new JavaScriptSerializer().Deserialize<Hashtable>(ascii_encoding.GetString(cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length)));
+      var transformed_final_block = cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length);
+      //
+      var decompressed_size = new k.int_nonnegative();
+      var byte_q = new Queue<byte>();
+      if (do_uncompress)
+        {
+        var deflate_stream = new DeflateStream(new MemoryStream(transformed_final_block),CompressionMode.Decompress);
+        for (var i = deflate_stream.ReadByte(); i > -1; i = deflate_stream.ReadByte())
+          {
+          byte_q.Enqueue(Convert.ToByte(i));
+          }
+        decompressed_size.val = byte_q.Count;
+        }
+      var byte_array = new byte[decompressed_size.val];
+      byte_q.CopyTo(byte_array,0);
+      //
+      return new JavaScriptSerializer().Deserialize<Hashtable>(ascii_encoding.GetString((do_uncompress ? byte_array : transformed_final_block)));
       }
 
     public string InstanceId()
@@ -849,9 +872,13 @@ namespace ki_web_ui
       templatecontrol.SessionSet(Page,name,value);
       }
 
-    protected string ShieldedQueryStringOfHashtable(Hashtable hash_table)
+    protected string ShieldedQueryStringOfHashtable
+      (
+      Hashtable hash_table,
+      bool do_compress = false
+      )
       {
-      return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table);
+      return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table,do_compress);
       }
 
     protected string ShieldedValueOfHashtable(Hashtable hash_table)
@@ -1115,9 +1142,13 @@ namespace ki_web_ui
       templatecontrol.SessionSet(Page,name,value);
       }
 
-    protected string ShieldedQueryStringOfHashtable(Hashtable hash_table)
+    protected string ShieldedQueryStringOfHashtable
+      (
+      Hashtable hash_table,
+      bool do_compress = false
+      )
       {
-      return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table);
+      return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table,do_compress);
       }
 
     protected string ShieldedValueOfHashtable(Hashtable hash_table)

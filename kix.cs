@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
@@ -1341,14 +1343,32 @@ namespace kix
       System.IO.File.Delete(scratch_pathname);
       }
 
-    public static string ShieldedValueOfHashtable(Hashtable hash_table)
+    public static string ShieldedValueOfHashtable
+      (
+      Hashtable hash_table,
+      bool do_compress = false
+      )
       {
       var ascii_encoding = new ASCIIEncoding();
       var bytearrayed_serialized_hashtable = ascii_encoding.GetBytes(new JavaScriptSerializer().Serialize(hash_table));
+      //
+      byte[] input_buffer;
+      if (do_compress)
+        {
+        var memory_stream = new MemoryStream();
+        var deflate_stream = new DeflateStream(memory_stream,CompressionLevel.Optimal);
+        deflate_stream.Write(bytearrayed_serialized_hashtable,0,bytearrayed_serialized_hashtable.Length);
+        deflate_stream.Dispose();
+        input_buffer = memory_stream.ToArray();
+        }
+      else
+        {
+        input_buffer = bytearrayed_serialized_hashtable;
+        }
       var cipher = new RijndaelManaged();
       cipher.Mode = CipherMode.ECB;
       cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
-      return Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(bytearrayed_serialized_hashtable,0,bytearrayed_serialized_hashtable.Length));
+      return Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(input_buffer,0,input_buffer.Length));
       }
 
     public static void SilentAlarm(System.Exception the_exception)
