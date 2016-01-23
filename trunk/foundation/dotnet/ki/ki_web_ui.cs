@@ -527,6 +527,25 @@ namespace ki_web_ui
       BackTrack(num_backsteps);
       }
 
+    protected void AlertAndWindowHistoryBack
+      (
+      k.alert_cause_type cause,
+      k.alert_state_type state,
+      string key,
+      string value,
+      uint num_backsteps = 1
+      )
+      {
+      var script = "alert(\"" + templatecontrol.AlertMessage(ConfigurationManager.AppSettings["application_name"],cause,state,key,value).Replace(Convert.ToString(k.NEW_LINE),"\\n").Replace(k.TAB,"\\t") + "\");";
+      Response.Write
+        (
+        "<script>"
+        + script
+        + " window.history.back();"
+        + "</script>"
+        );
+      }
+
     protected void BackTrack(uint num_backsteps = 1)
       {
       var p = "~/Default.aspx";
