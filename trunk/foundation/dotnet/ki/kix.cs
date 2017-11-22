@@ -1371,10 +1371,21 @@ namespace kix
       return Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(input_buffer,0,input_buffer.Length));
       }
 
-    public static void SilentAlarm(System.Exception the_exception)
+    public static void SilentAlarm(Exception the_exception)
       {
       be_smtp_mail_send_reliable = false;
-      SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "SILENT ALARM", "[EXCEPTION]" + NEW_LINE + the_exception.ToString() + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE);
+      SmtpMailSend
+        (
+        from:ConfigurationManager.AppSettings["sender_email_address"],
+        to:ConfigurationManager.AppSettings["sender_email_address"],
+        subject:"SILENT ALARM",
+        message_string:k.EMPTY
+        + "[EXCEPTION]" + NEW_LINE
+        + the_exception.ToString() + NEW_LINE
+        + NEW_LINE
+        + "[HRESULT]" + NEW_LINE
+        + HresultAnalysis(the_exception) + NEW_LINE
+        );
       be_smtp_mail_send_reliable = true;
       }
 
@@ -1399,7 +1410,7 @@ namespace kix
               //
               //         1         2         3         4         5         6         7
               //123456789012345678901234567890123456789012345678901234567890123456789012
-                "Please set, upgrade, or switch your email client to view this message in" + NEW_LINE
+               "Please set, upgrade, or switch your email client to view this message in" + NEW_LINE
               +"the provided HTML format, unmodified.  Otherwise you will be missing out" + NEW_LINE
               +"on important information that the application can not adequately render" + NEW_LINE
               +"in plain text.  Contact support@frompaper2web.com if you have questions" + NEW_LINE
@@ -1421,7 +1432,7 @@ namespace kix
           {
           (new SmtpClient(ConfigurationManager.AppSettings["smtp_server"])).Send(mail_message);
           }
-        catch(System.Exception e)
+        catch(Exception e)
           {
           if (be_smtp_mail_send_reliable)
             {
