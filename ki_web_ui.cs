@@ -229,21 +229,16 @@ namespace ki_web_ui
       //
       // NOTE: The value of the "key" query parameter must be registered on the Google Developers Console as an API key with a Referrer value of "frompaper2web.com/*".
       //
+      the_page.ClientScript.RegisterClientScriptInclude
+        (
+        key:"GoogleWebFontLoaderInclude",
+        url:"https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js?key=AIzaSyADewoPKVk4Yu42GkxP1zpihWZts78ig_8"
+        );
       the_page.ClientScript.RegisterClientScriptBlock
         (
         type:the_page.GetType(),
-        key:"GoogleWebFontLoader",
-        script:"WebFontConfig = { " + web_font_config + " };"
-        + " (function ()"
-        +   " {"
-        +   " var wf = document.createElement('script');"
-        +   " wf.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js?key=AIzaSyADewoPKVk4Yu42GkxP1zpihWZts78ig_8';"
-        +   " wf.type = 'text/javascript';"
-        +   " wf.async = 'true';"
-        +   " var s = document.getElementsByTagName('script')[0];"
-        +   " s.parentNode.insertBefore(wf, s);"
-        +   " }"
-        + " )();",
+        key:"GoogleWebFontLoaderBlock",
+        script:"WebFont.load({" + web_font_config + "});",
         addScriptTags:true
         );
       }
