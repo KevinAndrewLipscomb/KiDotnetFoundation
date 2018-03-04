@@ -54,6 +54,7 @@ namespace kix
     public const string HYPHEN = "-";
     public const string INVERTED_EXCLAMATION_MARK = "\u00A1"; // ¡
     public const string LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = "\u00AB"; //«
+    public const short MAX_RFC_2822_ET_SEQ_EMAIL_LINE_LENGTH = 998;
     public const string NEW_LINE = "\n";
     public const string NO_BREAK_SPACE = "\u00A0";
     public const string OPEN_PARENTHESIS = "(";
@@ -1406,7 +1407,8 @@ namespace kix
             Unix2Dos // To be RFC-compliant, bare linefeeds may not occur anywhere in an email message.
               (
               //
-              // An alternative view whose transfer encoding is set to 7bit should contain no more than 72 characters before each line break -- and MUST NOT contain more than 998 characters before each line break.
+              // An alternative view whose transfer encoding is set to 7bit should contain no more than 72 characters before each line break -- and MUST NOT contain more than 998 (MAX_RFC_2822_ET_SEQ_EMAIL_LINE_LENGTH) characters before each
+              // line break.
               //
               //         1         2         3         4         5         6         7
               //123456789012345678901234567890123456789012345678901234567890123456789012
