@@ -54,9 +54,6 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Web" />
-    <Reference Include="WCFExtrasPlus, Version=2.4.0.6, Culture=neutral, PublicKeyToken=f8633fc5451b43fc, processorArchitecture=MSIL">
-      <HintPath>packages\WCFExtrasPlus.2.4.0\lib\net45\WCFExtrasPlus.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gpw.cs" />
@@ -66,9 +63,6 @@
     <Compile Include="kix.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
