@@ -478,7 +478,7 @@ namespace ki_web_ui
       VISIT_POSTBACK_STALE,
       }
 
-    private templatecontrol_class templatecontrol = null;
+    private readonly templatecontrol_class templatecontrol = null;
 
     public page_class() : base() // CONSTRUCTOR
       {
@@ -527,8 +527,7 @@ namespace ki_web_ui
       k.alert_cause_type cause,
       k.alert_state_type state,
       string key,
-      string value,
-      uint num_backsteps = 1
+      string value
       )
       {
       var script = "alert(\"" + templatecontrol.AlertMessage(ConfigurationManager.AppSettings["application_name"],cause,state,key,value).Replace(Convert.ToString(k.NEW_LINE),"\\n").Replace(k.TAB,"\\t") + "\");";
@@ -661,7 +660,6 @@ namespace ki_web_ui
 
     protected void ExportToCsv
       (
-      Page the_page,
       string filename_sans_extension,
       string csv_string
       )
@@ -671,7 +669,6 @@ namespace ki_web_ui
 
     protected void ExportToExcel
       (
-      Page the_page,
       string filename_sans_extension,
       string excel_string
       )
@@ -681,7 +678,6 @@ namespace ki_web_ui
 
     protected void FileDownload
       (
-      Page the_page,
       string filename
       )
       {
@@ -707,28 +703,14 @@ namespace ki_web_ui
       bool do_uncompress = false
       )
       {
-      var ascii_encoding = new ASCIIEncoding();
-      var unbase64ed_query_string = Convert.FromBase64String(Request[name]);
-      var cipher = new RijndaelManaged();
-      cipher.Mode = CipherMode.ECB;
-      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
-      var transformed_final_block = cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length);
-      //
-      var decompressed_size = new k.int_nonnegative();
-      var byte_q = new Queue<byte>();
-      if (do_uncompress)
-        {
-        var deflate_stream = new DeflateStream(new MemoryStream(transformed_final_block),CompressionMode.Decompress);
-        for (var i = deflate_stream.ReadByte(); i > -1; i = deflate_stream.ReadByte())
-          {
-          byte_q.Enqueue(Convert.ToByte(i));
-          }
-        decompressed_size.val = byte_q.Count;
-        }
-      var byte_array = new byte[decompressed_size.val];
-      byte_q.CopyTo(byte_array,0);
-      //
-      return new JavaScriptSerializer().Deserialize<Hashtable>(ascii_encoding.GetString((do_uncompress ? byte_array : transformed_final_block)));
+      return new JavaScriptSerializer().Deserialize<Hashtable>
+        (
+        k.StringOfShieldedValue
+          (
+          shielded_value:Request[name],
+          do_uncompress:do_uncompress
+          )
+        );
       }
 
     public string InstanceId()
@@ -928,7 +910,7 @@ namespace ki_web_ui
   public class usercontrol_class : UserControl
     {
 
-    private templatecontrol_class templatecontrol = null;
+    private readonly templatecontrol_class templatecontrol = null;
 
     public usercontrol_class() : base() // CONSTRUCTOR
       {
@@ -1060,7 +1042,6 @@ namespace ki_web_ui
 
     protected void ExportToCsv
       (
-      Page the_page,
       string filename_sans_extension,
       string csv_string
       )
@@ -1070,7 +1051,6 @@ namespace ki_web_ui
 
     protected void ExportToExcel
       (
-      Page the_page,
       string filename_sans_extension,
       string excel_string
       )
@@ -1080,7 +1060,6 @@ namespace ki_web_ui
 
     protected void FileDownload
       (
-      Page the_page,
       string filename
       )
       {
