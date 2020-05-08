@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Kalips'o Infogistics LLC rules" Description="Code analysis rules for Kalips'o Infogistics projects." ToolsVersion="16.0">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
+    <Rule Id="IDE0017" Action="None" />
+    <Rule Id="IDE0018" Action="None" />
+    <Rule Id="IDE0039" Action="None" />
+    <Rule Id="IDE0059" Action="None" />
+    <Rule Id="IDE0060" Action="None" />
+    <Rule Id="IDE1006" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.Features" RuleNamespace="Microsoft.CodeAnalysis.Features">
+    <Rule Id="IDE0067" Action="Warning" />
+  </Rules>
+</RuleSet>

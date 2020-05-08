@@ -171,9 +171,9 @@ namespace kix
     public struct subtype<TComparable> where TComparable : IComparable
       {
       //
-      private TComparable first;
+      private readonly TComparable first;
       private TComparable current;
-      private TComparable last;
+      private readonly TComparable last;
       //
       public static Exception CONSTRAINT_ERROR = new Exception("kix.k.subtype<TComparable>.CONSTRAINT_ERROR");
       public subtype
@@ -505,7 +505,8 @@ namespace kix
     public static string Digest(string source_string)
       {
       var byte_buf = new byte[20 + 1]; // Not sure if or why this line is necessary, but I'm afraid to remove it.
-      byte_buf = new SHA1Managed().ComputeHash(new ASCIIEncoding().GetBytes(source_string));
+      using var sha1_managed = new SHA1Managed();
+      byte_buf = sha1_managed.ComputeHash(new ASCIIEncoding().GetBytes(source_string));
       var target_string = EMPTY;
       for (var i = 1; i <= 20; i++)
         {
@@ -524,7 +525,8 @@ namespace kix
       var empty_if_invalid = EMPTY;
       try
         {
-        new MailMessage().To.Add(e); // throws exception if invalid format
+        using var mail_message = new MailMessage();
+        mail_message.To.Add(e); // throws exception if invalid format
         if (k.BeValidDomainPartOfEmailAddress(e))
           {
           empty_if_invalid = e;
@@ -1098,6 +1100,11 @@ namespace kix
       return result;
       }
 
+    public static int PhpValueOf_safe_hint_type(string s)
+      {
+      return (int)Enum.Parse(enumType:typeof(safe_hint_type), value:s);
+      }
+
     public static void RunCommandIteratedOverArguments
       (
       string command,
@@ -1135,7 +1142,7 @@ namespace kix
       safe_hint_type hint = safe_hint_type.NONE
       )
       {
-      const string MODIFIED_LIBERAL_SET = "0-9a-zA-Z@#$%&()\\-+=[\\],/.:? "
+      const string MODIFIED_LIBERAL_SET = "0-9a-zA-Z@#$%&()_\\-+=[\\],/.:? "
       + ACUTE_ACCENT
       + CENT_SIGN
       + DIAERESIS
@@ -1350,8 +1357,21 @@ namespace kix
       bool do_compress = false
       )
       {
+      return ShieldedValueOfString
+        (
+        s:new JavaScriptSerializer().Serialize(hash_table),
+        do_compress:do_compress
+        );
+      }
+
+    public static string ShieldedValueOfString
+      (
+      string s,
+      bool do_compress = false
+      )
+      {
       var ascii_encoding = new ASCIIEncoding();
-      var bytearrayed_serialized_hashtable = ascii_encoding.GetBytes(new JavaScriptSerializer().Serialize(hash_table));
+      var bytearrayed_serialized_hashtable = ascii_encoding.GetBytes(s);
       //
       byte[] input_buffer;
       if (do_compress)
@@ -1366,7 +1386,7 @@ namespace kix
         {
         input_buffer = bytearrayed_serialized_hashtable;
         }
-      var cipher = new RijndaelManaged();
+      using var cipher = new RijndaelManaged();
       cipher.Mode = CipherMode.ECB;
       cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
       return Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(input_buffer,0,input_buffer.Length));
@@ -1432,7 +1452,8 @@ namespace kix
         mail_message.Body = null;
         try
           {
-          (new SmtpClient(ConfigurationManager.AppSettings["smtp_server"])).Send(mail_message);
+          using var smtp_client = new SmtpClient(ConfigurationManager.AppSettings["smtp_server"]);
+          smtp_client.Send(mail_message);
           }
         catch(Exception e)
           {
@@ -1518,6 +1539,37 @@ namespace kix
         mail_message.Headers.Add("X-FromPaper2Web-Bounce-To-Appadmin","Suppress");
         }
       SmtpMailSend(mail_message);
+      }
+
+    public static string StringOfShieldedValue
+      (
+      string shielded_value,
+      bool do_uncompress = false
+      )
+      {
+      var ascii_encoding = new ASCIIEncoding();
+      var unbase64ed_query_string = Convert.FromBase64String(shielded_value);
+      using var cipher = new RijndaelManaged();
+      cipher.Mode = CipherMode.ECB;
+      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
+      var transformed_final_block = cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length);
+      //
+      var decompressed_size = new k.int_nonnegative();
+      var byte_q = new Queue<byte>();
+      if (do_uncompress)
+        {
+        using var memory_stream = new MemoryStream(transformed_final_block);
+        using var deflate_stream = new DeflateStream(memory_stream,CompressionMode.Decompress);
+        for (var i = deflate_stream.ReadByte(); i > -1; i = deflate_stream.ReadByte())
+          {
+          byte_q.Enqueue(Convert.ToByte(i));
+          }
+        decompressed_size.val = byte_q.Count;
+        }
+      var byte_array = new byte[decompressed_size.val];
+      byte_q.CopyTo(byte_array,0);
+      //
+      return ascii_encoding.GetString((do_uncompress ? byte_array : transformed_final_block));
       }
 
     public static string UnambiguousPseudorandomLimitedAlphanumericString(int length)
