@@ -26,6 +26,8 @@ namespace ki_web_ui
   public class templatecontrol_class : TemplateControl
     {
 
+    #pragma warning disable CA1822 // Member does not access instance data and can be marked as static
+
     public templatecontrol_class() : base() // CONSTRUCTOR
       {
       }
@@ -420,7 +422,8 @@ namespace ki_web_ui
     public string StringOfControl(Control c)
       {
       var string_writer = new StringWriter();
-      c.RenderControl(new HtmlTextWriter(string_writer));
+      using var html_text_writer = new HtmlTextWriter(string_writer);
+      c.RenderControl(html_text_writer);
       return string_writer.ToString();
       }
 
@@ -461,6 +464,8 @@ namespace ki_web_ui
         be_using_scriptmanager:false
         );
       }
+
+    #pragma warning restore CA1822 // Member does not access instance data and can be marked as static
 
     } // end templatecontrol_class
 
@@ -877,7 +882,7 @@ namespace ki_web_ui
       return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table,do_compress);
       }
 
-    protected string ShieldedValueOfHashtable(Hashtable hash_table)
+    protected static string ShieldedValueOfHashtable(Hashtable hash_table)
       {
       return k.ShieldedValueOfHashtable(hash_table);
       }
@@ -1144,7 +1149,7 @@ namespace ki_web_ui
       return templatecontrol.ShieldedQueryStringOfHashtable(Page,hash_table,do_compress);
       }
 
-    protected string ShieldedValueOfHashtable(Hashtable hash_table)
+    protected static string ShieldedValueOfHashtable(Hashtable hash_table)
       {
       return k.ShieldedValueOfHashtable(hash_table);
       }
