@@ -1,3 +1,5 @@
+#pragma warning disable CA1034 // Nested types should not be visible
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -154,7 +156,8 @@ namespace kix
     // Exceptions
     //-
 
-    public static Exception PRIVILEGE_VIOLATION = new Exception("kix.k.PRIVILEGE_VIOLATION");
+    public static readonly Exception PRIVILEGE_VIOLATION = new Exception("kix.k.PRIVILEGE_VIOLATION");
+
 
     //--
     //
@@ -162,20 +165,36 @@ namespace kix
     //
     //--
 
+    //
+    // client_side_function_rec_type
+    //
+    #pragma warning disable CA1815 // Override equals and operator equals on value types
+    #pragma warning disable CA1051 // Do not declare visible instance fields
     public struct client_side_function_rec_type
       {
       public string profile;
       public string body;
       }
+    #pragma warning restore CA1051 // Do not declare visible instance fields
+    #pragma warning restore CA1815 // Override equals and operator equals on value types
 
+    //
+    // subtype
+    //
+    #pragma warning disable CA1066 // Type {0} should implement IEquatable<T> because it overrides Equals
+    #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+    #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
     public struct subtype<TComparable> where TComparable : IComparable
+    #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
+    #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+    #pragma warning restore CA1066 // Type {0} should implement IEquatable<T> because it overrides Equals
       {
       //
       private readonly TComparable first;
       private TComparable current;
       private readonly TComparable last;
       //
-      public static Exception CONSTRAINT_ERROR = new Exception("kix.k.subtype<TComparable>.CONSTRAINT_ERROR");
+      public static readonly Exception CONSTRAINT_ERROR = new Exception("kix.k.subtype<TComparable>.CONSTRAINT_ERROR");
       public subtype
         (
         TComparable the_first,
@@ -217,6 +236,18 @@ namespace kix
           {
           return last;
           }
+        }
+      public override bool Equals(object obj)
+        {
+        return obj is subtype<TComparable> subtype && EqualityComparer<TComparable>.Default.Equals(val, subtype.val);
+        }
+      public static bool operator ==(subtype<TComparable> left, subtype<TComparable> right)
+        {
+        return left.Equals(right);
+        }
+      public static bool operator !=(subtype<TComparable> left, subtype<TComparable> right)
+        {
+        return !(left == right);
         }
       }
 
@@ -445,11 +476,15 @@ namespace kix
         {
         Dns.GetHostEntry(web_address.Substring(0,significant_length));
         }
+      #pragma warning disable CA1031 // Do not catch general exception types
       catch
         {
         be_valid_domain_part_of_web_address = false;
         }
+      #pragma warning restore CA1031 // Do not catch general exception types
+
       return be_valid_domain_part_of_web_address;
+
       }
 
     public static bool BeValidFormatEmailAddress(string email_address)
@@ -502,6 +537,7 @@ namespace kix
       return (yn.ToUpper() == "YES");
       }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "Compliance requires transformation of database data")]
     public static string Digest(string source_string)
       {
       var byte_buf = new byte[20 + 1]; // Not sure if or why this line is necessary, but I'm afraid to remove it.
@@ -532,10 +568,14 @@ namespace kix
           empty_if_invalid = e;
           }
         }
+      #pragma warning disable CA1031 // Do not catch general exception types
       catch
         {
         }
+      #pragma warning restore CA1031 // Do not catch general exception types
+
       return empty_if_invalid;
+
       }
 
     public static string EscalatedException
@@ -1330,16 +1370,17 @@ namespace kix
       // sharing" checkbox.
       //
       var stream_writer = new System.IO.StreamWriter(scratch_pathname);
-      ((c) as Control).RenderControl(new HtmlTextWriter(stream_writer));
+      using var html_text_writer = new HtmlTextWriter(stream_writer);
+      ((c) as Control).RenderControl(html_text_writer);
       stream_writer.Close();
       //
-      var msg = new MailMessage();
+      using var msg = new MailMessage();
       msg.From = new MailAddress(from_address);
-      if (to_target != EMPTY)
+      if (to_target.Length > 0)
         {
         msg.To.Add(to_target);
         }
-      if (cc_target != EMPTY)
+      if (cc_target.Length > 0)
         {
         msg.CC.Add(cc_target);
         }
@@ -1489,7 +1530,7 @@ namespace kix
       //
 
       const string DOUBLE_COMMA = k.COMMA + k.COMMA;
-      var mail_message = new MailMessage();
+      using var mail_message = new MailMessage();
       //
       to = to.Replace(k.SPACE,EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
       while (to.Contains(DOUBLE_COMMA))
@@ -1515,22 +1556,22 @@ namespace kix
         }
       //
       mail_message.From = new MailAddress(Unix2Dos(from));
-      if (to != EMPTY)
+      if (to.Length > 0)
         {
         mail_message.To.Add(Unix2Dos(to));
         }
       mail_message.Subject = subject;
       mail_message.Body = message_string;
       mail_message.IsBodyHtml = be_html;
-      if (cc != EMPTY)
+      if (cc.Length > 0)
         {
         mail_message.CC.Add(Unix2Dos(cc));
         }
-      if (bcc != EMPTY)
+      if (bcc.Length > 0)
         {
         mail_message.Bcc.Add(Unix2Dos(bcc));
         }
-      if (reply_to != EMPTY)
+      if (reply_to.Length > 0)
         {
         mail_message.ReplyToList.Add(Unix2Dos(reply_to));
         }
