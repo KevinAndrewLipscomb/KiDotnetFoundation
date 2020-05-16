@@ -44,25 +44,25 @@ namespace kix
     //
     //--
 
-    public const string ACUTE_ACCENT = "\u00B4"; // ´
+    public const string ACUTE_ACCENT = "\u00B4"; // Â´
     public const string APOSTROPHE = "\'";
-    public const string CENT_SIGN = "\u00A2"; // ¢
+    public const string CENT_SIGN = "\u00A2"; // Â¢
     public const string COMMA = ",";
     public const string COMMA_SPACE = ", ";
-    public const string DIAERESIS = "\u00A8"; // ¨
+    public const string DIAERESIS = "\u00A8"; // Â¨
     public const string DOUBLE_APOSTROPHE = "''";
     public const string DOUBLE_QUOTE = "\"\"";
     public const string EMPTY = "";
     public const string HYPHEN = "-";
-    public const string INVERTED_EXCLAMATION_MARK = "\u00A1"; // ¡
-    public const string LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = "\u00AB"; //«
+    public const string INVERTED_EXCLAMATION_MARK = "\u00A1"; // Â¡
+    public const string LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = "\u00AB"; //Â«
     public const short MAX_RFC_2822_ET_SEQ_EMAIL_LINE_LENGTH = 998;
     public const string NEW_LINE = "\n";
     public const string NO_BREAK_SPACE = "\u00A0";
     public const string OPEN_PARENTHESIS = "(";
     public const string PERIOD = ".";
     public const string QUOTE = "\"";
-    public const string RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = "\u00BB"; //»
+    public const string RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = "\u00BB"; //Â»
     public const string SEMICOLON = ";";
     public const string SPACE = "\u0020";
     public const string SPACE_HYPHEN_SPACE = " - ";
@@ -168,7 +168,6 @@ namespace kix
     //
     // client_side_function_rec_type
     //
-    #pragma warning disable CA1815 // Override equals and operator equals on value types
     #pragma warning disable CA1051 // Do not declare visible instance fields
     public struct client_side_function_rec_type
       {
@@ -176,7 +175,6 @@ namespace kix
       public string body;
       }
     #pragma warning restore CA1051 // Do not declare visible instance fields
-    #pragma warning restore CA1815 // Override equals and operator equals on value types
 
     //
     // subtype
