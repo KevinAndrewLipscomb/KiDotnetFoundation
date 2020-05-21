@@ -10,6 +10,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -549,9 +550,18 @@ namespace kix
       return target_string;
       }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Dns.GetHostEntry() does not fail gracefully, and falling back to the given ip_address is always acceptable.")]
     public static string DomainNameOfIpAddress(string ip_address)
       {
-      return Dns.GetHostEntry(ip_address).HostName;
+      var domain_name_of_ip_address = "unresolveable";
+      try
+        {
+        domain_name_of_ip_address = Dns.GetHostEntry(ip_address).HostName;
+        }
+      catch
+        {
+        }
+      return domain_name_of_ip_address;
       }
 
     public static string EmptyIfInvalidEmailAddress(string e)
