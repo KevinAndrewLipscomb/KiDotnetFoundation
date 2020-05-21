@@ -1,13 +1,9 @@
 using kix;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
-using System.Security.Cryptography;
-using System.Text;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -17,7 +13,8 @@ namespace ki_web_ui
 
   static class common
     {
-    public const string STD_VALIDATION_ALERT = "Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.";
+    public const string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK = "-=:AppHandledMessage:=-" + k.NEW_LINE;
+    public const string VALIDATION_ALERT = "Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.";
     }
   
   // ==================================================================================================================================
@@ -451,7 +448,7 @@ namespace ki_web_ui
         cause:k.alert_cause_type.USER,
         state:k.alert_state_type.FAILURE,
         key:"stdsvrval",
-        value:common.STD_VALIDATION_ALERT,
+        value:common.VALIDATION_ALERT,
         be_using_scriptmanager:be_using_scriptmanager
         );
       }
@@ -474,6 +471,8 @@ namespace ki_web_ui
   // ==================================================================================================================================
   public class page_class : Page
     {
+
+    protected readonly static string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK = common.APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK;
 
     public enum nature_of_visit_type
       {
@@ -914,6 +913,8 @@ namespace ki_web_ui
   // ==================================================================================================================================
   public class usercontrol_class : UserControl
     {
+
+    protected readonly static string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK = common.APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK;
 
     private readonly templatecontrol_class templatecontrol = null;
 
