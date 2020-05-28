@@ -13,8 +13,16 @@ namespace ki_web_ui
 
   static class common
     {
-    public const string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK = "-=:AppHandledMessage:=-" + k.NEW_LINE;
+    public const string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_HEADER_VALUE = "App-Handled-Message";
+      // For use with CUSTOM_RESPONSE_HEADER_NAME if we can ever add this combination as an HTTP partial postback response header .
+      // Must correspond to the APP_HANDLED_ERROR_MESSAGE_LINE in ErrorHandler.js
+    public const string CUSTOM_RESPONSE_HEADER_NAME = "KiAspdotnetFramework-Pragma";
+    public const string SESSION_INTERRUPTED_HEADER_VALUE = "Session-Interrupted";
     public const string VALIDATION_ALERT = "Something about the data you just submitted is invalid.  Look for !ERR! indications near the data fields.  A more detailed explanation may appear near the top of the page.";
+    //
+    public const string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK = "-=:" + APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_HEADER_VALUE + ":=-" + k.NEW_LINE;
+      // For use as a workaround since we can't alter HTTP partial postback headers.
+      // Must correspond to the APP_HANDLED_ERROR_MESSAGE_LINE in ErrorHandler.js
     }
   
   // ==================================================================================================================================
@@ -472,7 +480,10 @@ namespace ki_web_ui
   public class page_class : Page
     {
 
+    protected readonly static string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_HEADER_VALUE = common.APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_HEADER_VALUE;
     protected readonly static string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK = common.APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK;
+    protected readonly static string CUSTOM_RESPONSE_HEADER_NAME = common.CUSTOM_RESPONSE_HEADER_NAME;
+    protected readonly static string SESSION_INTERRUPTED_HEADER_VALUE = common.SESSION_INTERRUPTED_HEADER_VALUE;
 
     public enum nature_of_visit_type
       {
@@ -914,7 +925,10 @@ namespace ki_web_ui
   public class usercontrol_class : UserControl
     {
 
+    protected readonly static string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_HEADER_VALUE = common.APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_HEADER_VALUE;
     protected readonly static string APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK = common.APP_HANDLED_ASYNC_POST_BACK_ERROR_MESSAGE_MARK;
+    protected readonly static string CUSTOM_RESPONSE_HEADER_NAME = common.CUSTOM_RESPONSE_HEADER_NAME;
+    protected readonly static string SESSION_INTERRUPTED_HEADER_VALUE = common.SESSION_INTERRUPTED_HEADER_VALUE;
 
     private readonly templatecontrol_class templatecontrol = null;
 
