@@ -550,10 +550,10 @@ namespace kix
       return target_string;
       }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Dns.GetHostEntry() does not fail gracefully, and falling back to the given ip_address is always acceptable.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Dns.GetHostEntry() does not fail gracefully.")]
     public static string DomainNameOfIpAddress(string ip_address)
       {
-      var domain_name_of_ip_address = "unresolveable";
+      var domain_name_of_ip_address = k.EMPTY;
       try
         {
         domain_name_of_ip_address = Dns.GetHostEntry(ip_address).HostName;
