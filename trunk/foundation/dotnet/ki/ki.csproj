@@ -72,6 +72,7 @@
     <Compile Include="kix.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="php_app_module.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ki.ruleset" />
