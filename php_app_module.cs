@@ -30,10 +30,12 @@ namespace ki
     public void OnError(Object source, EventArgs e)
       {
       var http_application_source = (source as HttpApplication);
+      var request_user_host_address = http_application_source.Request.UserHostAddress;
+      var request_url_string = http_application_source.Request.Url.ToString();
       k.EscalatedException
         (
         the_exception:http_application_source.Server.GetLastError(),
-        user_identity_name:http_application_source.Request.Url.ToString()
+        user_identity_name:"Someone at " + request_user_host_address + " (" + k.DomainNameOfIpAddress(request_user_host_address) + ") visiting " + request_url_string
         );
       http_application_source.Response.Redirect(url:"~/exception.phtml");
       }
