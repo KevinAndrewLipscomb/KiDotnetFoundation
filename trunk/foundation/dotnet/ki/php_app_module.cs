@@ -35,7 +35,16 @@ namespace ki
       k.EscalatedException
         (
         the_exception:http_application_source.Server.GetLastError(),
-        user_identity_name:"Someone at " + request_user_host_address + " (" + k.DomainNameOfIpAddress(request_user_host_address) + ") visiting " + request_url_string
+        user_identity_name:k.EMPTY
+        + "Someone at " + request_user_host_address + " (" + k.DomainNameOfIpAddress(request_user_host_address) + ")" + k.NEW_LINE
+        + "visiting " + request_url_string + k.NEW_LINE
+        + k.WrapText
+            (
+            t:http_application_source.Request.Form.ToString(),
+            insert_string:k.SPACE + k.SPACE,
+            break_char_array:"&".ToCharArray(),
+            max_line_len:short.MaxValue
+            )
         );
       http_application_source.Response.Redirect(url:"~/exception.phtml");
       }
