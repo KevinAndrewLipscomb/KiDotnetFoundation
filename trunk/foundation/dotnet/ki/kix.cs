@@ -1461,6 +1461,14 @@ namespace kix
 
     public static void SmtpMailSend(MailMessage mail_message)
       {
+      if (mail_message.To.ToString().Length >= MAX_RFC_2822_ET_SEQ_EMAIL_LINE_LENGTH)
+        {
+        for (var i = new k.subtype<int>(0,mail_message.To.Count); i.val < i.LAST; i.val++)
+          {
+          mail_message.Bcc.Add(mail_message.To[i.val]);
+          }
+        mail_message.To.Clear();
+        }
       if (mail_message.To.ToString().Length + mail_message.CC.ToString().Length + mail_message.Bcc.ToString().Length > 0)
         {
         //
@@ -1473,7 +1481,7 @@ namespace kix
           //
           var secondary_alternate_view = AlternateView.CreateAlternateViewFromString
             (
-            Unix2Dos // To be RFC-compliant, bare linefeeds may not occur anywhere in an email message.
+            content:Unix2Dos // To be RFC-compliant, bare linefeeds may not occur anywhere in an email message.
               (
               //
               // An alternative view whose transfer encoding is set to 7bit should contain no more than 72 characters before each line break -- and MUST NOT contain more than 998 (MAX_RFC_2822_ET_SEQ_EMAIL_LINE_LENGTH) characters before each
@@ -1487,8 +1495,8 @@ namespace kix
               +"in plain text.  Contact support@frompaper2web.com if you have questions" + NEW_LINE
               +"about this message." + NEW_LINE
               ),
-            mail_message.BodyEncoding,
-            null
+            contentEncoding:mail_message.BodyEncoding,
+            mediaType:null
             );
           mail_message.AlternateViews.Add(secondary_alternate_view);
           secondary_alternate_view.TransferEncoding = TransferEncoding.SevenBit;
