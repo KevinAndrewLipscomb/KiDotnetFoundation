@@ -1196,4 +1196,17 @@ namespace ki_web_ui
 
     } // end usercontrol_class
 
+  // ==================================================================================================================================
+  // usercontrol_subjoined_attribute_capture_class
+  // ==================================================================================================================================
+  public abstract class usercontrol_subjoined_attribute_capture_class : usercontrol_class
+    {
+    public abstract void ServerValidate
+      (
+      object source,
+      ServerValidateEventArgs args
+      );
+    public abstract void Submit();
+    }
+
   }
