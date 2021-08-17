@@ -1510,7 +1510,10 @@ namespace kix
         try
           {
           using var smtp_client = new SmtpClient(ConfigurationManager.AppSettings["smtp_server"]);
-          smtp_client.Send(mail_message);
+          if (bool.Parse(ConfigurationManager.AppSettings["k.SmtpMailSend.enabled"]))
+            {
+            smtp_client.Send(mail_message);
+            }
           }
         catch(Exception e)
           {
