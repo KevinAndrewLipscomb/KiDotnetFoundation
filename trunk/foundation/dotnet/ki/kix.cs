@@ -1509,9 +1509,10 @@ namespace kix
         mail_message.Body = null;
         try
           {
-          using var smtp_client = new SmtpClient(ConfigurationManager.AppSettings["smtp_server"]);
-          if (bool.Parse(ConfigurationManager.AppSettings["k.SmtpMailSend.enabled"]))
+          var be_enabled_obj = ConfigurationManager.AppSettings["k.SmtpMailSend.enabled"];
+          if (be_enabled_obj == null ? true : bool.Parse(be_enabled_obj.ToString()))
             {
+            using var smtp_client = new SmtpClient(ConfigurationManager.AppSettings["smtp_server"]);
             smtp_client.Send(mail_message);
             }
           }
