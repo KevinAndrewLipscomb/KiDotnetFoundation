@@ -55,7 +55,13 @@ namespace ki
               max_line_len:short.MaxValue
               )
           );
-        http_application_source.Response.Redirect(url:"~/exception.phtml");
+        try
+          {
+          http_application_source.Response.Redirect(url:"~/exception.phtml");
+          }
+        catch
+          {
+          }
         }
       }
     }
