@@ -1,6 +1,7 @@
 using kix;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
@@ -54,6 +55,40 @@ namespace ki_web_ui
       {
       base.OnInit(e);
       TemplateControl = new templatecontrol_class();
+      }
+
+    public void AddCopyFromFeatureToControl
+      (
+      Page the_page,
+      string instance_function_name,
+      Dictionary<WebControl,WebControl> target_source_dictionary,
+      WebControl c
+      )
+      {
+      EstablishClientSideFunction
+        (
+        the_page:the_page,
+        enumeral: k.client_side_function_enumeral_type.EL
+        );
+      //
+      var body = k.EMPTY;
+      foreach (var target_source in target_source_dictionary)
+        {
+        body += "El('" + target_source.Key.ClientID + "').value = El('" + target_source.Value.ClientID + "').value;" + k.NEW_LINE;
+        }
+      //
+      EstablishClientSideFunction
+        (
+        the_page:the_page,
+        profile: instance_function_name + "()",
+        body: body
+        );
+      //
+      c.Attributes.Add
+        (
+        key: "onclick",
+        value: instance_function_name + "();"
+        );
       }
 
     public string AddIdentifiedControlToPlaceHolder
@@ -500,6 +535,22 @@ namespace ki_web_ui
       templatecontrol = new templatecontrol_class();
       }
 
+    public void AddCopyFromFeatureToControl
+      (
+      string instance_function_name,
+      Dictionary<WebControl,WebControl> target_source_dictionary,
+      WebControl c
+      )
+      {
+      templatecontrol.AddCopyFromFeatureToControl
+        (
+        the_page:Page,
+        instance_function_name:instance_function_name,
+        target_source_dictionary:target_source_dictionary,
+        c:c
+        );
+      }
+
     protected string AddIdentifiedControlToPlaceHolder
       (
       Control c,
@@ -935,6 +986,22 @@ namespace ki_web_ui
     public usercontrol_class() : base() // CONSTRUCTOR
       {
       templatecontrol = new templatecontrol_class();
+      }
+
+    public void AddCopyFromFeatureToControl
+      (
+      string instance_function_name,
+      Dictionary<WebControl,WebControl> target_source_dictionary,
+      WebControl c
+      )
+      {
+      templatecontrol.AddCopyFromFeatureToControl
+        (
+        the_page:Page,
+        instance_function_name:instance_function_name,
+        target_source_dictionary:target_source_dictionary,
+        c:c
+        );
       }
 
     protected string AddIdentifiedControlToPlaceHolder
