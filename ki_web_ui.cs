@@ -86,8 +86,8 @@ namespace ki_web_ui
       //
       c.Attributes.Add
         (
-        key: "onclick",
-        value: instance_function_name + "();"
+        key: "OnClick",
+        value: instance_function_name + "(); return false;" // Appending "return false;" prevents a postback.
         );
       }
 
