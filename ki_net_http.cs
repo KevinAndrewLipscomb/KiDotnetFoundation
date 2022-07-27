@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -18,6 +19,7 @@ namespace ki_net_http
       {
       base.Headers.CacheControl = new CacheControlHeaderValue()
         {
+        MaxAge = TimeSpan.Zero,
         MustRevalidate = true,
         NoCache = true,
         NoStore = true,
