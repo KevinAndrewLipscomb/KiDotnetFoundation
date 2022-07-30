@@ -24,6 +24,12 @@ namespace ki_net_http
         NoCache = true,
         NoStore = true,
         };
+      base.Headers.Pragma.ParseAdd(input:"no-cache");
+      base.Content?.Headers.TryAddWithoutValidation
+        (
+        name:"Expires",
+        value:"-1"
+        ); 
       }
 
     } // end httpresponsemessage_class
