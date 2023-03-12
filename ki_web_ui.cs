@@ -173,6 +173,18 @@ namespace ki_web_ui
       + k.NEW_LINE;
       }
 
+    public void EncodeTargetRowKeyOntoPotentialNewFieldValuesForMovingListControl
+      (
+      string target_row_key,
+      ListControl potential_new_field_value_list
+      )
+      {
+      foreach (ListItem item in potential_new_field_value_list.Items)
+        {
+        item.Value = $"{target_row_key}:{item.Value}";
+        }
+      }
+
     public void EstablishClientSideFunction
       (
       Page the_page,
@@ -686,6 +698,15 @@ namespace ki_web_ui
         }
       }
 
+    public void EncodeTargetRowKeyOntoPotentialNewFieldValuesForMovingListControl
+      (
+      string target_row_key,
+      ListControl potential_new_field_value_list
+      )
+      {
+      templatecontrol.EncodeTargetRowKeyOntoPotentialNewFieldValuesForMovingListControl(target_row_key,potential_new_field_value_list);
+      }
+
     protected void EstablishClientSideFunction
       (
       string profile,
@@ -1089,6 +1110,15 @@ namespace ki_web_ui
         }
       }
 
+    public void EncodeTargetRowKeyOntoPotentialNewFieldValuesForMovingListControl
+      (
+      string target_row_key,
+      ListControl potential_new_field_value_list
+      )
+      {
+      templatecontrol.EncodeTargetRowKeyOntoPotentialNewFieldValuesForMovingListControl(target_row_key,potential_new_field_value_list);
+      }
+
     protected void EstablishClientSideFunction
       (
       string profile,
@@ -1274,6 +1304,27 @@ namespace ki_web_ui
       ServerValidateEventArgs args
       );
     public abstract void Submit();
+    }
+
+  // ==================================================================================================================================
+  // extensions_class
+  // ==================================================================================================================================
+  public static class extensions_class
+    {
+    public static string DecodeTargetRowKeyFromSelected
+      (
+      this ListControl list_control
+      )
+      {
+      return list_control.SelectedValue.Split(':')[0];
+      }
+    public static string DecodeNewValueFromSelected
+      (
+      this ListControl list_control
+      )
+      {
+      return list_control.SelectedValue.Split(':')[1];
+      }
     }
 
   }
