@@ -256,6 +256,31 @@ namespace kix
     //
     //--
 
+    public class int_month
+      {
+      private subtype<int> current;
+      public int_month()
+        {
+        current = new subtype<int>(1,12);
+        }
+      public int_month(int val)
+        {
+        current = new subtype<int>(1,12);
+        current.val = val;
+        }
+      public int val
+        {
+        get
+          {
+          return current.val;
+          }
+        set
+          {
+          current.val = value;
+          }
+        }
+      }
+
     public class int_negative
       {
       private subtype<int> current;
@@ -366,6 +391,31 @@ namespace kix
       public int_sign_range(int val)
         {
         current = new subtype<int>(-1,1);
+        current.val = val;
+        }
+      public int val
+        {
+        get
+          {
+          return current.val;
+          }
+        set
+          {
+          current.val = value;
+          }
+        }
+      }
+
+    public class int_year_mysql
+      {
+      private subtype<int> current;
+      public int_year_mysql()
+        {
+        current = new subtype<int>(1901,2155);
+        }
+      public int_year_mysql(int val)
+        {
+        current = new subtype<int>(1901,2155);
         current.val = val;
         }
       public int val
