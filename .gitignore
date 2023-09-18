@@ -6,8 +6,10 @@
 *.pdb
 *.suo
 *.user
+.vs/
+MigrationBackup/
+obj/
+packages/
 /*.xml
-/.vs
 /ki.dll
-/obj
-/packages
+
