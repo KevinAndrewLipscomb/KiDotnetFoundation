@@ -70,7 +70,6 @@
     <Compile Include="php_app_module.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="ki.ruleset" />
     <None Include="packages.config" />
   </ItemGroup>
