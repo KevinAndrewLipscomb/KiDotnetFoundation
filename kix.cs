@@ -1220,7 +1220,7 @@ namespace kix
         {
         for (var i = new int_nonnegative(); i.val < arguments.Count; i.val++)
           {
-          ProcessStartInfo process_start_info = new ProcessStartInfo(command,(arguments[i.val] as string));
+          var process_start_info = new ProcessStartInfo(command,(arguments[i.val] as string));
           process_start_info.RedirectStandardOutput = true;
           process_start_info.RedirectStandardError = true;
           process_start_info.UseShellExecute = false;
@@ -1232,6 +1232,25 @@ namespace kix
           stdout = stdout + work.StandardOutput.ReadToEnd() + k.NEW_LINE;
           }
         }
+      }
+
+    public static void RunCommandOnce
+      (
+      string command,
+      string working_directory,
+      string argument_clause = k.EMPTY,
+      bool beWaiting = true
+      )
+      {
+      var process_start_info = new ProcessStartInfo(command,argument_clause);
+      process_start_info.UseShellExecute = false;
+      process_start_info.WorkingDirectory = working_directory;
+      Process work = Process.Start(process_start_info);
+      if (beWaiting)
+        {
+        work.WaitForExit();
+        }
+      work.Refresh();
       }
 
     public static string Safe

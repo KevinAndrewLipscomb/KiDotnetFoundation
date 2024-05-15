@@ -1,62 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
+  <PropertyGroup Label="Application">
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AssemblyName>ki</AssemblyName>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <LangVersion>preview</LangVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <OutputType>Library</OutputType>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A20C347B-5154-47B9-A275-36157BF73352}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ki</RootNamespace>
-    <AssemblyName>ki</AssemblyName>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccProjectName>
+    </SccProjectName>
+    <SccProvider>
+    </SccProvider>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkProfile />
     <!-- -->
     <!-- The specified TargetFrameworkVersion must be installed on the ACTIVE production server. -->
     <!-- -->
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <!-- -->
-    <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <TargetFrameworkProfile />
-    <LangVersion>preview</LangVersion>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CodeAnalysisRuleSet>ki.ruleset</CodeAnalysisRuleSet>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>.\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Optimize>false</Optimize>
+    <OutputPath>.\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>ki.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <DebugType>pdbonly</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>.\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Optimize>false</Optimize>
+    <OutputPath>.\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Label="Compile">
     <Compile Include="Gpw.cs" />
     <Compile Include="ki.mvc.cs" />
     <Compile Include="ki_net_http.cs" />
@@ -69,10 +70,10 @@
     </Compile>
     <Compile Include="php_app_module.cs" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="None">
     <None Include="ki.ruleset" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="Reference">
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
