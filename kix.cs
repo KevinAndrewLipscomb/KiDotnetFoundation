@@ -1293,7 +1293,7 @@ namespace kix
         }
       else if (hint == safe_hint_type.FINANCIAL_TERMS)
         {
-        allow = "0-9a-zA-Z@#$%()\\-+=,/. " + CENT_SIGN;
+        allow = "0-9a-zA-Z@#$%*()\\-+=,/. " + CENT_SIGN;
         }
       else if (hint == safe_hint_type.HEX)
         {
