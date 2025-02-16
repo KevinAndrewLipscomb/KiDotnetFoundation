@@ -53,7 +53,8 @@ namespace ki
               insert_string:k.SPACE + k.SPACE,
               break_char_array:"&".ToCharArray(),
               max_line_len:short.MaxValue
-              )
+              ),
+          session:http_application_source.Session
           );
         try
           {
