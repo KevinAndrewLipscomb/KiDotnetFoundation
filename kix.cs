@@ -87,7 +87,7 @@ namespace kix
       MEMORY,
       NETWORK,
       OTHER,
-      USER,
+      USER
       }
 
     public enum alert_state_type
@@ -96,7 +96,7 @@ namespace kix
       SUCCESS,
       WARNING,
       FAILURE,
-      DAMAGE,
+      DAMAGE
       }
 
     public enum client_side_function_enumeral_type
@@ -144,7 +144,7 @@ namespace kix
       POSTAL_STREET_ADDRESS,
       PUNCTUATED,
       REAL_NUM,
-      REAL_NUM_INCLUDING_NEGATIVE,
+      REAL_NUM_INCLUDING_NEGATIVE
       }
 
     //--
@@ -1798,6 +1798,16 @@ namespace kix
     public static string YesNoOf(bool b)
       {
       return (b ? "Yes" : "No");
+      }
+
+    public static bool IsNonTrivial(string str)
+      {
+      return !(str == null || str.Trim() == "");
+      }
+
+    public static string IsNonTrivial(string str, string defaultValue)
+      {
+      return IsNonTrivial(str) ? str : defaultValue;
       }
 
     } // end k
