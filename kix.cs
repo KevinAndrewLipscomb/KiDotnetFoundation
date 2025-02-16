@@ -1506,7 +1506,7 @@ namespace kix
         }
       using var cipher = new RijndaelManaged();
       cipher.Mode = CipherMode.ECB;
-      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
+      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.ConnectionStrings["query_string_protection_password"].ConnectionString);
       return Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(input_buffer,0,input_buffer.Length));
       }
 
@@ -1681,7 +1681,7 @@ namespace kix
       var unbase64ed_query_string = Convert.FromBase64String(shielded_value);
       using var cipher = new RijndaelManaged();
       cipher.Mode = CipherMode.ECB;
-      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.AppSettings["query_string_protection_password"]);
+      cipher.Key = ascii_encoding.GetBytes(ConfigurationManager.ConnectionStrings["query_string_protection_password"].ConnectionString);
       var transformed_final_block = cipher.CreateDecryptor().TransformFinalBlock(unbase64ed_query_string,0,unbase64ed_query_string.Length);
       //
       var decompressed_size = new k.int_nonnegative();
