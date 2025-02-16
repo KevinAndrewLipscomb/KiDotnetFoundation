@@ -251,6 +251,22 @@ namespace ki_web_ui
         );
       }
 
+    public void EstablishClientSideJsBehind
+      (
+      Page page,
+      string resolvedClientUrlOfAppRelativeVirtualPath
+      )
+      {
+      var jsSpec = $"{resolvedClientUrlOfAppRelativeVirtualPath}.js";
+      ScriptManager.RegisterClientScriptInclude
+        (
+        page:page,
+        type:page.GetType(),
+        key:jsSpec,
+        url:jsSpec
+        );
+      }
+
     public void EstablishFormReenablementScript(Page the_page)
       {
       the_page.ClientScript.RegisterClientScriptBlock
@@ -656,13 +672,22 @@ namespace ki_web_ui
       templatecontrol.LabelizeAndSetTextForeColor(table_cell,fore_color);
       }
 
+    protected void ClearMessage
+      (
+      string folder_name,
+      string aspx_name
+      )
+      {
+      Session.Remove($"msg_{folder_name}.{aspx_name}");
+      }
+
     protected T Message<T>
       (
       string folder_name,
       string aspx_name
       )
       {
-      return (T)(Session["msg_" + folder_name + "." + aspx_name]);
+      return (T)(Session[$"msg_{folder_name}.{aspx_name}"]);
       }
 
     protected void DropCrumbAndTransferTo
@@ -703,6 +728,15 @@ namespace ki_web_ui
     protected void EstablishClientSideFunction(k.client_side_function_rec_type r)
       {
       templatecontrol.EstablishClientSideFunction(Page,r);
+      }
+
+    public void EstablishClientSideJsBehind()
+      {
+      templatecontrol.EstablishClientSideJsBehind
+        (
+        page:Page,
+        resolvedClientUrlOfAppRelativeVirtualPath:ResolveClientUrl($"{AppRelativeVirtualPath}")
+        );
       }
 
     protected void EstablishFormReenablementScript()
@@ -1096,6 +1130,15 @@ namespace ki_web_ui
       )
       {
       templatecontrol.EstablishClientSideFunction(Page,profile,body,ClientID);
+      }
+
+    public void EstablishClientSideJsBehind()
+      {
+      templatecontrol.EstablishClientSideJsBehind
+        (
+        page:Page,
+        resolvedClientUrlOfAppRelativeVirtualPath:ResolveClientUrl($"{AppRelativeVirtualPath}")
+        );
       }
 
     protected void EstablishClientSideFunction(k.client_side_function_enumeral_type enumeral)
