@@ -290,7 +290,7 @@ namespace ki_web_ui
       the_page.ClientScript.RegisterClientScriptInclude
         (
         key:"GoogleWebFontLoaderInclude",
-        url:"https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js?key=AIzaSyADewoPKVk4Yu42GkxP1zpihWZts78ig_8"
+        url:$"https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js?key={ConfigurationManager.ConnectionStrings["google_static_maps_api_key"].ConnectionString}"
         );
       the_page.ClientScript.RegisterClientScriptBlock
         (
