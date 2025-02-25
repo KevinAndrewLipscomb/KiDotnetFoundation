@@ -60,8 +60,6 @@
   <ItemGroup Label="Compile">
     <Compile Include="Gpw.cs" />
     <Compile Include="ki.mvc.cs" />
-    <Compile Include="ki_net_http.cs" />
-    <Compile Include="ki_web_http.cs" />
     <Compile Include="ki_web_ui.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -83,9 +81,6 @@
     <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup Label="PackageReference">
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core">
-      <Version>5.2.9</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
