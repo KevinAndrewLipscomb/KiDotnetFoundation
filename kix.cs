@@ -1,5 +1,6 @@
 #pragma warning disable CA1034 // Nested types should not be visible
 
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -654,15 +655,12 @@ namespace kix
       if ((session != null))
         {
         notification_message += "[SESSION (has " + session.Count.ToString() + " items)]" + NEW_LINE;
-        if (session.Count > 0)
+        foreach (var keyObj in session.Keys)
           {
-          var i = new subtype<int>(0,session.Count);
-          for (i.val = 0; i.val <= (session.Count - 1); i.val++ )
-            {
-            notification_message += session.Keys[i.val].ToString() + (session[i.val] == null ? " is null" : " = " + session[i.val].ToString()) + NEW_LINE;
-            }
-          notification_message += NEW_LINE;
+          var key = $"{keyObj}";
+          notification_message += $"{key} = {JsonConvert.SerializeObject(session[key],Formatting.Indented)}{NEW_LINE}";
           }
+        notification_message += NEW_LINE;
         }
       if (engine_innodb_status.Length > 0)
         {

@@ -66,6 +66,8 @@
     <Compile Include="kix.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="kix.extensions.cs" />
+    <Compile Include="ki_web_ui_webcontrols.cs" />
     <Compile Include="php_app_module.cs" />
   </ItemGroup>
   <ItemGroup Label="None">
@@ -75,6 +77,7 @@
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Web" />
