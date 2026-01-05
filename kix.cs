@@ -11,7 +11,6 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,7 +22,7 @@ using System.Web.UI;
 namespace kix
   {
 
-  public static class k
+  static public partial class k
     {
 
     //====
@@ -158,7 +157,7 @@ namespace kix
     // Exceptions
     //-
 
-    public static readonly Exception PRIVILEGE_VIOLATION = new Exception("kix.k.PRIVILEGE_VIOLATION");
+    static public readonly Exception PRIVILEGE_VIOLATION = new Exception("kix.k.PRIVILEGE_VIOLATION");
 
 
     //--
@@ -178,317 +177,13 @@ namespace kix
       }
     #pragma warning restore CA1051 // Do not declare visible instance fields
 
-    //
-    // subtype
-    //
-    #pragma warning disable CA1066 // Type {0} should implement IEquatable<T> because it overrides Equals
-    #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-    #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    public struct subtype<TComparable> where TComparable : IComparable
-    #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-    #pragma warning restore CA1066 // Type {0} should implement IEquatable<T> because it overrides Equals
-      {
-      //
-      private readonly TComparable first;
-      private TComparable current;
-      private readonly TComparable last;
-      //
-      public static readonly Exception CONSTRAINT_ERROR = new Exception("kix.k.subtype<TComparable>.CONSTRAINT_ERROR");
-      public subtype
-        (
-        TComparable the_first,
-        TComparable the_last
-        )
-        {
-        first = the_first;
-        current = the_first;
-        last = the_last;
-        }
-      public TComparable val
-        {
-        get
-          {
-          return current;
-          }
-        set
-          {
-          if ((value.CompareTo(first) < 0) || (value.CompareTo(last) > 0))
-            {
-            throw CONSTRAINT_ERROR;
-            }
-          unchecked
-            {
-            current = value;
-            }
-          }
-        }
-      public TComparable FIRST
-        {
-        get
-          {
-          return first;
-          }
-        }
-      public TComparable LAST
-        {
-        get
-          {
-          return last;
-          }
-        }
-      public override bool Equals(object obj)
-        {
-        return obj is subtype<TComparable> subtype && EqualityComparer<TComparable>.Default.Equals(val, subtype.val);
-        }
-      public static bool operator ==(subtype<TComparable> left, subtype<TComparable> right)
-        {
-        return left.Equals(right);
-        }
-      public static bool operator !=(subtype<TComparable> left, subtype<TComparable> right)
-        {
-        return !(left == right);
-        }
-      }
-
     //--
     //
-    // Classes based on instatiations of generic struct 'subtype'
+    // Methods
     //
     //--
 
-    public class int_month
-      {
-      private subtype<int> current;
-      public int_month()
-        {
-        current = new subtype<int>(1,12);
-        }
-      public int_month(int val)
-        {
-        current = new subtype<int>(1,12);
-        current.val = val;
-        }
-      public int val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    public class int_negative
-      {
-      private subtype<int> current;
-      public int_negative()
-        {
-        current = new subtype<int>(int.MinValue,-1);
-        }
-      public int_negative(int val)
-        {
-        current = new subtype<int>(int.MinValue,-1);
-        current.val = val;
-        }
-      public int val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    public class int_nonnegative
-      {
-      private subtype<int> current;
-      public int_nonnegative()
-        {
-        current = new subtype<int>(0,int.MaxValue);
-        }
-      public int_nonnegative(int val)
-        {
-        current = new subtype<int>(0,int.MaxValue);
-        current.val = val;
-        }
-      public int val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    public class int_nonpositive
-      {
-      private subtype<int> current;
-      public int_nonpositive()
-        {
-        current = new subtype<int>(int.MinValue,0);
-        }
-      public int_nonpositive(int val)
-        {
-        current = new subtype<int>(int.MinValue,0);
-        current.val = val;
-        }
-      public int val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    public class int_positive
-      {
-      private subtype<int> current;
-      public int_positive()
-        {
-        current = new subtype<int>(1,int.MaxValue);
-        }
-      public int_positive(int val)
-        {
-        current = new subtype<int>(1,int.MaxValue);
-        current.val = val;
-        }
-      public int val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    public class int_sign_range
-      {
-      private subtype<int> current;
-      public int_sign_range()
-        {
-        current = new subtype<int>(-1,1);
-        }
-      public int_sign_range(int val)
-        {
-        current = new subtype<int>(-1,1);
-        current.val = val;
-        }
-      public int val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    public class int_year_mysql
-      {
-      private subtype<int> current;
-      public int_year_mysql()
-        {
-        current = new subtype<int>(1901,2155);
-        }
-      public int_year_mysql(int val)
-        {
-        current = new subtype<int>(1901,2155);
-        current.val = val;
-        }
-      public int val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    public class decimal_nonnegative
-      {
-      private subtype<decimal> current;
-      public decimal_nonnegative()
-        {
-        current = new subtype<decimal>(0,decimal.MaxValue);
-        }
-      public decimal_nonnegative(decimal val)
-        {
-        current = new subtype<decimal>(0,decimal.MaxValue);
-        current.val = val;
-        }
-      public decimal val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    public class decimal_positive
-      {
-      private subtype<decimal> current;
-      public decimal_positive()
-        {
-        current = new subtype<decimal>(1,decimal.MaxValue);
-        }
-      public decimal_positive(decimal val)
-        {
-        current = new subtype<decimal>(1,decimal.MaxValue);
-        current.val = val;
-        }
-      public decimal val
-        {
-        get
-          {
-          return current.val;
-          }
-        set
-          {
-          current.val = value;
-          }
-        }
-      }
-
-    //--
-    //
-    // Static methods
-    //
-    //--
-
-    public static decimal AverageDeviation
+    static public decimal AverageDeviation
       (
       ArrayList array_list,
       decimal median_value
@@ -503,7 +198,7 @@ namespace kix
       return sum/n;
       }
 
-    public static bool BeValidDomainPartOfEmailAddress(string email_address)
+    static public bool BeValidDomainPartOfEmailAddress(string email_address)
       {
       var significant_part = email_address.Substring(email_address.LastIndexOf('@') + 1);
       var process_start_info = new ProcessStartInfo("nslookup", "-type=MX " + significant_part.Trim());
@@ -516,7 +211,7 @@ namespace kix
       return work.StandardOutput.ReadToEnd().Contains("mail exchanger = ");
       }
 
-    public static bool BeValidDomainPartOfWebAddress(string web_address)
+    static public bool BeValidDomainPartOfWebAddress(string web_address)
       {
       const int LENGTH_OF_SHORTEST_PRACTICAL_DOMAIN_NAME = 4; // a.com
       var be_valid_domain_part_of_web_address = true;
@@ -537,7 +232,7 @@ namespace kix
 
       }
 
-    public static bool BeValidFormatEmailAddress(string email_address)
+    static public bool BeValidFormatEmailAddress(string email_address)
       {
       var be_valid_format_email_address = false;
       try
@@ -551,7 +246,7 @@ namespace kix
       return be_valid_format_email_address;
       }
 
-    public static bool BeValidNanpNumber(string s)
+    static public bool BeValidNanpNumber(string s)
       {
       //
       // These rules are taken from http://en.wikipedia.org/wiki/North_American_Numbering_Plan
@@ -577,18 +272,18 @@ namespace kix
         && (digits.Substring(nanp_nxx_start.val,3) != "976");
       }
 
-    public static bool BeValidUsEin(string s)
+    static public bool BeValidUsEin(string s)
       {
       return (Safe(s,safe_hint_type.NUM).Length == 9);
       }
 
-    public static bool BooleanOfYesNo(string yn)
+    static public bool BooleanOfYesNo(string yn)
       {
       return (yn.ToUpper() == "YES");
       }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "Compliance requires transformation of database data")]
-    public static string Digest(string source_string)
+    static public string Digest(string source_string)
       {
       var byte_buf = new byte[20 + 1]; // Not sure if or why this line is necessary, but I'm afraid to remove it.
       using var sha1_managed = new SHA1Managed();
@@ -602,7 +297,7 @@ namespace kix
       }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Dns.GetHostEntry() does not fail gracefully.")]
-    public static string DomainNameOfIpAddress(string ip_address)
+    static public string DomainNameOfIpAddress(string ip_address)
       {
       var domain_name_of_ip_address = k.EMPTY;
       try
@@ -615,7 +310,7 @@ namespace kix
       return domain_name_of_ip_address;
       }
 
-    public static string EmptyIfInvalidEmailAddress(string e)
+    static public string EmptyIfInvalidEmailAddress(string e)
       {
       var empty_if_invalid = EMPTY;
       try
@@ -637,7 +332,7 @@ namespace kix
 
       }
 
-    public static string EscalatedException
+    static public string EscalatedException
       (
       Exception the_exception,
       string user_identity_name = EMPTY,
@@ -679,17 +374,17 @@ namespace kix
       return notification_message;
       }
 
-    public static string ExpandAsperand(string s)
+    static public string ExpandAsperand(string s)
       {
       return s.Replace("@",ConfigurationManager.AppSettings["runtime_root_fullspec"]);
       }
 
-    public static string ExpandTildePath(string s)
+    static public string ExpandTildePath(string s)
       {
       return s.Replace("\\","/").Replace("~","/" + ConfigurationManager.AppSettings["virtual_directory_name"]);
       }
 
-    public static string FormatAsNanpPhoneNum
+    static public string FormatAsNanpPhoneNum
       (
       string digits,
       bool be_for_international_audience = false
@@ -707,12 +402,12 @@ namespace kix
       return format_as_nanp_phone_num;
       }
 
-    public static string FormatAsUsEin(string digits)
+    static public string FormatAsUsEin(string digits)
       {
       return (BeValidUsEin(digits) ? digits.Substring(0,2) + HYPHEN + digits.Substring(2) : EMPTY);
       }
 
-    public static bool Has
+    static public bool Has
       (
       string[] the_string_array,
       string the_string
@@ -733,7 +428,7 @@ namespace kix
       return result;
       }
 
-    public static string HresultAnalysis(Exception the_exception)
+    static public string HresultAnalysis(Exception the_exception)
       {
       unchecked
         {
@@ -1078,7 +773,7 @@ namespace kix
         }
       }
 
-    public static k.int_sign_range IntsignrangeOfOptionalBoolean(string s)
+    static public k.int_sign_range IntsignrangeOfOptionalBoolean(string s)
       {
       var intsignrange_of_optional_boolean = new k.int_sign_range(-1);
       if (new ArrayList() {"0","FALSE","NO"}.Contains(s.ToUpper()))
@@ -1092,7 +787,7 @@ namespace kix
       return intsignrange_of_optional_boolean;
       }
 
-    public static decimal Median(ArrayList sorted_array_list)
+    static public decimal Median(ArrayList sorted_array_list)
       {
       return Percentile
         (
@@ -1101,7 +796,7 @@ namespace kix
         );
       }
 
-    public static string NoneFalseTrueOf
+    static public string NoneFalseTrueOf
       (
       k.int_sign_range condition,
       string none
@@ -1119,7 +814,7 @@ namespace kix
       return none_false_true_of;
       }
 
-    public static string NoneNoYesOf
+    static public string NoneNoYesOf
       (
       k.int_sign_range condition,
       string none
@@ -1137,7 +832,7 @@ namespace kix
       return none_no_yes_of;
       }
 
-     public static string OrdinalRenditionOf(int_positive n)
+     static public string OrdinalRenditionOf(int_positive n)
        {
        var n_val_string = n.val.ToString();
        var suffix = "th";
@@ -1159,7 +854,7 @@ namespace kix
        return n_val_string + suffix;
        }
 
-    public static decimal Percentile
+    static public decimal Percentile
       (
       uint p,
       ArrayList sorted_array_list
@@ -1196,12 +891,12 @@ namespace kix
       return result;
       }
 
-    public static int PhpValueOf_safe_hint_type(string s)
+    static public int PhpValueOf_safe_hint_type(string s)
       {
       return (int)Enum.Parse(enumType:typeof(safe_hint_type), value:s);
       }
 
-    public static void RunCommandIteratedOverArguments
+    static public void RunCommandIteratedOverArguments
       (
       string command,
       ArrayList arguments,
@@ -1232,7 +927,7 @@ namespace kix
         }
       }
 
-    public static void RunCommandOnce
+    static public void RunCommandOnce
       (
       string command,
       string working_directory,
@@ -1251,7 +946,7 @@ namespace kix
       work.Refresh();
       }
 
-    public static string Safe
+    static public string Safe
       (
       string source_string,
       safe_hint_type hint = safe_hint_type.NONE
@@ -1428,7 +1123,7 @@ namespace kix
       return scratch_string;
       }
 
-    public static void SendControlAsAttachmentToEmailMessage
+    static public void SendControlAsAttachmentToEmailMessage
       (
       object c,
       string scratch_pathname,
@@ -1467,7 +1162,7 @@ namespace kix
       System.IO.File.Delete(scratch_pathname);
       }
 
-    public static string ShieldedValueOfHashtable
+    static public string ShieldedValueOfHashtable
       (
       Hashtable hash_table,
       bool do_compress = false
@@ -1480,7 +1175,7 @@ namespace kix
         );
       }
 
-    public static string ShieldedValueOfString
+    static public string ShieldedValueOfString
       (
       string s,
       bool do_compress = false
@@ -1508,7 +1203,7 @@ namespace kix
       return Convert.ToBase64String(cipher.CreateEncryptor().TransformFinalBlock(input_buffer,0,input_buffer.Length));
       }
 
-    public static void SilentAlarm(Exception the_exception)
+    static public void SilentAlarm(Exception the_exception)
       {
       be_smtp_mail_send_reliable = false;
       SmtpMailSend
@@ -1526,7 +1221,7 @@ namespace kix
       be_smtp_mail_send_reliable = true;
       }
 
-    public static void SmtpMailSend(MailMessage mail_message)
+    static public void SmtpMailSend(MailMessage mail_message)
       {
       if (mail_message.To.ToString().Length >= MAX_RFC_2822_ET_SEQ_EMAIL_LINE_LENGTH)
         {
@@ -1598,7 +1293,7 @@ namespace kix
         }
       }
 
-    public static void SmtpMailSend
+    static public void SmtpMailSend
       (
       string from,
       string to,
@@ -1669,7 +1364,7 @@ namespace kix
       SmtpMailSend(mail_message);
       }
 
-    public static string StringOfShieldedValue
+    static public string StringOfShieldedValue
       (
       string shielded_value,
       bool do_uncompress = false
@@ -1700,7 +1395,7 @@ namespace kix
       return ascii_encoding.GetString((do_uncompress ? byte_array : transformed_final_block));
       }
 
-    public static string UnambiguousPseudorandomLimitedAlphanumericString(int length)
+    static public string UnambiguousPseudorandomLimitedAlphanumericString(int length)
       {
       var unambiguous_pseudorandom_limited_alphanumeric_string = EMPTY;
       var unambiguous_pseudorandom_limited_alphanumeric_char_array =
@@ -1722,12 +1417,12 @@ namespace kix
       return unambiguous_pseudorandom_limited_alphanumeric_string;
       }
 
-    public static string Unix2Dos(string s)
+    static public string Unix2Dos(string s)
       {
       return Regex.Replace(s,@"(?<!\r)\n","\r\n");
       }
 
-    public static string WrapText
+    static public string WrapText
       (
       string t,
       string insert_string,
@@ -1793,17 +1488,17 @@ namespace kix
         }
       }
 
-    public static string YesNoOf(bool b)
+    static public string YesNoOf(bool b)
       {
       return (b ? "Yes" : "No");
       }
 
-    public static bool IsNonTrivial(string str)
+    static public bool IsNonTrivial(string str)
       {
       return !(str == null || str.Trim() == "");
       }
 
-    public static string IsNonTrivial(string str, string defaultValue)
+    static public string IsNonTrivial(string str, string defaultValue)
       {
       return IsNonTrivial(str) ? str : defaultValue;
       }
