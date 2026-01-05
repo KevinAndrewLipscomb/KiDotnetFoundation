@@ -9,10 +9,19 @@ namespace ki_web_ui_webcontrols
 
     static public void Bind
       (
+      this BaseDataList baseDataList,
+      object dataSource
+      )
+      {
+      baseDataList.SetDataSource(dataSource).DataBind();
+      }
+
+    static public void Bind
+      (
       this ListControl listControl,
       DataTable dataSource,
       string selected_id = k.EMPTY,
-      bool be_available_option_all = true,
+      bool be_available_option_all = false,
       string unselectedLiteral = "-- Select --"
       )
       {
@@ -23,11 +32,11 @@ namespace ki_web_ui_webcontrols
         {
         listControl.Items.Insert
           (
-          index:0,
-          item:new ListItem()
+          index: 0,
+          item: new ListItem()
             {
             Text = unselectedLiteral,
-            Value = string.Empty
+            Value = k.EMPTY
             }
           );
         }
@@ -39,11 +48,18 @@ namespace ki_web_ui_webcontrols
 
     static public void Bind
       (
-      this BaseDataList baseDataList,
-      object dataSource
+      this ListItemCollection listItemCollection,
+      DataTable dataSource
       )
       {
-      baseDataList.SetDataSource(dataSource).DataBind();
+      var dataValueField = dataSource.Columns[0].ColumnName;
+      var dataTextField = dataSource.Columns[1].ColumnName;
+      foreach (DataRow dataRow in dataSource.Rows)
+        {
+        var text = $"{dataRow[dataTextField]}" ?? k.EMPTY;
+        var value = $"{dataRow[dataValueField]}" ?? k.EMPTY;
+        listItemCollection.Add(item:new ListItem(text,value));
+        }
       }
 
     static public BaseDataList SetDataSource

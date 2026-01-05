@@ -950,6 +950,15 @@ namespace ki_web_ui
         }
       }
 
+    protected override void OnPreRender(EventArgs e)
+      {
+      base.OnPreRender(e);
+      if (ConfigurationManager.AppSettings["application_name"].EndsWith("_x"))
+        {
+        Response.AppendHeader("X-Robots-Tag","noindex, nofollow");
+        }
+      }
+
     protected void RequireConfirmation
       (
       WebControl c,
