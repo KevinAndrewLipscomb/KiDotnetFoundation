@@ -2,16 +2,16 @@
   {
   static public partial class k
     {
-    public class int_positive
+
+    public class int_nonpositive
       {
-      private subtype<int> current;
-      public int_positive()
+      public int_nonpositive()
         {
-        current = new subtype<int>(1,int.MaxValue);
+        current = new subtype<int>(int.MinValue,0);
         }
-      public int_positive(int val)
+      public int_nonpositive(int val)
         {
-        current = new subtype<int>(1,int.MaxValue);
+        current = new subtype<int>(int.MinValue,0);
         current.val = val;
         }
       public int val
@@ -25,6 +25,7 @@
           current.val = value;
           }
         }
+      private subtype<int> current;
       }
 
     }

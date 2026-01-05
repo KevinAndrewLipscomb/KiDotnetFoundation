@@ -2,19 +2,19 @@
   {
   static public partial class k
     {
-    public class int_sign_range
+
+    public class decimal_nonnegative
       {
-      private subtype<int> current;
-      public int_sign_range()
+      public decimal_nonnegative()
         {
-        current = new subtype<int>(-1,1);
+        current = new subtype<decimal>(0,decimal.MaxValue);
         }
-      public int_sign_range(int val)
+      public decimal_nonnegative(decimal val)
         {
-        current = new subtype<int>(-1,1);
+        current = new subtype<decimal>(0,decimal.MaxValue);
         current.val = val;
         }
-      public int val
+      public decimal val
         {
         get
           {
@@ -25,6 +25,7 @@
           current.val = value;
           }
         }
+      private subtype<decimal> current;
       }
 
     }

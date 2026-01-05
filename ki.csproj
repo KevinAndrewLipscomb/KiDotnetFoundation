@@ -59,17 +59,37 @@
   </PropertyGroup>
   <ItemGroup Label="Compile">
     <Compile Include="Gpw.cs" />
-    <Compile Include="k.subtype.decimal_nonnegative.cs" />
-    <Compile Include="k.subtype.decimal_positive.cs" />
-    <Compile Include="k.subtype.int_month.cs" />
-    <Compile Include="k.subtype.int_negative.cs" />
-    <Compile Include="k.subtype.int_nonnegative.cs" />
-    <Compile Include="k.subtype.int_nonpositive.cs" />
-    <Compile Include="k.subtype.int_positive.cs" />
-    <Compile Include="k.subtype.int_sign_range.cs" />
-    <Compile Include="k.subtype.int_year_mysql.cs" />
+    <Compile Include="kix.subtype.decimal_nonnegative.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kix.subtype.decimal_positive.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kix.subtype.int_month.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kix.subtype.int_negative.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kix.subtype.int_nonnegative.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kix.subtype.int_nonpositive.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kix.subtype.int_positive.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kix.subtype.int_sign_range.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kix.subtype.int_year_mysql.cs">
+      <DependentUpon>kix.subtype.cs</DependentUpon>
+    </Compile>
     <Compile Include="ki.mvc.cs" />
-    <Compile Include="kix.subtype.cs" />
+    <Compile Include="kix.subtype.cs">
+      <DependentUpon>kix.cs</DependentUpon>
+    </Compile>
     <Compile Include="ki_web_ui.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -2,9 +2,9 @@
   {
   static public partial class k
     {
+
     public class decimal_positive
       {
-      private subtype<decimal> current;
       public decimal_positive()
         {
         current = new subtype<decimal>(1,decimal.MaxValue);
@@ -25,6 +25,7 @@
           current.val = value;
           }
         }
+      private subtype<decimal> current;
       }
 
     }

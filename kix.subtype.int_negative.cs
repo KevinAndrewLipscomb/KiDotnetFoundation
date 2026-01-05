@@ -2,22 +2,16 @@
   {
   static public partial class k
     {
-    //--
-    //
-    // Classes based on instatiations of generic struct 'subtype'
-    //
-    //--
 
-    public class int_month
+    public class int_negative
       {
-      private subtype<int> current;
-      public int_month()
+      public int_negative()
         {
-        current = new subtype<int>(1,12);
+        current = new subtype<int>(int.MinValue,-1);
         }
-      public int_month(int val)
+      public int_negative(int val)
         {
-        current = new subtype<int>(1,12);
+        current = new subtype<int>(int.MinValue,-1);
         current.val = val;
         }
       public int val
@@ -31,6 +25,7 @@
           current.val = value;
           }
         }
+      private subtype<int> current;
       }
 
     }

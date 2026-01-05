@@ -2,16 +2,16 @@
   {
   static public partial class k
     {
-    public class int_year_mysql
+
+    public class int_month
       {
-      private subtype<int> current;
-      public int_year_mysql()
+      public int_month()
         {
-        current = new subtype<int>(1901,2155);
+        current = new subtype<int>(1,12);
         }
-      public int_year_mysql(int val)
+      public int_month(int val)
         {
-        current = new subtype<int>(1901,2155);
+        current = new subtype<int>(1,12);
         current.val = val;
         }
       public int val
@@ -25,6 +25,7 @@
           current.val = value;
           }
         }
+      private subtype<int> current;
       }
 
     }

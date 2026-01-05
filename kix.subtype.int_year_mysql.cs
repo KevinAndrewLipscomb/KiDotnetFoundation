@@ -2,16 +2,16 @@
   {
   static public partial class k
     {
-    public class int_nonpositive
+
+    public class int_year_mysql
       {
-      private subtype<int> current;
-      public int_nonpositive()
+      public int_year_mysql()
         {
-        current = new subtype<int>(int.MinValue,0);
+        current = new subtype<int>(1901,2155);
         }
-      public int_nonpositive(int val)
+      public int_year_mysql(int val)
         {
-        current = new subtype<int>(int.MinValue,0);
+        current = new subtype<int>(1901,2155);
         current.val = val;
         }
       public int val
@@ -25,6 +25,7 @@
           current.val = value;
           }
         }
+      private subtype<int> current;
       }
 
     }

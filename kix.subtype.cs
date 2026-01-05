@@ -17,7 +17,6 @@ namespace kix
     #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     #pragma warning restore CA1066 // Type {0} should implement IEquatable<T> because it overrides Equals
       {
-
       public TComparable FIRST { get => first; }
       public TComparable LAST { get => last; }
       public static readonly Exception CONSTRAINT_ERROR = new Exception("kix.k.subtype<TComparable>.CONSTRAINT_ERROR");
@@ -66,11 +65,9 @@ namespace kix
         {
         return !(left == right);
         }
-
       private readonly TComparable first;
       private TComparable current;
       private readonly TComparable last;
-
       }
 
     }
