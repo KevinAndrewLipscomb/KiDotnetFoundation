@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
@@ -157,7 +158,7 @@ namespace kix
     // Exceptions
     //-
 
-    static public readonly Exception PRIVILEGE_VIOLATION = new Exception("kix.k.PRIVILEGE_VIOLATION");
+    static public readonly Exception PRIVILEGE_VIOLATION = new("kix.k.PRIVILEGE_VIOLATION");
 
 
     //--
@@ -342,35 +343,50 @@ namespace kix
       {
       var user_designator = (user_identity_name.Length == 0 ? "unknown" : user_identity_name);
       var the_exception_string = the_exception.ToString();
-      var notification_message = "[EXCEPTION]" + NEW_LINE + the_exception_string + NEW_LINE + NEW_LINE + "[HRESULT]" + NEW_LINE + HresultAnalysis(the_exception) + NEW_LINE + NEW_LINE;
+      var notification_message = $"[EXCEPTION]{NEW_LINE}{the_exception_string}{NEW_LINE}{NEW_LINE}[HRESULT]{NEW_LINE}{HresultAnalysis(the_exception)}{NEW_LINE}{NEW_LINE}";
       if (user_identity_name.Length > 0)
         {
-        notification_message += "[USER]" + NEW_LINE + user_designator + NEW_LINE + NEW_LINE;
+        notification_message += $"[USER]{NEW_LINE}{user_designator}{NEW_LINE}{NEW_LINE}";
         }
       if ((session != null))
         {
-        notification_message += "[SESSION (has " + session.Count.ToString() + " items)]" + NEW_LINE;
-        foreach (var keyObj in session.Keys)
+        notification_message += $"[SESSION (has {session.Count} items)]{NEW_LINE}";
+        var filteredSessionKeys = session.Keys.Cast<string>().Where(key => key.NotInLoosely("ASP.exception_aspx.p"));
+        foreach (var key in filteredSessionKeys)
           {
-          var key = $"{keyObj}";
           notification_message += $"{key} = {JsonConvert.SerializeObject(session[key],Formatting.Indented)}{NEW_LINE}";
           }
         notification_message += NEW_LINE;
         }
       if (engine_innodb_status.Length > 0)
         {
-        notification_message += "[ENGINE INNODB STATUS (caution: not necessarily consistent with exception)]" + engine_innodb_status + NEW_LINE + NEW_LINE;
+        notification_message += $"[ENGINE INNODB STATUS (caution: not necessarily consistent with exception)]{engine_innodb_status}{NEW_LINE}{NEW_LINE}";
         }
-      SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sender_email_address"], "EXCEPTION REPORT", notification_message);
+      SmtpMailSend
+        (
+        from: ConfigurationManager.AppSettings["sender_email_address"],
+        to: ConfigurationManager.AppSettings["sender_email_address"],
+        subject: "EXCEPTION REPORT",
+        message_string: notification_message
+        );
       if(
-          (the_exception_string.Contains("\\inetpub\\wwwroot\\") || the_exception_string.Contains("\\kveo-it-project\\"))
+          (the_exception_string.ContainsAnyOf(@"C:\PROJ\",@"\inetpub\wwwroot\",@"\kveo-it-project\"))
         &&
           the_exception_string.Contains(":line ")
         )
         {
-        SmtpMailSend(ConfigurationManager.AppSettings["sender_email_address"], ConfigurationManager.AppSettings["sysadmin_sms_address"], "CRASH", user_designator);
+        SmtpMailSend
+          (
+          from: ConfigurationManager.AppSettings["sender_email_address"],
+          to: ConfigurationManager.AppSettings["sysadmin_sms_address"],
+          subject: "CRASH",
+          message_string: user_designator
+          );
         }
+      else
+        {
         // else I doubt my code is responsible, so there's no need to wake me up at night.
+        }
       return notification_message;
       }
 
@@ -1272,7 +1288,7 @@ namespace kix
         try
           {
           var be_enabled_obj = ConfigurationManager.AppSettings["k.SmtpMailSend.enabled"];
-          if (be_enabled_obj == null ? true : bool.Parse(be_enabled_obj.ToString()))
+          if (be_enabled_obj == null || bool.Parse(be_enabled_obj.ToString()))
             {
             using var smtp_client = new SmtpClient(ConfigurationManager.AppSettings["smtp_server"]);
             smtp_client.Send(mail_message);
@@ -1314,24 +1330,24 @@ namespace kix
       const string DOUBLE_COMMA = k.COMMA + k.COMMA;
       using var mail_message = new MailMessage();
       //
-      to = to.Replace(k.SPACE,EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
+      to = to.Replace(k.SPACE,EMPTY).Trim([Convert.ToChar(k.COMMA)]);
       while (to.Contains(DOUBLE_COMMA))
         {
         to = to.Replace(DOUBLE_COMMA,k.COMMA);
         }
       //
-      cc = cc.Replace(k.SPACE,EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
+      cc = cc.Replace(k.SPACE,EMPTY).Trim([Convert.ToChar(k.COMMA)]);
       while (cc.Contains(DOUBLE_COMMA))
         {
         cc = cc.Replace(DOUBLE_COMMA,k.COMMA);
         }
       //
-      bcc = bcc.Replace(k.SPACE,EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
+      bcc = bcc.Replace(k.SPACE,EMPTY).Trim([Convert.ToChar(k.COMMA)]);
       while (bcc.Contains(DOUBLE_COMMA))
         {
         bcc = bcc.Replace(DOUBLE_COMMA,k.COMMA);
         }
-      reply_to = reply_to.Replace(k.SPACE,EMPTY).Trim(new char[] {Convert.ToChar(k.COMMA)});
+      reply_to = reply_to.Replace(k.SPACE,EMPTY).Trim([Convert.ToChar(k.COMMA)]);
       while (reply_to.Contains(DOUBLE_COMMA))
         {
         reply_to = reply_to.Replace(DOUBLE_COMMA,k.COMMA);
@@ -1438,7 +1454,7 @@ namespace kix
       else
         {
         var scratch_line = EMPTY;
-        var source_line_array = t.Split(new string[] {NEW_LINE,"\r\n"},StringSplitOptions.None);
+        var source_line_array = t.Split([NEW_LINE,"\r\n"],StringSplitOptions.None);
         foreach (var current_phrase in source_line_array)
           {
           var word_array = current_phrase.Split(break_char_array);
