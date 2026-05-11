@@ -1,5 +1,7 @@
 ﻿using kix;
 using System;
+using System.Security.Principal;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -41,19 +43,30 @@ namespace ki
         {
         var request_user_host_address = http_application_source.Request.UserHostAddress;
         var request_url_string = http_application_source.Request.Url.ToString();
+        var host_descriptor = $"{request_user_host_address} ({k.DomainNameOfIpAddress(request_user_host_address)})";
         k.EscalatedException
           (
           the_exception:last_error,
-          user_identity_name:k.EMPTY
-          + "Someone at " + request_user_host_address + " (" + k.DomainNameOfIpAddress(request_user_host_address) + ")" + k.NEW_LINE
-          + "visiting " + request_url_string + k.NEW_LINE
-          + k.WrapText
+          claimsIdentity:new
+            (
+            identity:new GenericIdentity
               (
-              t:http_application_source.Request.Form.ToString(),
-              insert_string:k.SPACE + k.SPACE,
-              break_char_array:"&".ToCharArray(),
-              max_line_len:short.MaxValue
-              ),
+              name:new StringBuilder()
+              .AppendLine($"Someone at {host_descriptor}")
+              .AppendLine($"visiting {request_url_string}")
+              .Append
+                (
+                k.WrapText
+                  (
+                  t:http_application_source.Request.Form.ToString(),
+                  insert_string:k.SPACE + k.SPACE,
+                  break_char_array:"&".ToCharArray(),
+                  max_line_len:short.MaxValue
+                  )
+                )
+               .ToString()
+               )
+             ),
           session:http_application_source.Session
           );
         try

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -855,7 +858,7 @@ namespace ki_web_ui
         if (be_landing_from_login)
           {
           be_cold_call_allowed = false;
-          be_cold_call = (Session["user_id"] == null) || (Session["username"] == null);
+          be_cold_call = (((ClaimsPrincipal)User).Claims.Where(claim => claim.Type == "user_id").FirstOrDefault() == null) || string.IsNullOrEmpty(HttpContext.Current?.User?.Identity?.Name);
           }
         else
           {

@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Runtime.InteropServices;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -336,58 +337,112 @@ namespace kix
     static public string EscalatedException
       (
       Exception the_exception,
-      string user_identity_name = EMPTY,
+      ClaimsIdentity claimsIdentity = null,
       HttpSessionState session = null,
       string engine_innodb_status = EMPTY
       )
       {
-      var user_designator = (user_identity_name.Length == 0 ? "unknown" : user_identity_name);
+      var result = k.EMPTY;
       var the_exception_string = the_exception.ToString();
-      var notification_message = $"[EXCEPTION]{NEW_LINE}{the_exception_string}{NEW_LINE}{NEW_LINE}[HRESULT]{NEW_LINE}{HresultAnalysis(the_exception)}{NEW_LINE}{NEW_LINE}";
-      if (user_identity_name.Length > 0)
+      var notification_message = new StringBuilder()
+      .AppendLine($"[EXCEPTION]")
+      .AppendLine($"{the_exception_string}")
+      .AppendLine()
+      .AppendLine($"[HRESULT]")
+      .AppendLine($"{HresultAnalysis(the_exception)}")
+      .AppendLine();
+      var genericIdentityName = claimsIdentity?.Name ?? k.EMPTY;
+      var genericIdentityDescriptor = (genericIdentityName.Length > 0 ? genericIdentityName : "unknown");
+      //
+      ManageUserInfo();
+      ManageClaimsInfo();
+      ManageSessionInfo();
+      ManageEngineInnoDbStatusInfo();
+      //
+      result = notification_message.ToString();
+      //
+      SendEmail();
+      ManageSmsNotification();
+      //
+      return result;
+
+      void ManageUserInfo()
         {
-        notification_message += $"[USER]{NEW_LINE}{user_designator}{NEW_LINE}{NEW_LINE}";
-        }
-      if ((session != null))
-        {
-        notification_message += $"[SESSION (has {session.Count} items)]{NEW_LINE}";
-        var filteredSessionKeys = session.Keys.Cast<string>().Where(key => key.NotInLoosely("ASP.exception_aspx.p"));
-        foreach (var key in filteredSessionKeys)
+        if (genericIdentityName.Length > 0)
           {
-          notification_message += $"{key} = {JsonConvert.SerializeObject(session[key],Formatting.Indented)}{NEW_LINE}";
+          notification_message.AppendLine($"[USER]")
+          .AppendLine($"{genericIdentityDescriptor}")
+          .AppendLine();
           }
-        notification_message += NEW_LINE;
         }
-      if (engine_innodb_status.Length > 0)
+
+      void ManageClaimsInfo()
         {
-        notification_message += $"[ENGINE INNODB STATUS (caution: not necessarily consistent with exception)]{engine_innodb_status}{NEW_LINE}{NEW_LINE}";
+        var claims = claimsIdentity.Claims;
+        var claimsOfInterest = claims?.Where(claim => claim.Type.NotIn(ClaimTypes.Name));
+        var numClaimsOfInterest = (claimsOfInterest?.Count() ?? 0);
+        notification_message.AppendLine($"[CLAIMS (has {numClaimsOfInterest} item(s) of interest)]");
+        foreach (var claim in claimsOfInterest)
+          {
+          notification_message.AppendLine($"{claim.OriginalIssuer}>{claim.Issuer}>{claim.Type}: `{claim.Value}`");
+          }
+        notification_message.AppendLine();
         }
-      SmtpMailSend
-        (
-        from: ConfigurationManager.AppSettings["sender_email_address"],
-        to: ConfigurationManager.AppSettings["sender_email_address"],
-        subject: "EXCEPTION REPORT",
-        message_string: notification_message
-        );
-      if(
-          (the_exception_string.ContainsAnyOf(@"C:\PROJ\",@"\inetpub\wwwroot\",@"\kveo-it-project\"))
-        &&
-          the_exception_string.Contains(":line ")
-        )
+
+      void ManageSessionInfo()
+        {
+        if ((session != null))
+          {
+          notification_message.AppendLine($"[SESSION (has {session.Count} item(s))]");
+          var filteredSessionKeys = session.Keys.Cast<string>().Where(key => key.NotInLoosely("ASP.exception_aspx.p"));
+          foreach (var key in filteredSessionKeys)
+            {
+            notification_message.AppendLine($"{key} = {JsonConvert.SerializeObject(session[key],Formatting.Indented)}");
+            }
+          notification_message.AppendLine();
+          }
+        }
+
+      void ManageEngineInnoDbStatusInfo()
+        {
+        if (engine_innodb_status.Length > 0)
+          {
+          notification_message.AppendLine($"[ENGINE INNODB STATUS (caution: not necessarily consistent with exception)]{engine_innodb_status}")
+          .AppendLine();
+          }
+        }
+
+      void SendEmail()
         {
         SmtpMailSend
           (
           from: ConfigurationManager.AppSettings["sender_email_address"],
-          to: ConfigurationManager.AppSettings["sysadmin_sms_address"],
-          subject: "CRASH",
-          message_string: user_designator
+          to: ConfigurationManager.AppSettings["sender_email_address"],
+          subject: "EXCEPTION REPORT",
+          message_string: result
           );
         }
-      else
+
+      void ManageSmsNotification()
         {
-        // else I doubt my code is responsible, so there's no need to wake me up at night.
+        var beInvolvingOwnCode = 
+          (
+            (the_exception_string.ContainsAnyOf(@"C:\PROJ\",@"\inetpub\wwwroot\",@"\kveo-it-project\"))
+          &&
+            the_exception_string.Contains(":line ")
+          );
+        if (beInvolvingOwnCode) // else don't wake us up at night
+          {
+          SmtpMailSend
+            (
+            from: ConfigurationManager.AppSettings["sender_email_address"],
+            to: ConfigurationManager.AppSettings["sysadmin_sms_address"],
+            subject: k.EMPTY,
+            message_string: $"CRASH: {genericIdentityDescriptor}"
+            );
+          }
         }
-      return notification_message;
+
       }
 
     static public string ExpandAsperand(string s)
@@ -421,27 +476,6 @@ namespace kix
     static public string FormatAsUsEin(string digits)
       {
       return (BeValidUsEin(digits) ? digits.Substring(0,2) + HYPHEN + digits.Substring(2) : EMPTY);
-      }
-
-    static public bool Has
-      (
-      string[] the_string_array,
-      string the_string
-      )
-      {
-      var i = new int_nonnegative();
-      var len = new int_nonnegative();
-      var result = false;
-      if (the_string_array != null)
-        {
-        len.val = the_string_array.Length;
-        while ((i.val < len.val) && !(new ArrayList {the_string,the_string + "/GENERALLY"}.Contains(the_string_array[i.val]))) // Test against unscoped and scoped forms.
-          {
-          i.val++;
-          }
-        result = (i.val < len.val);
-        }
-      return result;
       }
 
     static public string HresultAnalysis(Exception the_exception)

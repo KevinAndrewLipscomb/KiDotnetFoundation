@@ -7,7 +7,7 @@
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -97,8 +97,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="kix.extensions.cs" />
-    <Compile Include="ki_web_ui_webcontrols.cs" />
+    <Compile Include="web_ui_webcontrols\extensions.cs" />
     <Compile Include="php_app_module.cs" />
+    <Compile Include="web_ui_webcontrols\TooltippedItemDropDownList.cs" />
   </ItemGroup>
   <ItemGroup Label="None">
     <None Include="ki.ruleset" />
