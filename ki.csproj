@@ -90,13 +90,22 @@
     <Compile Include="kix.subtype.cs">
       <DependentUpon>kix.cs</DependentUpon>
     </Compile>
-    <Compile Include="ki_web_ui.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="web_ui\common.cs" />
+    <Compile Include="web_ui\extensions_class.cs" />
     <Compile Include="kix.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="kix.extensions.cs" />
+    <Compile Include="web_ui\page_class.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="web_ui\templatecontrol_class.cs" />
+    <Compile Include="web_ui\usercontrol_class.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="web_ui\usercontrol_subjoined_attribute_capture_class.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="web_ui_webcontrols\extensions.cs" />
     <Compile Include="php_app_module.cs" />
     <Compile Include="web_ui_webcontrols\TooltippedItemDropDownList.cs" />
